@@ -16,11 +16,12 @@ interface VideoCardProps {
 const VideoCard: React.FC<VideoCardProps> = ({ video }) => {
     const router = useRouter();
     const imageRef = useRef<HTMLDivElement>(null);
-    const [isVisible, setIsVisible] = useState(false);
+    // change defualt to false and un comment the useeffect block for lazy loading of thumbnails
+    const [isVisible, setIsVisible] = useState(true);
     const [imageData, setImageData] = useState<string | null>(null); 
     const [requestMade, setRequestMade] = useState(false); // Track if request is made
 
-    useEffect(() => {
+    /*useEffect(() => {
       const observer = new IntersectionObserver(
         ([entry]) => {
             setIsVisible(entry.isIntersecting);
@@ -43,7 +44,8 @@ const VideoCard: React.FC<VideoCardProps> = ({ video }) => {
       }
   };
 
-    },[]);
+    },[]);*/
+    
 
     const handleVideoClick = () => {
         // Redirect to the server URL with the fileId parameter
@@ -57,14 +59,16 @@ const VideoCard: React.FC<VideoCardProps> = ({ video }) => {
     };
 
     useEffect(()=>{
-      if(isVisible && !requestMade){
+      if((isVisible && !requestMade)||imageData!=null){
         try{
           (async ()=>{
+            setRequestMade(true);
+            console.log("request thumbnai for "+video.fileId)
             var requestData = await ServerRequest.requestThumbnail(video.fileId.toString())  
             if(requestData.exists){
               setImageData(requestData.imageData)
             }
-            setRequestMade(true);
+            
           })()
         }catch(error){
           console.log("Failed to fethch thumbnail for id"+ video.fileId)
@@ -77,9 +81,10 @@ const VideoCard: React.FC<VideoCardProps> = ({ video }) => {
       
       <div key={video.fileId} ref={imageRef} className={styles.videoCard}>
       {imageData ? (
-        <img onClick={handleVideoClick} src={imageData} alt="Thumbnail of the video" />
+        <img key={"placeholder"+video.fileId} onClick={handleVideoClick} src={imageData} alt="Thumbnail of the video" />
       ) : (
         <Image
+          key={"image"+video.fileId}
           onClick={handleVideoClick}
           priority
           src={noThumbnail}
