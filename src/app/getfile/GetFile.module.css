@@ -1,0 +1,21 @@
+
+.videoContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 80vh
+}
+
+.videoElement {
+    
+    width: 60%; 
+    max-width: 100%;
+}
+
+
+@media (max-width: 768px) {
+    .videoElement {
+        width: 90%; 
+        max-width: 100%;
+    }
+}

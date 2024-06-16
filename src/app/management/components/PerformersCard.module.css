@@ -1,0 +1,91 @@
+.cardContainer {
+  background-color: #f2eded;
+  padding: 20px;
+  border-radius: 8px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.cardList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.card {
+  background-color: #ffffff;
+  padding: 10px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  width: 100px;
+  position: relative;
+}
+
+.buttons {
+  display: none;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.card:hover .buttons {
+  display: flex;
+  justify-content: space-around;
+  gap: 8px;
+}
+
+.card:hover .text {
+  display: none;
+}
+
+.text {
+  text-align: center;
+  margin: 5;
+}
+
+.button {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease; 
+}
+
+.button img {
+  vertical-align: middle;
+}
+
+.button.editButton {
+  background-color: #2196f3; 
+  color: white;
+}
+
+.button.removeButton {
+  background-color: #f44336; 
+  color: white;
+}
+
+.button.addButton {
+  background-color: #4caf50;
+  color: white;
+}
+
+.button:hover {
+  filter: brightness(85%); 
+}
+
+.button:active {
+  filter: brightness(70%);
+}
+
+.icon {
+  color: white;
+  height: 20px; 
+  width: 20px; 
+}
