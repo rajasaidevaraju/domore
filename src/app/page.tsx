@@ -1,9 +1,9 @@
 'use client'
 import Banner from './components/Banner'
 import VideoCard from './components/VideoCard';
-import videos from './components/DummyData';
 import { useEffect, useState } from 'react';
 import { ServerRequest } from './service/ServerRequest';
+
 
 export default function Home() {
 
@@ -22,11 +22,11 @@ export default function Home() {
     }
 
     fetchFiles();
-}, []);
+}, [files]);
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <Banner/>
+     
       {files.length === 0 && !error &&
       <div className="text-center">
         <p className="text-gray-600">Loading...</p>
