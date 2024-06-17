@@ -63,7 +63,6 @@ const VideoCard: React.FC<VideoCardProps> = ({ video }) => {
         try{
           (async ()=>{
             setRequestMade(true);
-            console.log("request thumbnai for "+video.fileId)
             var requestData = await ServerRequest.requestThumbnail(video.fileId.toString())  
             if(requestData.exists){
               setImageData(requestData.imageData)

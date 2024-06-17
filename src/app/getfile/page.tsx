@@ -3,13 +3,20 @@
 import React,{useEffect, useState,useRef} from "react"
 import { notFound ,useSearchParams} from 'next/navigation'
 import styles from './GetFile.module.css';
-import Banner from "../components/Banner";
 import html2canvas from "html2canvas";
 import {ServerRequest} from './../service/ServerRequest'
+import ToastMessage from './components/ToastMessages'
+
 const GetFile = () => {
     const searchParams = useSearchParams()
     const [fileId, setFileId] = useState<string>();
     const videoRef = useRef(null);
+
+    const [toast, setToast] = useState<{ message: string; type: 'success' | 'danger' | 'warning' } | null>(null);
+
+    const showToast = (message: string, type: 'success' | 'danger' | 'warning') => {
+        setToast({ message, type });
+    };
 
     useEffect(() => {
 
@@ -18,7 +25,6 @@ const GetFile = () => {
             setFileId(fileId)
         }
 
-
     }, []);
     
     const handleTakeScreenshot = async () => {
@@ -26,12 +32,17 @@ const GetFile = () => {
 
         try {
             const canvas = await html2canvas(videoRef.current);
-            const imageData = canvas.toDataURL('image/png');
+            const imageData = canvas.toDataURL("image/jpeg", 0.3);
             // Send the screenshot to the server
             await ServerRequest.sendScreenshot(fileId,imageData);
-        } catch (error) {
+            showToast("Screenshot set as Thumbnail","success")
+        } catch (error: Error | any) {
+            if( error instanceof Error){
+                showToast(error.message, 'danger')
+            }
             console.error('Error taking screenshot:', error);
-        }
+        };
+        
     };
 
     return (
@@ -43,8 +54,10 @@ const GetFile = () => {
                         <source src={`/server/file?fileId=${fileId}`} type="video/mp4" />
                     </video>
                 }
-            <button onClick={handleTakeScreenshot}>Take Screenshot</button>
+            <button className="bg-dedede text-black font-medium py-2 px-4 rounded-lg transition duration-200 ease-in-out transform active:scale-95"
+      style={{ backgroundColor: '#dedede' }} onClick={handleTakeScreenshot}>Take Screenshot</button>
         </div>
+        {toast && <ToastMessage message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
         </div>
     );
 
