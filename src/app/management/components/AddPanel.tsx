@@ -38,6 +38,7 @@ const AddPanel = <T extends { id: number; name: string }>({
       name,
     }));
     onSave(newEntries); // Pass the new entries to the parent component
+    onClose(); // Close the AddPanel after saving
   };
 
   return (
