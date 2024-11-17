@@ -6,6 +6,13 @@ import styles from './GetFile.module.css';
 import html2canvas from "html2canvas";
 import {ServerRequest} from './../service/ServerRequest'
 import ToastMessage from './components/ToastMessages'
+var API_BASE_URL = process.env.NEXT_PUBLIC_SERVER_ADDRESS;
+const NEXT_PUBLIC_IS_DEVELOPMENT= process.env.NEXT_PUBLIC_IS_DEVELOPMENT;
+
+if(NEXT_PUBLIC_IS_DEVELOPMENT!='true'){
+    API_BASE_URL=`http://${window.location.host}:1280`;
+}
+
 
 const GetFile = () => {
     const searchParams = useSearchParams()
@@ -24,7 +31,7 @@ const GetFile = () => {
         if(typeof fileId ==="string"){
             setFileId(fileId)
             if(videoRef.current){
-                videoRef.current.src=`/server/file?fileId=${fileId}`
+                videoRef.current.src=`${API_BASE_URL}/server/file?fileId=${fileId}`
                 videoRef.current.load();
             }
         }

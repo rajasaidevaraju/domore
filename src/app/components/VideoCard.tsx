@@ -3,7 +3,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Video from './Video';
 import Link from 'next/link';
-import Image from 'next/image';
 import styles from './VideoCard.module.css';
 import { ServerRequest } from '../service/ServerRequest';
 
@@ -31,7 +30,7 @@ const VideoCard: React.FC<VideoCardProps> = ({ video }) => {
         // Do nothing
       }
     }
-  }, [requestMade, video.fileId]);
+  }, [requestMade, video.fileId,imageData]);
 
   return (
     <Link href={`/getfile/?fileId=${video.fileId}`}>
