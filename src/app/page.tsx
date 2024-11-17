@@ -1,5 +1,4 @@
 'use client'
-import Banner from './components/Banner'
 import VideoCard from './components/VideoCard';
 import { useEffect, useState } from 'react';
 import { ServerRequest } from './service/ServerRequest';
@@ -27,20 +26,19 @@ export default function Home() {
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-18">
      
-      {files.length === 0 && !error &&
-      <div className="text-center">
+     <div className="flex flex-col justify-center items-center h-full">
+      {files.length === 0 && !error && (
         <p className="text-gray-600">Loading...</p>
-      </div>
-      }
-      {error &&
-      <div className="text-center">
+      )}
+      {error && (
         <p className="text-red-600">{error}</p>
+      )}
       </div>
-      }
+
       {files.length > 0 && 
       <div className="videos-container">
         {files.map((video) => (
-          <VideoCard key={video.fileId} video={video} />
+          <VideoCard key={video.fileId} video={video}/>
         ))}
       </div>
       }

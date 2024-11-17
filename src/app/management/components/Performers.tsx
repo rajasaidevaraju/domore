@@ -35,10 +35,8 @@ const PerformersCard = () => {
         <button 
         className={`${styles.addButton} ${styles.button}`}
         onClick={handleAdd}>
-          <img src="/add.svg" alt="Add" />
+          <img src="/svg/add.svg" alt="Add" />
         </button>
-        
-        
       </div>
       <div className={styles.cardList}>
         {performers.map((performer) => (
@@ -48,12 +46,12 @@ const PerformersCard = () => {
               <button 
               className={`${styles.editButton} ${styles.button}`}
               onClick={() => handleEdit(performer.id)}>
-                <img src="/edit.svg" alt="Edit" />
+                <img src="/svg/edit.svg" alt="Edit" />
                 </button>
 
               <button className={`${styles.removeButton} ${styles.button}`}
               onClick={() => handleRemove(performer.id)}>
-                <img src="/delete.svg" alt="Delete" />
+                <img src="/svg/delete.svg" alt="Delete" />
               </button>
             </div>
           </div>

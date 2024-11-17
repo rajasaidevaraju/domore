@@ -10,7 +10,7 @@ import ToastMessage from './components/ToastMessages'
 const GetFile = () => {
     const searchParams = useSearchParams()
     const [fileId, setFileId] = useState<string>();
-    const videoRef = useRef(null);
+    const videoRef = useRef<HTMLVideoElement>(null);
 
     const [toast, setToast] = useState<{ message: string; type: 'success' | 'danger' | 'warning' } | null>(null);
 
@@ -23,6 +23,10 @@ const GetFile = () => {
         const fileId = searchParams.get('fileId')
         if(typeof fileId ==="string"){
             setFileId(fileId)
+            if(videoRef.current){
+                videoRef.current.src=`/server/file?fileId=${fileId}`
+                videoRef.current.load();
+            }
         }
 
     }, []);
@@ -47,17 +51,16 @@ const GetFile = () => {
 
     return (
         <div>
-            
             <div className={styles.videoContainer}>
-                {typeof fileId !== "undefined" &&
-                    <video ref={videoRef} controls className={styles.videoElement}>
-                        <source src={`/server/file?fileId=${fileId}`} type="video/mp4" />
-                    </video>
-                }
+                
+            <video ref={videoRef} controls className={styles.videoElement}>
+                <source src="" type="video/mp4" />
+            </video>
+                
             <button className="bg-dedede text-black font-medium py-2 px-4 rounded-lg transition duration-200 ease-in-out transform active:scale-95"
-      style={{ backgroundColor: '#dedede' }} onClick={handleTakeScreenshot}>Take Screenshot</button>
-        </div>
-        {toast && <ToastMessage message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
+            style={{ backgroundColor: '#dedede' }} onClick={handleTakeScreenshot}>Set As Thumbnail</button>
+            </div>
+            {toast && <ToastMessage message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
         </div>
     );
 
