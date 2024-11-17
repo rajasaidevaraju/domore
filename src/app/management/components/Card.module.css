@@ -1,0 +1,171 @@
+.cardContainer {
+  background-color: #f2eded;
+  padding: 20px;
+  margin: 10px;
+  border-radius: 8px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.header p{
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.cardList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.card {
+  position: relative;
+  background-color: #ffffff;
+  padding: 10px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.buttons {
+ display: flex;
+}
+
+
+.card:hover {
+  cursor: pointer;
+}
+
+.text {
+  text-align: center;
+  margin: 5;
+}
+
+.button {
+  margin-left: 5px;
+  padding: 6px 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease; 
+}
+
+.button img {
+  vertical-align: middle;
+}
+
+.button.editButton {
+  background-color: #2196f3; 
+  color: white;
+}
+
+.button.removeButton {
+  background-color: #f44336; 
+  color: white;
+}
+
+.button.addButton {
+  background-color: #4caf50;
+  color: white;
+}
+
+.button:hover {
+  filter: brightness(85%); 
+}
+
+.button:active {
+  filter: brightness(70%);
+}
+
+.icon {
+  color: white;
+  height: 20px; 
+  width: 20px; 
+}
+
+
+/*new*/
+
+.addForm {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.input {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  flex-grow: 1;
+}
+
+.saveButton {
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 12px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.saveButton:hover {
+  background-color: #45a049;
+}
+
+.cancelButton {
+  background-color: #f44336;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 12px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.cancelButton:hover {
+  background-color: #e41f1f;
+}
+
+
+.confirmButton {
+  background-color: #2196f3;
+  color: white;
+}
+
+.confirmButton:hover {
+  background-color: #1976d2;
+}
+
+.checkboxLabel {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  z-index: 10; /* Ensure it is above the performer content */
+}
+
+.checkbox {
+  width: 20px;
+  height: 20px;
+}
+
+
+.selected {
+  filter: blur(1px);
+}
+
+
+.text {
+  text-align: center;
+  margin: 5px;
+}
+
+.cardList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}

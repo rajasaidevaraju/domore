@@ -1,11 +1,11 @@
 import React from "react";
 import {PerformersCard} from "./components/Performers";
-import Categories from "./components/Categories";
+import {CategoriesCard} from "./components/Categories";
 const management=()=>{
 
     return (<div>
         <PerformersCard/>
-        <Categories/>
+        <CategoriesCard/>
     </div>)
 
 }

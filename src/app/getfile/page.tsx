@@ -7,10 +7,10 @@ import html2canvas from "html2canvas";
 import {ServerRequest} from './../service/ServerRequest'
 import ToastMessage from './components/ToastMessages'
 var API_BASE_URL = process.env.NEXT_PUBLIC_SERVER_ADDRESS;
-const NEXT_PUBLIC_IS_DEVELOPMENT= process.env.NEXT_PUBLIC_IS_DEVELOPMENT;
+const NEXT_IS_DEPLOYMENT_static= process.env.NEXT_IS_DEPLOYMENT_static;
 
-if(NEXT_PUBLIC_IS_DEVELOPMENT!='true'){
-    API_BASE_URL=`http://${window.location.host}:1280`;
+if(NEXT_IS_DEPLOYMENT_static=='true'){
+    API_BASE_URL="";
 }
 
 
