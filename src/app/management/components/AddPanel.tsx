@@ -3,13 +3,17 @@
 import React, { useState } from "react";
 import styles from "./AddPanel.module.css";
 
-interface AddPanelProps {
+interface AddPanelProps<T extends { id: number; name: string }> {
   onClose: () => void;
-  onSave: (newEntries: { id: number; name: string }[]) => void;
-  label:String
+  onSave: (newEntries: { id: number; name: string }[])  => void; // Accepts T[], where T is any type extending { id: number; name: string }
+  label: string;
 }
 
-const AddPanel: React.FC<AddPanelProps> = ({ onClose, onSave, label }) => {
+const AddPanel = <T extends { id: number; name: string }>({
+  onClose,
+  onSave,
+  label,
+}: AddPanelProps<T>) => {
   const [entries, setEntries] = useState<string[]>([""]); // Initial entry input
 
   const handleInputChange = (index: number, value: string) => {
@@ -30,16 +34,16 @@ const AddPanel: React.FC<AddPanelProps> = ({ onClose, onSave, label }) => {
     }
 
     const newEntries = validEntries.map((name, index) => ({
-      id: Date.now() + index, // Generate a unique ID
+      id: Date.now() + index, // Generate a unique ID (you can use another method if needed)
       name,
     }));
-    onSave(newEntries);
+    onSave(newEntries); // Pass the new entries to the parent component
   };
 
   return (
     <div className={styles.overlay}>
       <div className={styles.panel}>
-        <h2>{label}</h2>
+        <h2>{`Add ${label}`}</h2>
         <div className={styles.entries}>
           {entries.map((entry, index) => (
             <input
@@ -47,7 +51,7 @@ const AddPanel: React.FC<AddPanelProps> = ({ onClose, onSave, label }) => {
               type="text"
               value={entry}
               onChange={(e) => handleInputChange(index, e.target.value)}
-              placeholder={`new entry ${index + 1}`}
+              placeholder={`New ${label.slice(0, -1)} ${index + 1}`} // Dynamic placeholder
               className={styles.input}
             />
           ))}

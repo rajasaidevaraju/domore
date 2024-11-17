@@ -1,6 +1,6 @@
 import React from "react";
-import {PerformersCard} from "./components/Performers";
-import {CategoriesCard} from "./components/Categories";
+import PerformersCard from "./components/Performers";
+import CategoriesCard from "./components/Categories";
 const management=()=>{
 
     return (<div>
