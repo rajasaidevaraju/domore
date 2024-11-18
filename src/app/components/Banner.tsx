@@ -6,12 +6,6 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 const Banner = () => {
 
-  const router = useRouter();
-  const handleClick = (url:string) => {
-    // Redirect to the server URL with the fileId parameter
-    router.push(url);
-    };
-
     return (
       <div className={styles.banner}>
       <Link href="/" className={styles.icon_container}>

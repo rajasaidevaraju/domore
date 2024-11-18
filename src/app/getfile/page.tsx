@@ -1,7 +1,8 @@
 'use client'
 
 import React,{useEffect, useState,useRef} from "react"
-import { notFound ,useSearchParams} from 'next/navigation'
+import {useSearchParams} from 'next/navigation'
+import { Suspense } from 'react'
 import styles from './GetFile.module.css';
 import html2canvas from "html2canvas";
 import {ServerRequest} from './../service/ServerRequest'
@@ -73,4 +74,12 @@ const GetFile = () => {
 
 }
 
-export default GetFile;
+
+export default function GetFilePage() {
+    return (
+      <Suspense fallback={<div>Loading...</div>}>
+        <GetFile />
+      </Suspense>
+    );
+  }
+

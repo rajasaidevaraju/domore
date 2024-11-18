@@ -11,15 +11,14 @@ interface VideoCardProps {
 }
 
 const VideoCard: React.FC<VideoCardProps> = ({ video }) => {
-  const imageRef = useRef<HTMLDivElement>(null);
   const [imageData, setImageData] = useState<string | null>(null);
-  const [requestMade, setRequestMade] = useState(false); // Track if request is made
+  const requestMadeRef = useRef(false);
 
   useEffect(() => {
-    if (!requestMade || imageData != null) {
+    if (!requestMadeRef.current && !imageData) {
       try {
         (async () => {
-          setRequestMade(true);
+          requestMadeRef.current = true;
           const requestData = await ServerRequest.requestThumbnail(video.fileId.toString());
           if (requestData.exists) {
             setImageData(requestData.imageData);
@@ -30,13 +29,12 @@ const VideoCard: React.FC<VideoCardProps> = ({ video }) => {
         // Do nothing
       }
     }
-  }, [requestMade, video.fileId,imageData]);
+  }, [imageData]);
 
   return (
-    <Link href={`/getfile/?fileId=${video.fileId}`}>
+    <Link href={`/getfile/?fileId=${video.fileId}`} key={`/getfile/?fileId=${video.fileId}`} >
       <div
         key={video.fileId + 'div'}
-        ref={imageRef}
         className={styles.videoCard}
       >
         {imageData ? (
