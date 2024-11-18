@@ -48,11 +48,9 @@ const VideoCard: React.FC<VideoCardProps> = ({ video }) => {
             alt="Thumbnail of the video"
           />
         ) : (
-          <img
-            key={'image' + video.fileId}
-            src="/svg/noThumbnail.svg"
-            alt="Thumbnail not created"
-          />
+          <div className={styles.placeholderDiv}>
+            <p> Thumbnail not created </p>
+          </div>
         )}
         <h2>{video.fileName}</h2>
       </div>
