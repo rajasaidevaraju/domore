@@ -2,18 +2,18 @@
 import VideoCard from './components/VideoCard';
 import { useEffect, useState } from 'react';
 import { ServerRequest } from './service/ServerRequest';
-
+import { FileDataList, FileData } from './types/FileDataList';
 
 export default function Home() {
 
-  const [files, setFiles] = useState<{ fileId: number; fileName: string }[]>([]);
+  const [files, setFiles] = useState<FileData[]>([]);
   const [error, setError] = useState<string | null>(null);
   
   useEffect(() => {
     async function fetchFiles() {
         try {
-            const filesData = await ServerRequest.fetchFiles();
-            setFiles(filesData);
+            const filesDataList = await ServerRequest.fetchFiles();
+            setFiles(filesDataList.data);
         } catch (error) {
             setError('Failed to fetch files');
             console.error('Error fetching files:', error);

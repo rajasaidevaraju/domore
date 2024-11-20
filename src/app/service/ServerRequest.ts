@@ -1,14 +1,12 @@
 var API_BASE_URL = process.env.NEXT_PUBLIC_SERVER_ADDRESS;
 const NEXT_IS_DEPLOYMENT_static= process.env.NEXT_IS_DEPLOYMENT_static;
-
-if(NEXT_IS_DEPLOYMENT_static!='true'){
-    API_BASE_URL="";
-}
-
+import { FileDataList } from "../types/FileDataList";
 export const ServerRequest = {
-  async fetchFiles(): Promise<{ fileId: number; fileName: string }[]> {
+  async fetchFiles(): Promise<FileDataList> {
     try {
-      const response = await fetch(`${API_BASE_URL}/server/files`);
+      let url=`${API_BASE_URL}/server/files`
+      console.log(url)
+      const response = await fetch(url,{method:"GET",redirect:"follow"});
       if (!response.ok) {
         throw new Error('Failed to fetch files');
       }
