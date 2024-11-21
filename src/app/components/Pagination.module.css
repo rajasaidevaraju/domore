@@ -26,6 +26,7 @@
     margin: 5px;
     text-decoration: none;
     color: inherit;
+    transition: background-color 0.3s ease;
 }
 
 
@@ -58,7 +59,7 @@
     appearance: none;
     width: 80px;
     text-align: center;
-    transition: background-color 0.2s ease, transform 0.1s ease;
+    transition: background-color 0.3s ease, transform 0.1s ease;
 }
 
 /* Remove dropdown arrow and style it */
