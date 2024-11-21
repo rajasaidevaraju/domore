@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useEffect, useRef, useState } from 'react';
-import Video from './Video';
+import Video from '../types/Video';
 import Link from 'next/link';
 import styles from './VideoCard.module.css';
 import { ServerRequest } from '../service/ServerRequest';
@@ -26,7 +26,6 @@ const VideoCard: React.FC<VideoCardProps> = ({ video }) => {
         })();
       } catch (error) {
         console.error('Failed to fetch thumbnail for id' + video.fileId);
-        // Do nothing
       }
     }
   }, [imageData]);

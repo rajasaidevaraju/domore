@@ -2,9 +2,12 @@ var API_BASE_URL = process.env.NEXT_PUBLIC_SERVER_ADDRESS;
 const NEXT_IS_DEPLOYMENT_static= process.env.NEXT_IS_DEPLOYMENT_static;
 import { FileDataList } from "../types/FileDataList";
 export const ServerRequest = {
-  async fetchFiles(): Promise<FileDataList> {
+  async fetchFiles(page?:number): Promise<FileDataList> {
     try {
       let url=`${API_BASE_URL}/server/files`
+      if(page!=undefined){
+        url=`${API_BASE_URL}/server/files/page/${page}`
+      }
       console.log(url)
       const response = await fetch(url,{method:"GET",redirect:"follow"});
       if (!response.ok) {
@@ -35,7 +38,7 @@ export const ServerRequest = {
   async requestThumbnail(fileId: string): Promise<{ imageData: string, exists: boolean }> {
     const response = await fetch(`${API_BASE_URL}/server/thumbnail?fileId=${fileId}`);
     if (!response.ok) {
-      throw new Error(`status ${response.status} from server`);
+      return { imageData: "", exists: false }
     }
     return await response.json();
   }
