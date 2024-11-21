@@ -10,7 +10,7 @@ export default function AltHome(){
     const [numPage,setNumPage]=useState(getPageNumber(page))
     useEffect(() => {
         page = searchParams.get("page")
-        console.log(`page:${page}`)
+        
         setNumPage(getPageNumber(page))
       }, [searchParams]);
     

@@ -29,7 +29,7 @@ export default function Home({ page }: HomeProps) {
     }
 
     fetchFiles();
-}, []);
+}, [page]);
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-18">
      
