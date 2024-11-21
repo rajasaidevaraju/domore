@@ -20,3 +20,25 @@
         max-width: 100%;
     }
 }
+
+
+.scbutton{
+    background-color: #dedede;
+    border-radius: 8px;
+    justify-content: center;
+    display: flex;
+    padding: 10px;
+    margin: 5px;
+    text-decoration: none;
+    color: inherit;
+}
+
+
+.scbutton:hover {
+    background-color: #d0d0d0; 
+}
+
+.scbutton:active {
+    transform: scale(0.95); 
+    background-color: #b5b5b5; 
+}

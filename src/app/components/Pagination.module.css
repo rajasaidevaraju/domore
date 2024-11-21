@@ -1,4 +1,76 @@
 .button_container{
     display: flex;
     margin: 10px;
+    align-items: center;
+
+}
+
+.disabled{
+    cursor: not-allowed;     
+    opacity: 0.5; 
+    pointer-events: none;
+}
+
+.disabled img {
+    opacity: 0.5;    
+  }
+
+.button{
+    background-color: #dedede;
+    border-radius: 30px;
+    width: 30px;
+    height: 30px;
+    justify-content: center;
+    display: flex;
+    padding: 3px;
+    margin: 5px;
+    text-decoration: none;
+    color: inherit;
+}
+
+
+.button:hover {
+    background-color: #d0d0d0; 
+}
+
+.button:active {
+    transform: scale(0.95); 
+    background-color: #b5b5b5; 
+}
+
+.disabled:hover, .disabled:active {
+    background-color: #dedede; 
+    transform: none; 
+}
+
+
+.dropdown_select {
+    margin: 5px;
+    padding: 3px;
+    background-color: #dedede;
+    border-radius: 30px;
+    padding: 5px 15px;
+    font-size: 14px;
+    color: inherit;
+    cursor: pointer;
+    border: none;
+    outline: none;
+    appearance: none;
+    width: 80px;
+    text-align: center;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+/* Remove dropdown arrow and style it */
+.dropdown_select::-ms-expand {
+    display: none;
+}
+
+.dropdown_select:hover {
+    background-color: #d0d0d0;
+}
+
+.dropdown_select:active {
+    transform: scale(0.95);
+    background-color: #b5b5b5;
 }

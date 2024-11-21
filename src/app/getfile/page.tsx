@@ -65,8 +65,7 @@ const GetFile = () => {
                 <source src="" type="video/mp4" />
             </video>
                 
-            <button className="bg-dedede text-black font-medium py-2 px-4 rounded-lg transition duration-200 ease-in-out transform active:scale-95"
-            style={{ backgroundColor: '#dedede' }} onClick={handleTakeScreenshot}>Set As Thumbnail</button>
+            <button className={styles.scbutton} onClick={handleTakeScreenshot}>Set As Thumbnail</button>
             </div>
             {toast && <ToastMessage message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
         </div>
