@@ -16,7 +16,7 @@
   }
 
 .button{
-    background-color: #dedede;
+    background-color: rgb(var(--main-color));
     border-radius: 30px;
     width: 30px;
     height: 30px;
@@ -31,16 +31,15 @@
 
 
 .button:hover {
-    background-color: #d0d0d0; 
+    background-color: rgba(var(--main-color-hover));
 }
 
 .button:active {
-    transform: scale(0.95); 
-    background-color: #b5b5b5; 
+    background-color: rgba(var(--main-color-active));
 }
 
 .disabled:hover, .disabled:active {
-    background-color: #dedede; 
+    background-color: rgb(var(--main-color));
     transform: none; 
 }
 
@@ -48,7 +47,7 @@
 .dropdown_select {
     margin: 5px;
     padding: 3px;
-    background-color: #dedede;
+    background-color: rgb(var(--main-color));
     border-radius: 30px;
     padding: 5px 15px;
     font-size: 14px;
@@ -68,10 +67,9 @@
 }
 
 .dropdown_select:hover {
-    background-color: #d0d0d0;
+    background-color: rgba(var(--main-color-hover));
 }
 
 .dropdown_select:active {
-    transform: scale(0.95);
-    background-color: #b5b5b5;
+    background-color: rgba(var(--main-color-active));
 }

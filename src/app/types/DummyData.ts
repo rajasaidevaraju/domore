@@ -1,4 +1,4 @@
-{
+let dummyData={
     "files": [
       { "fileId": 7025, "fileName": "Tokyo, Tokyo, Japan" },
       { "fileId": 8541, "fileName": "Delhi, Delhi, India" },

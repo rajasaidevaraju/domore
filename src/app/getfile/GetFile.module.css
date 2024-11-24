@@ -23,7 +23,7 @@
 
 
 .scbutton{
-    background-color: #dedede;
+    background-color: rgb(var(--main-color));
     border-radius: 8px;
     justify-content: center;
     display: flex;
@@ -31,14 +31,14 @@
     margin: 5px;
     text-decoration: none;
     color: inherit;
+    transition: background-color 0.3s ease;
 }
 
 
 .scbutton:hover {
-    background-color: #d0d0d0; 
+    background-color: rgba(var(--main-color-hover)); 
 }
 
 .scbutton:active {
-    transform: scale(0.95); 
-    background-color: #b5b5b5; 
+    background-color: rgba(var(--main-color-active)); 
 }

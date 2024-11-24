@@ -1,7 +1,7 @@
 
 import Link from 'next/link';
 import styles from './Pagination.module.css';
-import { Meta } from '../types/FileDataList';
+import { Meta } from '../../types/FileDataList';
 
 export default function Pagination({page,limit,total}:Meta){
 
@@ -17,7 +17,7 @@ export default function Pagination({page,limit,total}:Meta){
     return(
         <div className={styles.button_container}>
             <Link href={isFirstPage?'#':`/files?page=${page-1}`} className={`${styles.button} ${isFirstPage?styles.disabled:undefined}`}>
-                <img src="/svg/left.svg"></img>
+                <img src="/svg/left.svg" alt="left button"></img>
             </Link>
             <select
                 className={styles.dropdown_select}
@@ -31,7 +31,7 @@ export default function Pagination({page,limit,total}:Meta){
                 ))}
             </select>
             <Link href={isLastPage?'#':`/files?page=${page+1}`}  className={`${styles.button} ${isLastPage?styles.disabled:undefined}`}>
-                <img src="/svg/right.svg"></img>
+                <img src="/svg/right.svg" alt="right button"></img>
             </Link>
         </div>
     )

@@ -1,15 +1,12 @@
 'use client'
-import VideoCard from './components/VideoCard';
+import VideoCard from './files/components/VideoCard';
 import { useEffect, useState } from 'react';
 import { ServerRequest } from './service/ServerRequest';
 import { FileDataList, FileData,Meta } from './types/FileDataList';
-import Pagination from './components/Pagination';
+import Pagination from './files/components/Pagination';
 
-type HomeProps = {
-  page?: number;
-};
 
-export default function Home({ page }: HomeProps) {
+export default function Home() {
 
   const [files, setFiles] = useState<FileData[]>([]);
   const [error, setError] = useState<string | null>(null);
@@ -18,7 +15,7 @@ export default function Home({ page }: HomeProps) {
   useEffect(() => {
     async function fetchFiles() {
         try {
-            const filesDataList = await ServerRequest.fetchFiles(page);
+            const filesDataList = await ServerRequest.fetchFiles(1);
             setFiles(filesDataList.data);
             setMeta(filesDataList.meta)
             
@@ -29,7 +26,7 @@ export default function Home({ page }: HomeProps) {
     }
 
     fetchFiles();
-}, [page]);
+}, []);
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-18">
      

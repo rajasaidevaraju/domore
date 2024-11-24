@@ -6,7 +6,7 @@ export const ServerRequest = {
     try {
       let url=`${API_BASE_URL}/server/files`
       if(page!=undefined){
-        url=`${API_BASE_URL}/server/files/page/${page}`
+        url=`${API_BASE_URL}/server/files?page=${page}`
       }
       console.log(url)
       const response = await fetch(url,{method:"GET",redirect:"follow"});

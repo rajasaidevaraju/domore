@@ -1,21 +1,59 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-import Home from '../page'
+import { useEffect, useState,Suspense } from 'react'
+import VideoCard from './components/VideoCard';
+import { ServerRequest } from '../service/ServerRequest';
+import { FileDataList, FileData,Meta } from '../types/FileDataList';
+import Pagination from './components/Pagination';
 import { useSearchParams } from 'next/navigation'
+import styles from './Files.module.css'; 
 
-export default function AltHome(){
+function AltHome(){
     const searchParams = useSearchParams()
-    let page = searchParams.get("page")
-    const [numPage,setNumPage]=useState(getPageNumber(page))
+    const [files, setFiles] = useState<FileData[]>([]);
+    const [error, setError] = useState<string | null>(null);
+    const [meta,setMeta]=useState<Meta>({page: 1,limit: 1,total: 1})
+
     useEffect(() => {
-        page = searchParams.get("page")
-        
-        setNumPage(getPageNumber(page))
-      }, [searchParams]);
+       let pageNo = getPageNumber(searchParams.get("page"))
+       async function fetchFiles() {
+        try {
+            const filesDataList = await ServerRequest.fetchFiles(pageNo);
+            setFiles(filesDataList.data);
+            setMeta(filesDataList.meta)
+            
+        } catch (error) {
+            setError('Failed to fetch files');
+            console.error('Error fetching files:', error);
+        }
+    }
+
+    fetchFiles();
+    }, [searchParams]);
     
 
- return <Home page={numPage}></Home>
+ return  (
+    <main className={styles.mainContainer}>
+     
+     <div className={styles.innerContainer}>
+      {files.length === 0 && !error && (
+        <p className={styles.loadingText}>Loading...</p>
+      )}
+      {error && (
+        <p className={styles.errorText}>{error}</p>
+      )}
+      </div>
+
+      {files.length > 0 && 
+      <div className="videos-container">
+        {files.map((video) => (
+          <VideoCard key={video.fileId} video={video}/>
+        ))}
+      </div>
+      }
+    <Pagination {...meta}></Pagination>
+    </main>
+  );
 }
 
 function getPageNumber(page:string | null):number{
@@ -25,4 +63,14 @@ function getPageNumber(page:string | null):number{
         }
     }
     return 1;
+}
+
+export default function AltHomePage(){
+
+    return (
+        <Suspense fallback={<div>Loading...</div>}>
+          <AltHome></AltHome>
+        </Suspense>
+      );
+    
 }

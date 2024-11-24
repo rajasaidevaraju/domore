@@ -1,10 +1,10 @@
 'use client'
 
 import React, { useEffect, useRef, useState } from 'react';
-import Video from '../types/Video';
+import Video from '../../types/Video';
 import Link from 'next/link';
 import styles from './VideoCard.module.css';
-import { ServerRequest } from '../service/ServerRequest';
+import { ServerRequest } from '../../service/ServerRequest';
 
 interface VideoCardProps {
   video: Video;
@@ -31,16 +31,14 @@ const VideoCard: React.FC<VideoCardProps> = ({ video }) => {
   }, [imageData]);
 
   return (
-    <Link href={`/getfile/?fileId=${video.fileId}`} key={`/getfile/?fileId=${video.fileId}`} >
+    <Link href={`/getfile/?fileId=${video.fileId}`} >
       <div
-        key={video.fileId + 'div'}
         className={styles.videoCard}
       >
         {imageData ? (
           <img
             height={270}
             width={150}
-            key={'placeholder' + video.fileId}
             src={imageData}
             alt="Thumbnail of the video"
           />

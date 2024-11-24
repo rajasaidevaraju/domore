@@ -8,12 +8,18 @@
 :root {
   --foreground-rgb: 0, 0, 0;
   --background-rgb: 255, 255, 255;
+  --main-color: 222, 222, 222; 
+  --main-color-hover: 200, 200, 200;
+  --main-color-active: 180, 180, 180;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-rgb: 0, 0, 0; 
+    --foreground-rgb: 230, 230, 230;
+    --background-rgb: 30, 30, 30; 
+    --main-color: 68, 68, 68;
+    --main-color-hover: 78, 78, 78;
+    --main-color-active: 88, 88, 88;
   }
 }
 
@@ -25,6 +31,6 @@ body {
 .videos-container {
   display: flex;
   margin: 10px 0px;
-  flex-wrap: wrap; /* Allow wrapping to next row */
-  justify-content: center; /* Center the items horizontally */
+  flex-wrap: wrap;
+  justify-content: center;
 }

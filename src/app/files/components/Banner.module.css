@@ -4,8 +4,7 @@
     justify-content: flex-end;
     align-items: center; 
     padding: 10px; 
-    background-color: #dedede;
-    
+    background-color: rgb(var(--main-color));
   }
 
   .banner .item-to-start {
@@ -24,11 +23,11 @@
 
   .icon_container:hover {
     cursor: pointer;
-    background-color: #d0d0d0;
+    background-color: rgba(var(--main-color-hover));
   }
   
   .icon_container:active {
-    background-color: #b5b5b5; 
+    background-color: rgba(var(--main-color-active));
 }
 
   .icon_text {

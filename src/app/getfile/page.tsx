@@ -61,8 +61,8 @@ const GetFile = () => {
         <div>
             <div className={styles.videoContainer}>
                 
-            <video ref={videoRef} controls className={styles.videoElement}>
-                <source src="" type="video/mp4" />
+            <video  ref={videoRef} controls className={styles.videoElement}>
+                <source src="null" type="video/mp4" />
             </video>
                 
             <button className={styles.scbutton} onClick={handleTakeScreenshot}>Set As Thumbnail</button>
