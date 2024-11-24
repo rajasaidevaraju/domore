@@ -14,7 +14,7 @@ const VideoCard: React.FC<VideoCardProps> = ({ video }) => {
   const [imageData, setImageData] = useState<string | null>(null);
   const requestMadeRef = useRef(false);
 
-  useEffect(() => {
+
     if (!requestMadeRef.current && !imageData) {
       try {
         (async () => {
@@ -29,7 +29,7 @@ const VideoCard: React.FC<VideoCardProps> = ({ video }) => {
         // Do nothing
       }
     }
-  }, [imageData]);
+
 
   return (
     <Link href={`/getfile/?fileId=${video.fileId}`} key={`/getfile/?fileId=${video.fileId}`} >
