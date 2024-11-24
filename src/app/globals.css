@@ -28,9 +28,4 @@ body {
   background-color: rgb(var(--background-rgb)); 
 }
 
-.videos-container {
-  display: flex;
-  margin: 10px 0px;
-  flex-wrap: wrap;
-  justify-content: center;
-}
+

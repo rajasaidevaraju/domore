@@ -7,6 +7,7 @@ import { FileDataList, FileData,Meta } from '../types/FileDataList';
 import Pagination from './components/Pagination';
 import { useSearchParams } from 'next/navigation'
 import styles from './Files.module.css'; 
+import Loading from './../loading'
 
 function AltHome(){
     const searchParams = useSearchParams()
@@ -37,7 +38,7 @@ function AltHome(){
      
      <div className={styles.innerContainer}>
       {files.length === 0 && !error && (
-        <p className={styles.loadingText}>Loading...</p>
+        <Loading/>
       )}
       {error && (
         <p className={styles.errorText}>{error}</p>
@@ -45,7 +46,7 @@ function AltHome(){
       </div>
 
       {files.length > 0 && 
-      <div className="videos-container">
+      <div className={styles.videosContainer}>
         {files.map((video) => (
           <VideoCard key={video.fileId} video={video}/>
         ))}
@@ -68,7 +69,7 @@ function getPageNumber(page:string | null):number{
 export default function AltHomePage(){
 
     return (
-        <Suspense fallback={<div>Loading...</div>}>
+        <Suspense fallback={<Loading/>}>
           <AltHome></AltHome>
         </Suspense>
       );
