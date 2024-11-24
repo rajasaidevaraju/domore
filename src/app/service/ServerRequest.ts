@@ -1,14 +1,10 @@
-var API_BASE_URL = process.env.NEXT_PUBLIC_SERVER_ADDRESS;
-const NEXT_PUBLIC_IS_DEPLOYMENT_static= process.env.NEXT_PUBLIC_IS_DEPLOYMENT_static;
-
-if(NEXT_PUBLIC_IS_DEPLOYMENT_static!='true'){
-    API_BASE_URL="";
-}
+//var API_BASE_URL = process.env.NEXT_PUBLIC_SERVER_ADDRESS;
+//const NEXT_PUBLIC_IS_DEPLOYMENT_static= process.env.NEXT_PUBLIC_IS_DEPLOYMENT_static;
 
 export const ServerRequest = {
   async fetchFiles(): Promise<{ fileId: number; fileName: string }[]> {
     try {
-      const response = await fetch(`${API_BASE_URL}/server/files`);
+      const response = await fetch(`/server/files`);
       if (!response.ok) {
         throw new Error('Failed to fetch files');
       }
@@ -21,7 +17,7 @@ export const ServerRequest = {
   async sendScreenshot(fileId: string, imageData: string) {
     let requestBody = JSON.stringify({ fileId, imageData });
 
-    const response = await fetch(`${API_BASE_URL}/server/upload-screenshot`, {
+    const response = await fetch(`/server/upload-screenshot`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -35,7 +31,7 @@ export const ServerRequest = {
   },
 
   async requestThumbnail(fileId: string): Promise<{ imageData: string, exists: boolean }> {
-    const response = await fetch(`${API_BASE_URL}/server/thumbnail?fileId=${fileId}`);
+    const response = await fetch(`/server/thumbnail?fileId=${fileId}`);
     if (!response.ok) {
       throw new Error(`status ${response.status} from server`);
     }

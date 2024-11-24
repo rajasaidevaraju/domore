@@ -7,12 +7,8 @@ import styles from './GetFile.module.css';
 import html2canvas from "html2canvas";
 import {ServerRequest} from './../service/ServerRequest'
 import ToastMessage from './components/ToastMessages'
-var API_BASE_URL = process.env.NEXT_PUBLIC_SERVER_ADDRESS;
-const NEXT_PUBLIC_IS_DEPLOYMENT_static= process.env.NEXT_PUBLIC_IS_DEPLOYMENT_static;
-
-if(NEXT_PUBLIC_IS_DEPLOYMENT_static=='true'){
-    API_BASE_URL="";
-}
+//var API_BASE_URL = process.env.NEXT_PUBLIC_SERVER_ADDRESS;
+//const NEXT_PUBLIC_IS_DEPLOYMENT_static= process.env.NEXT_PUBLIC_IS_DEPLOYMENT_static;
 
 
 const GetFile = () => {
@@ -26,18 +22,19 @@ const GetFile = () => {
         setToast({ message, type });
     };
 
+
     useEffect(() => {
 
         const fileId = searchParams.get('fileId')
         if(typeof fileId ==="string"){
             setFileId(fileId)
             if(videoRef.current){
-                videoRef.current.src=`${API_BASE_URL}/server/file?fileId=${fileId}`
+                videoRef.current.src=`/server/file?fileId=${fileId}`
                 videoRef.current.load();
             }
         }
 
-    }, []);
+    }, [searchParams]);
     
     const handleTakeScreenshot = async () => {
         if (!videoRef.current || typeof fileId !== 'string') return;

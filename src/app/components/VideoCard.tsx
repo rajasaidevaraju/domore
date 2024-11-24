@@ -5,6 +5,7 @@ import Video from './Video';
 import Link from 'next/link';
 import styles from './VideoCard.module.css';
 import { ServerRequest } from '../service/ServerRequest';
+import { useRouter } from 'next/navigation';
 
 interface VideoCardProps {
   video: Video;
@@ -13,7 +14,14 @@ interface VideoCardProps {
 const VideoCard: React.FC<VideoCardProps> = ({ video }) => {
   const [imageData, setImageData] = useState<string | null>(null);
   const requestMadeRef = useRef(false);
+  const router = useRouter();
 
+  function navigate(event: React.MouseEvent<HTMLAnchorElement>){
+    let url=`/getfile?fileId=${video.fileId}`;
+    console.log(url)
+    event.preventDefault(); // Optional: Prevent navigation for testing
+    router.push(url)
+  }
 
     if (!requestMadeRef.current && !imageData) {
       try {
@@ -32,7 +40,7 @@ const VideoCard: React.FC<VideoCardProps> = ({ video }) => {
 
 
   return (
-    <Link href={`/getfile/?fileId=${video.fileId}`} key={`/getfile/?fileId=${video.fileId}`} >
+    <Link onClick={navigate} href={`/getfile/?fileId=${video.fileId}`} key={`/getfile/?fileId=${video.fileId}`} >
       <div
         key={video.fileId + 'div'}
         className={styles.videoCard}
