@@ -1,7 +1,7 @@
 var API_BASE_URL = process.env.NEXT_PUBLIC_SERVER_ADDRESS;
-const NEXT_IS_DEPLOYMENT_static= process.env.NEXT_IS_DEPLOYMENT_static;
+const NEXT_PUBLIC_IS_DEPLOYMENT_static= process.env.NEXT_PUBLIC_IS_DEPLOYMENT_static;
 
-if(NEXT_IS_DEPLOYMENT_static!='true'){
+if(NEXT_PUBLIC_IS_DEPLOYMENT_static!='true'){
     API_BASE_URL="";
 }
 
