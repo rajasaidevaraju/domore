@@ -1,5 +1,5 @@
 .cardContainer {
-  background-color: #f2eded;
+  background-color: rgba(var(--main-color));
   padding: 20px;
   margin: 10px;
   border-radius: 8px;
@@ -25,7 +25,7 @@
 
 .card {
   position: relative;
-  background-color: #ffffff;
+  background-color: rgba(var(--background-rgb));
   padding: 10px;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
