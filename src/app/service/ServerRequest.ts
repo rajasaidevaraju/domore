@@ -1,7 +1,9 @@
-var API_BASE_URL = process.env.NEXT_PUBLIC_SERVER_ADDRESS;
+var API_BASE_URL = process.env.NEXT_PUBLIC_SERVER_ADDRESS??"";
 const NEXT_IS_DEPLOYMENT_static= process.env.NEXT_IS_DEPLOYMENT_static;
 import { FileDataList } from "../types/FileDataList";
+
 export const ServerRequest = {
+  
   async fetchFiles(page?:number): Promise<FileDataList> {
     try {
       let url=`${API_BASE_URL}/server/files`
@@ -20,8 +22,8 @@ export const ServerRequest = {
   },
 
   async sendScreenshot(fileId: string, imageData: string) {
-    let requestBody = JSON.stringify({ fileId, imageData });
 
+    let requestBody = JSON.stringify({ fileId, imageData });
     const response = await fetch(`${API_BASE_URL}/server/upload-screenshot`, {
       method: 'POST',
       headers: {
