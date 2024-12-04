@@ -3,11 +3,30 @@ import styles from "./Card.module.css";
 
 
 const UploadCard=()=>{
-    const handleFileUpload = (event:React.ChangeEvent<HTMLInputElement>) => {
+    const handleFileUpload = async (event:React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
         if (file) {
             console.log("File selected:", file);
-            // You can add further logic here to handle the uploaded file, e.g., send it to a server.
+            const formData = new FormData();
+            formData.append("video", file); // 'video' matches the field name expected by the server
+
+        try {
+            const response = await fetch("http://localhost:5000/server/upload", {
+                method: "POST",
+                body: formData,
+            });
+
+            if (response.ok) {
+                const result = await response.json();
+                console.log("File uploaded successfully:", result);
+            } else {
+                console.error("Failed to upload file. Server responded with:", response.status);
+            }
+        } catch (error) {
+            console.error("An error occurred while uploading the file:", error);
+        }finally {
+            event.target.value = '';
+        }
         }
     };
 
