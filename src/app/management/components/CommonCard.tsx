@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from "react";
+import React, { useState , useEffect} from "react";
 import styles from "./Card.module.css";
 import AddPanel from "./AddPanel";
 
@@ -23,6 +23,15 @@ const Card = <T extends { id: number; name: string }>({
   const [isSelecting, setIsSelecting] = useState(false);
   const [selectedItems, setSelectedItems] = useState<Set<number>>(new Set());
   const [showAddPanel, setShowAddPanel] = useState(false);
+  const [isAnimating, setIsAnimating] = useState(false);
+
+  useEffect(() => {
+    if (showAddPanel) {
+      setIsAnimating(true);
+    } else {
+      setIsAnimating(false);
+    }
+  }, [showAddPanel]);
 
   const handleSelect = (itemId: number) => {
     if (isSelecting) {
@@ -69,7 +78,7 @@ const Card = <T extends { id: number; name: string }>({
           {!isSelecting ? (
             <>
               <button
-                className={`${styles.addButton} ${styles.button}`}
+                className={`${styles.commonButton} ${styles.button}`}
                 onClick={() => setShowAddPanel(true)}
               >
                 <img src="/svg/add.svg" alt="Add" />
@@ -113,13 +122,15 @@ const Card = <T extends { id: number; name: string }>({
           <div
             key={item.id}
             className={`${styles.card} ${selectedItems.has(item.id) ? styles.selected : ""}`}
-            onClick={() => handleSelect(item.id)}
+            onClick={()=>handleSelect(item.id)}
           >
             {isSelecting && (
               <label className={styles.checkboxLabel}>
                 <input
+                  id={`checkbox-${item.id}`}
                   type="checkbox"
                   checked={selectedItems.has(item.id)}
+                  
                   className={styles.checkbox}
                 />
               </label>
@@ -128,14 +139,23 @@ const Card = <T extends { id: number; name: string }>({
           </div>
         ))}
       </div>
-
+      
       {showAddPanel && (
-        <AddPanel
-          onClose={() => setShowAddPanel(false)}
-          onSave={onAdd}
-          label={label}
-        />
+        <div>
+          <div className={styles.overlay}></div>
+          <div
+            className={`${styles.addPanel} ${isAnimating ? styles.enter : ''}`}
+            onAnimationEnd={() => !showAddPanel && setIsAnimating(false)}
+          >
+            <AddPanel
+              onClose={() => setShowAddPanel(false)}
+              onSave={onAdd}
+              label={label}
+            />
+          </div>
+        </div>
       )}
+
     </div>
   );
 };

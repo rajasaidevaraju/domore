@@ -1,7 +1,9 @@
 .cardContainer {
-  background-color: rgba(var(--main-color));
+  background-color: rgba(var(--background-rgb));
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
   padding: 20px;
   margin: 10px;
+  border: 1px solid rgb(var(--main-color));
   border-radius: 8px;
 }
 
@@ -14,7 +16,6 @@
 
 .header p{
   font-size: 20px;
-  font-weight: bold;
 }
 
 .cardList {
@@ -25,10 +26,9 @@
 
 .card {
   position: relative;
-  background-color: rgba(var(--background-rgb));
+  background-color: rgba(var( --main-color));
   padding: 10px;
   border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .buttons {
@@ -64,13 +64,16 @@
 }
 
 .button.removeButton {
-  background-color: #f44336; 
+  background-color: rgba(var(--red));
   color: white;
 }
 
-.button.addButton {
-  background-color: #4caf50;
-  color: white;
+.button.commonButton:hover {
+  background-color: rgba(var(--main-color-hover));
+}
+
+.button.commonButton:active {
+  background-color: rgba(var(--main-color-active));
 }
 
 .button:hover {
@@ -89,12 +92,6 @@
 
 
 /*new*/
-
-.addForm {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 15px;
-}
 
 .input {
   padding: 8px;
@@ -118,7 +115,7 @@
 }
 
 .cancelButton {
-  background-color: #f44336;
+  background-color: rgba(var(--red));
   color: white;
   border: none;
   border-radius: 4px;
@@ -128,7 +125,7 @@
 }
 
 .cancelButton:hover {
-  background-color: #e41f1f;
+  filter: brightness(85%); 
 }
 
 
@@ -164,8 +161,28 @@
   margin: 5px;
 }
 
-.cardList {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
+.addPanel {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80%;
+  max-width: 600px;
+  opacity: 0; 
+  z-index: 1000;
+  transition: opacity 0.3s ease;
+}
+
+.addPanel.enter {
+  opacity: 1;
+}
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5); /* Dark overlay with 50% opacity */
+  z-index: 999; /* Ensure it is behind the AddPanel */
+  pointer-events: auto; /* Allow clicks to interact with the overlay */
 }
