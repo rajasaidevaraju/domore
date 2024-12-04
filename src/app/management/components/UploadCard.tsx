@@ -33,13 +33,14 @@ const UploadCard=()=>{
     return(    
         <div className={styles.cardContainer}>
             <div className={styles.header}>
-                <p>{"Upload File"}</p>
+                <h1>{"Upload File"}</h1>
                 <div className={styles.buttons}>
                     <button
                         className={`${styles.commonButton} ${styles.button}`}
                         onClick={() => document.getElementById("fileInput")?.click()}
                     >
                         <img src="/svg/upload.svg" alt="Add" />
+                        <p>Choose</p>
                     </button>
                     <input
                         id="fileInput"

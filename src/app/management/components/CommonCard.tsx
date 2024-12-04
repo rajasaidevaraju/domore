@@ -73,7 +73,7 @@ const Card = <T extends { id: number; name: string }>({
   return (
     <div className={styles.cardContainer}>
       <div className={styles.header}>
-        <p>{label}</p>
+        <h1>{label}</h1>
         <div className={styles.buttons}>
           {!isSelecting ? (
             <>
