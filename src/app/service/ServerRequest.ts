@@ -1,5 +1,6 @@
 var API_BASE_URL = process.env.NEXT_PUBLIC_SERVER_ADDRESS??"";
 const NEXT_IS_DEPLOYMENT_static= process.env.NEXT_IS_DEPLOYMENT_static;
+import { resolve } from "path";
 import { FileDataList } from "../types/FileDataList";
 
 export const ServerRequest = {
@@ -43,5 +44,51 @@ export const ServerRequest = {
       return { imageData: "", exists: false }
     }
     return await response.json();
+  },
+  async uploadFile(file: File|undefined, onProgress: (progress: number, speed: number) => void): Promise<any> {
+
+    if (file) {
+      const sizeInBytes = file.size; 
+      const sizeInMB = (sizeInBytes / (1024 * 1024)).toFixed(2);
+      console.log(`File size: ${sizeInMB} MB`);
+      const formData = new FormData();
+      formData.append('file', file);
+   
+      try {
+          const xhr = new XMLHttpRequest();
+          xhr.open('POST', `${API_BASE_URL}/server/upload`, true);
+          let lastTime = Date.now();
+          let lastLoaded = 0;
+          
+          let progressTracker = function(event: ProgressEvent<EventTarget>) {
+            if (event.lengthComputable) {
+              const percentComplete = (event.loaded / event.total) * 100;
+              // Calculate speed
+              const currentTime = Date.now();
+              const timeElapsed = (currentTime - lastTime) / 1000;
+              const bytesTransferred = event.loaded - lastLoaded; 
+              const speed = (bytesTransferred / timeElapsed) / 1024; // speed in KBps
+              lastTime = currentTime;
+              lastLoaded = event.loaded;
+              onProgress(percentComplete, speed);
+            } else {
+              console.warn('Progress not computable');
+            }
+          };
+        xhr.upload.addEventListener("progress",progressTracker,false)
+        xhr.onload = function() {
+          if (xhr.status === 200) {
+            return 'File uploaded successfully!';
+          } else {
+            throw new Error('Upload failed.')
+          }
+        };
+        xhr.send(formData);
+
+      }catch (error) {
+        console.error('Error:', error);
+        throw new Error('An error occurred while uploading the file.')
+      }
+    }
   }
 };

@@ -25,13 +25,17 @@ const Card = <T extends { id: number; name: string }>({
   const [showAddPanel, setShowAddPanel] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
 
-  useEffect(() => {
-    if (showAddPanel) {
-      setIsAnimating(true);
-    } else {
-      setIsAnimating(false);
-    }
-  }, [showAddPanel]);
+  const openPanel = () => {
+    setShowAddPanel(true);
+    setIsAnimating(true);
+  };
+
+  const closePanel = () => {
+    setIsAnimating(false);
+    setTimeout(() => {
+      setShowAddPanel(false);
+    }, 300);
+  };
 
   const handleSelect = (itemId: number) => {
     if (isSelecting) {
@@ -78,21 +82,21 @@ const Card = <T extends { id: number; name: string }>({
           {!isSelecting ? (
             <>
               <button
-                className={`${styles.commonButton} ${styles.button}`}
-                onClick={() => setShowAddPanel(true)}
+                className={`${styles.commonButton}`}
+                onClick={openPanel}
               >
                 <img src="/svg/add.svg" alt="Add" />
               </button>
               {onEdit && (
                 <button
-                  className={`${styles.editButton} ${styles.button}`}
+                  className={`${styles.editButton} ${styles.commonButton}`}
                   onClick={onEdit}
                 >
                   <img src="/svg/edit.svg" alt="Edit" />
                 </button>
               )}
               <button
-                className={`${styles.removeButton} ${styles.button}`}
+                className={`${styles.removeButton} ${styles.commonButton}`}
                 onClick={handleDeleteMode}
               >
                 <img src="/svg/delete.svg" alt="Delete" />
@@ -101,13 +105,13 @@ const Card = <T extends { id: number; name: string }>({
           ) : (
             <>
               <button
-                className={`${styles.confirmButton} ${styles.button}`}
+                className={`${styles.removeButton} ${styles.commonButton}`}
                 onClick={handleDeleteSelected}
               >
                 Confirm Delete
               </button>
               <button
-                className={`${styles.cancelButton} ${styles.button}`}
+                className={`${styles.commonButton}`}
                 onClick={handleCancelSelection}
               >
                 Cancel
@@ -142,13 +146,13 @@ const Card = <T extends { id: number; name: string }>({
       
       {showAddPanel && (
         <div>
-          <div className={styles.overlay}></div>
+          <div className={`${styles.overlay} ${isAnimating ? styles.enter : styles.exit}`}></div>
           <div
-            className={`${styles.addPanel} ${isAnimating ? styles.enter : ''}`}
+            className={`${styles.addPanel} ${isAnimating ? styles.enter : styles.exit}`}
             onAnimationEnd={() => !showAddPanel && setIsAnimating(false)}
           >
             <AddPanel
-              onClose={() => setShowAddPanel(false)}
+              onClose={closePanel}
               onSave={onAdd}
               label={label}
             />

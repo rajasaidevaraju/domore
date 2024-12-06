@@ -44,28 +44,27 @@
     width: 20px; 
   }
 
-  /* Media query for smaller screens */
-@media (max-width: 768px) {
+  @media (max-width: 768px) {
 
-  .icon_container{
-    margin: 0px 10px;
+    .icon_container{
+      margin: 0px 10px;
+    }
+    .icon_container:hover {
+      background-color: initial;
+    }
+    .banner {
+      justify-content: space-between;
+      padding-left: 5px;
+      padding-right: 5px;
+      padding-top: 10px; 
+      padding-bottom: 10px; 
+    }
+  
+    .icon_text {
+        font-size: 16px;
+    }
+    .icon {
+        height: 16px;
+        width: 16px;
+    }
   }
-  .icon_container:hover {
-    background-color: initial;
-  }
-  .banner {
-    justify-content: space-between;
-    padding-left: 5px;
-    padding-right: 5px;
-    padding-top: 10px; 
-    padding-bottom: 10px; 
-  }
-
-  .icon_text {
-      font-size: 14px; /* Adjust font size for smaller screens */
-  }
-  .icon {
-      height: 13px; /* Adjust icon size for smaller screens */
-      width: 13px;
-  }
-}

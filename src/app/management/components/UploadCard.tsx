@@ -1,34 +1,49 @@
 'use client'
+import { useEffect, useState, useRef } from "react";
 import styles from "./Card.module.css";
-
-
+import { ServerRequest } from "@/app/service/ServerRequest";
+import ProgressTracker from "./ProgressTracker";
 const UploadCard=()=>{
-    const handleFileUpload = async (event:React.ChangeEvent<HTMLInputElement>) => {
-        const file = event.target.files?.[0];
+
+    const [progress, setProgress] = useState<number>(0);
+    const [speed, setSpeed] = useState<number>(0);
+    const [file, setFile]=useState<File>();
+
+    const fileInputRef = useRef<HTMLInputElement>(null);
+    let name=file?.name;
+    let size=0;
+    if(file){
+        size=file.size/(1024*1024*1024)
+    }
+    const handleFileUpload = async () => {
         if (file) {
-            console.log("File selected:", file);
-            const formData = new FormData();
-            formData.append("video", file); // 'video' matches the field name expected by the server
-
-        try {
-            const response = await fetch("http://localhost:5000/server/upload", {
-                method: "POST",
-                body: formData,
-            });
-
-            if (response.ok) {
-                const result = await response.json();
-                console.log("File uploaded successfully:", result);
-            } else {
-                console.error("Failed to upload file. Server responded with:", response.status);
+            console.log(file)
+            setProgress(0);
+            setSpeed(0);
+            try{
+                await ServerRequest.uploadFile(file,(progress,speed)=>{
+                    setProgress(progress);
+                    setSpeed(speed);
+                 })
+                console.log(`File "${name}" uploaded successfully`);
+                
             }
-        } catch (error) {
-            console.error("An error occurred while uploading the file:", error);
-        }finally {
-            event.target.value = '';
-        }
+            catch(error){
+                console.error(error);
+
+            }finally{
+                if (fileInputRef.current) {
+                    fileInputRef.current.value = '';
+                }
+                setFile(undefined);
+            }
+           
         }
     };
+
+    useEffect(()=>{
+        console.log("Inside use effect of upload card")
+      },[])
 
     return(    
         <div className={styles.cardContainer}>
@@ -36,22 +51,37 @@ const UploadCard=()=>{
                 <h1>{"Upload File"}</h1>
                 <div className={styles.buttons}>
                     <button
-                        className={`${styles.commonButton} ${styles.button}`}
-                        onClick={() => document.getElementById("fileInput")?.click()}
+                        className={`${styles.commonButton}`}
+                        onClick={() => fileInputRef.current?.click()}
                     >
-                        <img src="/svg/upload.svg" alt="Add" />
                         <p>Choose</p>
                     </button>
                     <input
                         id="fileInput"
                         type="file"
+                        ref={fileInputRef}
                         accept="video/*, .mkv"
                         style={{ display: 'none' }}
-                        onChange={handleFileUpload}
+                        onChange={(event)=>{setFile(event.target.files?.[0])}}
                     />
+                    <button
+                        className={`${styles.commonButton}`}
+                        onClick={handleFileUpload}
+                        disabled={file?false:true} 
+                    >
+                        <img src="/svg/upload.svg" alt="Add" />
+                        <p>Upload</p>
+                    </button>
                 </div>
             </div>
-            
+           
+            <div>
+                <p className={styles.text}>Selected File Name: {name}</p>
+                <p className={styles.text}>Selected File Size: {size.toFixed(2)} GB</p>
+                <p className={styles.text}>Progress: {progress.toFixed(2)}%</p>
+                <p className={styles.text}>Speed: {(speed / 1024).toFixed(2)} MB/s</p>
+            </div>
+
         </div>
     )
 

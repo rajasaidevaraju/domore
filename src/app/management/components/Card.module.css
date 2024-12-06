@@ -41,20 +41,14 @@
   cursor: pointer;
 }
 
-.text {
-  text-align: center;
-  margin: 5;
-}
 
-.button {
+
+.commonButton{
   padding: 6px 12px;
   border: none;
   border-radius: 4px;
   cursor: pointer;
   transition: background-color 0.3s ease; 
-}
-
-.commonButton{
   display: flex;
   justify-content: center;
   align-items: center;
@@ -62,33 +56,48 @@
   background-color: rgb(var(--main-color));
 }
 
-.button img {
+
+
+.commonButton:disabled {
+  background-color: rgba(var(--main-color), 0.3);
+  cursor: not-allowed;
+  filter: brightness(100%);
+}
+
+.commonButton:disabled:hover {
+  background-color: rgba(var(--main-color), 0.3);
+  filter: none;
+}
+
+.commonButton:hover {
+  background-color: rgba(var(--main-color-hover));
+}
+
+.commonButton:active {
+  background-color: rgba(var(--main-color-active));
+}
+
+.commonButton img {
   vertical-align: middle;
 }
 
-.button.editButton {
+
+.commonButton.editButton {
   background-color: #2196f3; 
   color: white;
 }
 
-.button.removeButton {
+.commonButton.removeButton {
   background-color: rgba(var(--red));
   color: white;
 }
 
-.button.commonButton:hover {
-  background-color: rgba(var(--main-color-hover));
+
+.commonButton.editButton:hover, .commonButton.removeButton:hover{
+  filter: brightness(85%);
 }
 
-.button.commonButton:active {
-  background-color: rgba(var(--main-color-active));
-}
-
-.button:hover {
-  filter: brightness(85%); 
-}
-
-.button:active {
+.commonButton.editButton:active, .commonButton.removeButton:active{
   filter: brightness(70%);
 }
 
@@ -98,52 +107,11 @@
   width: 20px; 
 }
 
-
-/*new*/
-
 .input {
   padding: 8px;
   border: 1px solid #ccc;
   border-radius: 4px;
   flex-grow: 1;
-}
-
-.saveButton {
-  background-color: #4caf50;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  padding: 8px 12px;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-
-.saveButton:hover {
-  background-color: #45a049;
-}
-
-.cancelButton {
-  background-color: rgba(var(--red));
-  color: white;
-  border: none;
-  border-radius: 4px;
-  padding: 8px 12px;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-
-.cancelButton:hover {
-  filter: brightness(85%); 
-}
-
-
-.confirmButton {
-  background-color: #2196f3;
-  color: white;
-}
-
-.confirmButton:hover {
-  background-color: #1976d2;
 }
 
 .checkboxLabel {
@@ -181,16 +149,82 @@
   transition: opacity 0.3s ease;
 }
 
-.addPanel.enter {
-  opacity: 1;
+.addPanel.enter, .overlay.enter {
+  animation: fadeIn 0.3s forwards;
 }
+.addPanel.exit, .overlay.exit {
+  animation: fadeOut 0.3s forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
 .overlay {
   position: fixed;
   top: 0;
   left: 0;
   width: 100vw;
   height: 100vh;
-  background-color: rgba(0, 0, 0, 0.5); /* Dark overlay with 50% opacity */
-  z-index: 999; /* Ensure it is behind the AddPanel */
-  pointer-events: auto; /* Allow clicks to interact with the overlay */
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+  pointer-events: auto;
+}
+
+@media (max-width: 768px) {
+  .cardContainer {
+    padding: 10px;
+    margin: 7px;
+  }
+
+  .card{
+    padding: 5px;    
+  }
+
+  .header h1 {
+    font-size: 16px;
+  }
+
+  .text{
+    font-size: 14px;
+  }
+
+  .commonButton {
+    padding: 4px 8px;
+    font-size: 16px;
+  }
+
+  .icon {
+    height: 16px;
+    width: 16px;
+  }
+
+  .input {
+    padding: 6px;
+    font-size: 16px;
+  }
+
+  .checkbox {
+    width: 16px;
+    height: 16px;
+  }
+
+  .addPanel {
+    width: 90%;
+    max-width: 400px;
+  }
 }
