@@ -41,4 +41,3 @@ const ProgressTracker: React.FC<ProgressTrackerProps>  = ({file}) => {
 };
 
 export default ProgressTracker;
-

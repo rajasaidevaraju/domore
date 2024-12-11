@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from "react";
-import { Performer } from "./types";
+import { Performer } from "../../types/Types";
 import Card from "./CommonCard";
 
 const PerformersCard = () => {

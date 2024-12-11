@@ -31,25 +31,25 @@ const VideoCard: React.FC<VideoCardProps> = ({ video }) => {
   }, [imageData]);
 
   return (
-    <Link href={`/getfile/?fileId=${video.fileId}`} >
-      <div
-        className={styles.videoCard}
-      >
-        {imageData ? (
-          <img
-            height={270}
-            width={150}
-            src={imageData}
-            alt="Thumbnail of the video"
-          />
-        ) : (
-          <div className={styles.placeholderDiv}>
-            <p> Thumbnail not created </p>
-          </div>
-        )}
-        <h2>{video.fileName}</h2>
-      </div>
-    </Link>
+    <a href={`/getfile?fileId=${video.fileId}`} >
+        <div
+          className={styles.videoCard}
+        >
+          {imageData ? (
+            <img
+              height={270}
+              width={150}
+              src={imageData}
+              alt="Thumbnail of the video"
+            />
+          ) : (
+            <div className={styles.placeholderDiv}>
+              <p> Thumbnail not created </p>
+            </div>
+          )}
+          <h2>{video.fileName}</h2>
+        </div>
+      </a>
   );
 };
 
