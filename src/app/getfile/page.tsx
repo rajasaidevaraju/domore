@@ -8,8 +8,8 @@ import html2canvas from "html2canvas";
 import {ServerRequest} from './../service/ServerRequest'
 import ToastMessage from './components/ToastMessages'
 import Loading from './../loading'
-var API_BASE_URL = process.env.NEXT_PUBLIC_SERVER_ADDRESS??"";
-const NEXT_IS_DEPLOYMENT_static= process.env.NEXT_IS_DEPLOYMENT_static;
+const IS_DEPLOYMENT_STATIC = process.env.NEXT_PUBLIC_IS_DEPLOYMENT_STATIC === "true";
+const API_BASE_URL = IS_DEPLOYMENT_STATIC ? "" : process.env.NEXT_PUBLIC_SERVER_ADDRESS ?? "";
 
 
 const GetFile = () => {
@@ -30,7 +30,7 @@ const GetFile = () => {
         if(typeof fileId ==="string"){
             setFileId(fileId)
             if(videoRef.current){
-                videoRef.current.src=`/server/file?fileId=${fileId}`
+                videoRef.current.src=`${API_BASE_URL}/server/file?fileId=${fileId}`
                 videoRef.current.load();
             }
         }

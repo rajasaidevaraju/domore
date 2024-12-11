@@ -1,5 +1,6 @@
-var API_BASE_URL = process.env.NEXT_PUBLIC_SERVER_ADDRESS??"";
-const NEXT_IS_DEPLOYMENT_static= process.env.NEXT_IS_DEPLOYMENT_static;
+const IS_DEPLOYMENT_STATIC = process.env.NEXT_PUBLIC_IS_DEPLOYMENT_STATIC === "true";
+const API_BASE_URL = IS_DEPLOYMENT_STATIC ? "" : process.env.NEXT_PUBLIC_SERVER_ADDRESS ?? "";
+
 import { resolve } from "path";
 import { FileDataList } from "../types/FileDataList";
 
@@ -39,7 +40,7 @@ export const ServerRequest = {
   },
 
   async requestThumbnail(fileId: string): Promise<{ imageData: string, exists: boolean }> {
-    const response = await fetch(`/server/thumbnail?fileId=${fileId}`);
+    const response = await fetch(`${API_BASE_URL}/server/thumbnail?fileId=${fileId}`);
     if (!response.ok) {
       return { imageData: "", exists: false }
     }
