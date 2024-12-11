@@ -90,5 +90,56 @@ export const ServerRequest = {
         throw new Error('An error occurred while uploading the file.')
       }
     }
+  },
+  async  testUploadFile(
+    file: File | undefined, 
+    onProgress: (progress: number, speed: number) => void
+  ): Promise<any> {
+    if (file) {
+      const sizeInBytes = file.size;
+      const sizeInMB = (sizeInBytes / (1024 * 1024)).toFixed(2);
+      console.log(`File size: ${sizeInMB} MB`);
+  
+      // Simulate the file upload with an interval that mimics progress
+      const totalSize = sizeInBytes;
+      let uploaded = 0;
+      const chunkSize = Math.min(2*1024 * 1024, totalSize / 10); // Simulate chunks of 1MB or 10% of total size
+      const totalChunks = Math.ceil(totalSize / chunkSize);
+      
+      let lastTime = Date.now();
+      let lastLoaded = 0;
+  
+      return new Promise((resolve, reject) => {
+        const interval = setInterval(() => {
+          if (uploaded < totalSize) {
+            // Simulate uploading a chunk
+            uploaded += chunkSize;
+            if (uploaded > totalSize) {
+              uploaded = totalSize;
+            }
+            
+            const percentComplete = (uploaded / totalSize) * 100;
+            const currentTime = Date.now();
+            const timeElapsed = (currentTime - lastTime) / 1000;
+            const bytesTransferred = uploaded - lastLoaded;
+            const speed = timeElapsed > 0 ? (bytesTransferred / timeElapsed) / 1024 : 0; // Speed in KBps
+            lastTime = currentTime;
+            lastLoaded = uploaded;
+  
+            // Call the onProgress callback with simulated progress and speed
+            onProgress(percentComplete, speed);
+          }
+  
+          if (uploaded >= totalSize) {
+            clearInterval(interval);
+            resolve('File uploaded successfully!');
+          }
+        }, 500); // Simulate progress update every 500ms
+      });
+    } else {
+      console.error('No file provided.');
+      return Promise.reject('No file provided.');
+    }
   }
+  
 };

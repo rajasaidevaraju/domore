@@ -12,6 +12,9 @@
   --main-color-hover: 200, 200, 200;
   --main-color-active: 180, 180, 180;
   --red:244, 67, 54;
+  --secondary-color: 100, 149, 237;
+  --secondary-color-hover: 70, 130, 180;
+  --secondary-color-active: 60, 120, 180;
 }
 
 @media (prefers-color-scheme: dark) {
