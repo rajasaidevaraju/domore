@@ -42,23 +42,3 @@ const ProgressTracker: React.FC<ProgressTrackerProps>  = ({file}) => {
 
 export default ProgressTracker;
 
-
-async uploadFile(file: File, onProgress: (progress: number, speed: number) => void): Promise<any> {
-  const formData = new FormData();
-  formData.append('file', file);
-  try {
-    const response = await fetch(`${API_BASE_URL}/server/upload`, {
-        method: 'POST',
-        body: formData
-    });
-
-    if (response.ok) {
-       return 'File uploaded successfully!';
-    } else {
-      throw new Error('Upload failed.')
-    }
-} catch (error) {
-    console.error('Error:', error);
-    throw new Error('An error occurred while uploading the file.')
-}
-}
