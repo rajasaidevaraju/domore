@@ -9,7 +9,7 @@ const Banner = () => {
     return (
       <div className={styles.banner}>
       <Link href="/" className={styles.icon_container}>
-          <img src="/svg/filter.svg" alt="Filter" className={styles.icon} />
+          <img src="/svg/home.svg" alt="Filter" className={styles.icon} />
           <span className={styles.icon_text}>Home</span>
       </Link>
 

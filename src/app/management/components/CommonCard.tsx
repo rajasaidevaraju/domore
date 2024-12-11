@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from "react";
+import React, { useState , useEffect} from "react";
 import styles from "./Card.module.css";
 import AddPanel from "./AddPanel";
 
@@ -23,6 +23,19 @@ const Card = <T extends { id: number; name: string }>({
   const [isSelecting, setIsSelecting] = useState(false);
   const [selectedItems, setSelectedItems] = useState<Set<number>>(new Set());
   const [showAddPanel, setShowAddPanel] = useState(false);
+  const [isAnimating, setIsAnimating] = useState(false);
+
+  const openPanel = () => {
+    setShowAddPanel(true);
+    setIsAnimating(true);
+  };
+
+  const closePanel = () => {
+    setIsAnimating(false);
+    setTimeout(() => {
+      setShowAddPanel(false);
+    }, 300);
+  };
 
   const handleSelect = (itemId: number) => {
     if (isSelecting) {
@@ -64,26 +77,26 @@ const Card = <T extends { id: number; name: string }>({
   return (
     <div className={styles.cardContainer}>
       <div className={styles.header}>
-        <p>{label}</p>
+        <h1>{label}</h1>
         <div className={styles.buttons}>
           {!isSelecting ? (
             <>
               <button
-                className={`${styles.addButton} ${styles.button}`}
-                onClick={() => setShowAddPanel(true)}
+                className={`${styles.commonButton}`}
+                onClick={openPanel}
               >
                 <img src="/svg/add.svg" alt="Add" />
               </button>
               {onEdit && (
                 <button
-                  className={`${styles.editButton} ${styles.button}`}
+                  className={`${styles.editButton} ${styles.commonButton}`}
                   onClick={onEdit}
                 >
                   <img src="/svg/edit.svg" alt="Edit" />
                 </button>
               )}
               <button
-                className={`${styles.removeButton} ${styles.button}`}
+                className={`${styles.removeButton} ${styles.commonButton}`}
                 onClick={handleDeleteMode}
               >
                 <img src="/svg/delete.svg" alt="Delete" />
@@ -92,13 +105,13 @@ const Card = <T extends { id: number; name: string }>({
           ) : (
             <>
               <button
-                className={`${styles.confirmButton} ${styles.button}`}
+                className={`${styles.removeButton} ${styles.commonButton}`}
                 onClick={handleDeleteSelected}
               >
                 Confirm Delete
               </button>
               <button
-                className={`${styles.cancelButton} ${styles.button}`}
+                className={`${styles.commonButton}`}
                 onClick={handleCancelSelection}
               >
                 Cancel
@@ -113,13 +126,15 @@ const Card = <T extends { id: number; name: string }>({
           <div
             key={item.id}
             className={`${styles.card} ${selectedItems.has(item.id) ? styles.selected : ""}`}
-            onClick={() => handleSelect(item.id)}
+            onClick={()=>handleSelect(item.id)}
           >
             {isSelecting && (
               <label className={styles.checkboxLabel}>
                 <input
+                  id={`checkbox-${item.id}`}
                   type="checkbox"
                   checked={selectedItems.has(item.id)}
+                  
                   className={styles.checkbox}
                 />
               </label>
@@ -128,14 +143,23 @@ const Card = <T extends { id: number; name: string }>({
           </div>
         ))}
       </div>
-
+      
       {showAddPanel && (
-        <AddPanel
-          onClose={() => setShowAddPanel(false)}
-          onSave={onAdd}
-          label={label}
-        />
+        <div>
+          <div className={`${styles.overlay} ${isAnimating ? styles.enter : styles.exit}`}></div>
+          <div
+            className={`${styles.addPanel} ${isAnimating ? styles.enter : styles.exit}`}
+            onAnimationEnd={() => !showAddPanel && setIsAnimating(false)}
+          >
+            <AddPanel
+              onClose={closePanel}
+              onSave={onAdd}
+              label={label}
+            />
+          </div>
+        </div>
       )}
+
     </div>
   );
 };

@@ -2,13 +2,13 @@
 
 import React, { useState } from "react";
 import Card from "./CommonCard";
-import { Category } from "./types";
+import { Category } from "../../types/Types";
 
 const CategoriesCard = () => {
   const [categories, setCategories] = useState<Category[]>([
-    { id: 1, name: "Category1" },
-    { id: 2, name: "Category2" },
-    { id: 3, name: "Category3" },
+    { id: 1, name: "category1" },
+    { id: 2, name: "category2" },
+    { id: 3, name: "category3" },
   ]);
 
   const handleAddCategories = (newCategories: Category[]) => {

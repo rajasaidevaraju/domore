@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from "react";
+import React, { useState , useEffect, useRef} from "react";
 import styles from "./AddPanel.module.css";
 
 interface AddPanelProps<T extends { id: number; name: string }> {
@@ -14,7 +14,27 @@ const AddPanel = <T extends { id: number; name: string }>({
   onSave,
   label,
 }: AddPanelProps<T>) => {
+
   const [entries, setEntries] = useState<string[]>([""]); // Initial entry input
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        onClose(); 
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
+
+  const firstInputRef = useRef<HTMLInputElement | null>(null);
+  useEffect(() => {
+    if (firstInputRef.current) {
+      firstInputRef.current.focus();
+    }
+  }, []);
 
   const handleInputChange = (index: number, value: string) => {
     const updatedEntries = [...entries];
@@ -41,35 +61,36 @@ const AddPanel = <T extends { id: number; name: string }>({
     onClose(); // Close the AddPanel after saving
   };
 
+  const placeholder=`New ${label === 'Categories' ? 'Category' : label.slice(0, -1)}`
+
   return (
-    <div className={styles.overlay}>
       <div className={styles.panel}>
-        <h2>{`Add ${label}`}</h2>
-        <div className={styles.entries}>
+        <h2 className={styles.row}>{`Add ${label}`}</h2>
+        <div className={styles.row}>
           {entries.map((entry, index) => (
             <input
               key={index}
+              ref={index === 0 ? firstInputRef : null}
               type="text"
               value={entry}
               onChange={(e) => handleInputChange(index, e.target.value)}
-              placeholder={`New ${label.slice(0, -1)} ${index + 1}`} // Dynamic placeholder
+              placeholder={`${placeholder} ${index + 1}`} // Dynamic placeholder
               className={styles.input}
             />
           ))}
         </div>
-        <button className={styles.addEntryButton} onClick={handleAddEntry}>
-          + Add Another
-        </button>
         <div className={styles.actions}>
-          <button className={styles.saveButton} onClick={handleSave}>
+        <button className={styles.commonButton} onClick={handleAddEntry}>
+          + Add
+        </button>
+          <button className={styles.commonButton} onClick={handleSave}>
             Save
           </button>
-          <button className={styles.cancelButton} onClick={onClose}>
+          <button className={`${styles.commonButton} ${styles.cancelButton}`} onClick={onClose}>
             Cancel
           </button>
         </div>
       </div>
-    </div>
   );
 };
 

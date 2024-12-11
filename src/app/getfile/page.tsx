@@ -7,8 +7,9 @@ import styles from './GetFile.module.css';
 import html2canvas from "html2canvas";
 import {ServerRequest} from './../service/ServerRequest'
 import ToastMessage from './components/ToastMessages'
-//var API_BASE_URL = process.env.NEXT_PUBLIC_SERVER_ADDRESS;
-//const NEXT_PUBLIC_IS_DEPLOYMENT_static= process.env.NEXT_PUBLIC_IS_DEPLOYMENT_static;
+import Loading from './../loading'
+var API_BASE_URL = process.env.NEXT_PUBLIC_SERVER_ADDRESS??"";
+const NEXT_IS_DEPLOYMENT_static= process.env.NEXT_IS_DEPLOYMENT_static;
 
 
 const GetFile = () => {
@@ -58,12 +59,11 @@ const GetFile = () => {
         <div>
             <div className={styles.videoContainer}>
                 
-            <video ref={videoRef} controls className={styles.videoElement}>
-                <source src="" type="video/mp4" />
+            <video  ref={videoRef} controls className={styles.videoElement}>
+                <source src="null" type="video/mp4" />
             </video>
                 
-            <button className="bg-dedede text-black font-medium py-2 px-4 rounded-lg transition duration-200 ease-in-out transform active:scale-95"
-            style={{ backgroundColor: '#dedede' }} onClick={handleTakeScreenshot}>Set As Thumbnail</button>
+            <button className={styles.scbutton} onClick={handleTakeScreenshot}>Set As Thumbnail</button>
             </div>
             {toast && <ToastMessage message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
         </div>
@@ -74,7 +74,7 @@ const GetFile = () => {
 
 export default function GetFilePage() {
     return (
-      <Suspense fallback={<div>Loading...</div>}>
+      <Suspense fallback={<Loading/>}>
         <GetFile />
       </Suspense>
     );

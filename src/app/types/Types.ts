@@ -1,4 +1,3 @@
-// types.ts
 
 // Define the structure of a Category
 export interface Category {

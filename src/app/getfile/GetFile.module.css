@@ -20,3 +20,25 @@
         max-width: 100%;
     }
 }
+
+
+.scbutton{
+    background-color: rgb(var(--main-color));
+    border-radius: 8px;
+    justify-content: center;
+    display: flex;
+    padding: 10px;
+    margin: 5px;
+    text-decoration: none;
+    color: inherit;
+    transition: background-color 0.3s ease;
+}
+
+
+.scbutton:hover {
+    background-color: rgba(var(--main-color-hover)); 
+}
+
+.scbutton:active {
+    background-color: rgba(var(--main-color-active)); 
+}

@@ -1,18 +1,21 @@
 .videoCard {
-  border: 1px solid #ccc;
+  border: 1px solid rgb(var(--main-color));
   border-radius: 8px;
   padding: 12px;
   margin: 8px;
   text-align: center;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background-color: rgb(var(--background-rgb));
+  box-shadow: 0 2px 4px rgba(var(--foreground-rgb), 0.1);
   max-width: 300px;
   width: 100%;
+  transition: background-color 0.3s ease;
   overflow: hidden; 
   cursor: default; 
 }
 
 .videoCard:hover {
   cursor: pointer;
+  background-color: rgba(var(--foreground-rgb), 0.1);
 }
 
 .videoCard img {
@@ -24,21 +27,20 @@
 
 .videoCard h2 {
   margin: 0;
-  font-size: 13px;
+  font-size: 14px;
   text-decoration: none !important;
-  color: #333;
 }
 
 .placeholderDiv{
   height: 150px;
   width: 270px;
-  background-color: #afafaf;
+  background-color: rgb(var(--main-color));
   border-radius: 8px;
   margin-bottom: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 13px; 
+  font-size: 14px; 
   font-weight: bold;
   text-align: center;
 }
