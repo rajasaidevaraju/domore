@@ -7,6 +7,16 @@
   border-radius: 8px;
 }
 
+.trackerContainer{
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.statsContainer{
+  width: fit-content;
+}
+
 .header {
   display: flex;
   justify-content: space-between;
@@ -185,11 +195,7 @@
 }
 
 
-.trackerContainer{
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-}
+
 
 .tracker{
   min-width: 400px;
