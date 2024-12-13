@@ -84,7 +84,7 @@ const UploadCard=()=>{
             </div>
             <div className={styles.trackerContainer}>
             {files.map((item,index)=>{
-                return <ProgressTracker key={index} file={item} startUpload={startUpload} removeFile={removeFile}></ProgressTracker>
+                return <ProgressTracker key={item.name} file={item} startUpload={startUpload} removeFile={removeFile}></ProgressTracker>
             })}
             </div>
         </div>
