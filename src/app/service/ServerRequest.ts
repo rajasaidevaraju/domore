@@ -46,7 +46,7 @@ export const ServerRequest = {
     }
     return await response.json();
   },
-  async uploadFile(file: File|undefined, onProgress: (progress: number, speed: number) => void): Promise<any> {
+  async uploadFile(file: File|undefined, onProgress: (progress: number, speed: number) => void, passXMLObj:(xhr:XMLHttpRequest)=>void): Promise<any> {
 
     if (file) {
       const sizeInBytes = file.size; 
@@ -57,6 +57,7 @@ export const ServerRequest = {
    
       try {
           const xhr = new XMLHttpRequest();
+          passXMLObj(xhr)
           xhr.open('POST', `${API_BASE_URL}/server/upload`, true);
           let lastTime = Date.now();
           let lastLoaded = 0;
@@ -68,7 +69,7 @@ export const ServerRequest = {
               const currentTime = Date.now();
               const timeElapsed = (currentTime - lastTime) / 1000;
               const bytesTransferred = event.loaded - lastLoaded; 
-              const speed = (bytesTransferred / timeElapsed) / 1024; // speed in KBps
+              const speed = (bytesTransferred / timeElapsed)
               lastTime = currentTime;
               lastLoaded = event.loaded;
               onProgress(percentComplete, speed);
@@ -123,7 +124,7 @@ export const ServerRequest = {
             const currentTime = Date.now();
             const timeElapsed = (currentTime - lastTime) / 1000;
             const bytesTransferred = uploaded - lastLoaded;
-            const speed = timeElapsed > 0 ? (bytesTransferred / timeElapsed) / 1024 : 0; // Speed in KBps
+            const speed = timeElapsed > 0 ? (bytesTransferred / timeElapsed): 0;
             lastTime = currentTime;
             lastLoaded = uploaded;
   

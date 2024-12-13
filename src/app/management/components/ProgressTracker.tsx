@@ -6,12 +6,30 @@ import styles from "./Card.module.css";
 interface ProgressTrackerProps {
     file: File;
     startUpload:boolean
+    removeFile:(file:File)=>void
   }
 
-const ProgressTracker: React.FC<ProgressTrackerProps>  = ({file,startUpload}) => {
+const ProgressTracker: React.FC<ProgressTrackerProps>  = ({file,startUpload,removeFile}) => {
   const [progress, setProgress] = useState<number>(0);
-  const [speed, setSpeed] = useState<number>(0);
+  const [speed, setSpeed] = useState<number>(0); 
+  const xhr = useRef<XMLHttpRequest | null>(null);
   const uploadStarted = useRef(false);
+  const [aborted,setAborted] = useState(false)
+  const oneKiloByte=useRef(1024)
+  const oneMegaByte=useRef(1024*1024)
+  const oneGigaByte=useRef(1024*1024*1024)
+
+  const formatSize = (size: number): string => {
+    if (size < oneKiloByte.current) {
+        return `${size.toFixed(0)} B`;
+    } else if (size < oneMegaByte.current) {
+        return `${(size / 1024).toFixed(2)} KB`;
+    } else if (size < oneGigaByte.current) {
+        return `${(size / (1024 * 1024)).toFixed(2)} MB`;
+    }else{
+      return `${(size / (1024 * 1024*1024)).toFixed(2)} GB`;
+    }
+};
 
   const handleFileUpload = async () => {
     if (file) {
@@ -19,9 +37,11 @@ const ProgressTracker: React.FC<ProgressTrackerProps>  = ({file,startUpload}) =>
         setProgress(0);
         setSpeed(0);
         try{
-            await ServerRequest.testUploadFile(file,(progress,speed)=>{
+            await ServerRequest.uploadFile(file,(progress,speed)=>{
                 setProgress(progress);
                 setSpeed(speed);
+             },(xhrObj:XMLHttpRequest)=>{
+                xhr.current=xhrObj
              })
             console.log(`File "${file.name}" uploaded successfully`);
             
@@ -33,27 +53,50 @@ const ProgressTracker: React.FC<ProgressTrackerProps>  = ({file,startUpload}) =>
     }
 };
 
-if(startUpload && !uploadStarted.current){
-  console.log(`${file.name} upload called`)
-  handleFileUpload()
-  uploadStarted.current=true
-
+const stopUpload=()=>{
+  if(xhr.current!=null){
+    xhr.current.abort()
+  }
+  setAborted(true)
+    setTimeout(() => {
+      removeFile(file)
+    }, 1000);
 
 }
+
+useEffect(()=>{
+  
+  if( startUpload&& !uploadStarted.current){
+    handleFileUpload()
+    uploadStarted.current=true
+  }
+
+  return ()=>{
+    if(xhr.current!=null){
+      xhr.current.abort()
+    }
+  }
+},[startUpload])
 
 
   return (
     <div className={styles.tracker}>
-      <p className={styles.text}>{file.name}</p>
+      <div className={styles.infoRow}>
+        <p className={`${styles.text} ${styles.left}`}>{file.name}</p>
+        <button className={`${styles.removeButton} ${styles.commonButton} ${styles.right} ${aborted || progress === 100 ? styles.hidden : ''}`} onClick={stopUpload}>
+          <img src="/svg/delete.svg" alt="Stop Upload" />
+        </button>
+        
+      </div>  
+      
       <div className={styles.progressBar}>
         <div className={styles.filledBar} style={{ width: `${progress.toFixed(2)}%` }}></div>
       </div>
-      <div>
-        <p className={styles.text}>Size: {(file.size/(1024*1024)).toFixed(0)} MB</p>
-        <p className={styles.text}>Progress: {progress.toFixed(2)}%</p>
-        <p className={styles.text}>Speed: {(speed / 1024).toFixed(2)} MB/s</p>
+      <div className={styles.infoRow}>
+        <p className={`${styles.text} ${styles.left}`}>{formatSize(file.size)}</p>
+        {!aborted && progress>0 && progress < 100 && <p className={`${styles.text} ${styles.right}`}>{formatSize(speed)}/s</p>}
+        {aborted && <p className={`${styles.text} ${styles.right}`}>Upload Aborted</p>}
       </div>
-     
     </div>
   );
 };

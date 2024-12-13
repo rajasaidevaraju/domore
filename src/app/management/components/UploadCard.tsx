@@ -16,6 +16,12 @@ const UploadCard=()=>{
           }
 
     }
+
+    const removeFile=(fileToRemove:File)=>{
+        setFiles((previousFiles)=>{
+          return  previousFiles.filter((file) => file.name !== fileToRemove.name)
+        })
+    }
     const addFile=async(event:ChangeEvent<HTMLInputElement>)=>{
         
         const newFiles=event.target.files;
@@ -38,6 +44,10 @@ const UploadCard=()=>{
                 setUploadVisible(true)
                 setFiles((prevItems)=>{return[...prevItems,...noDuplicates]})
             }
+            if (fileInputRef.current) {
+                fileInputRef.current.value = "";
+              }
+            
         }
     }
  
@@ -74,7 +84,7 @@ const UploadCard=()=>{
             </div>
             <div className={styles.trackerContainer}>
             {files.map((item,index)=>{
-                return <ProgressTracker key={index} file={item} startUpload={startUpload} ></ProgressTracker>
+                return <ProgressTracker key={index} file={item} startUpload={startUpload} removeFile={removeFile}></ProgressTracker>
             })}
             </div>
         </div>
