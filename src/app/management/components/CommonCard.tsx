@@ -134,7 +134,7 @@ const Card = <T extends { id: number; name: string }>({
                   id={`checkbox-${item.id}`}
                   type="checkbox"
                   checked={selectedItems.has(item.id)}
-                  
+                  onChange={()=>{}}
                   className={styles.checkbox}
                 />
               </label>
