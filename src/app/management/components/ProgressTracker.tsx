@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import { ServerRequest } from "@/app/service/ServerRequest";
+import { formatSize } from "@/app/service/formatSize";
 import styles from "./Card.module.css";
 
 
@@ -15,21 +16,7 @@ const ProgressTracker: React.FC<ProgressTrackerProps>  = ({file,startUpload,remo
   const xhr = useRef<XMLHttpRequest | null>(null);
   const uploadStarted = useRef(false);
   const [aborted,setAborted] = useState(false)
-  const oneKiloByte=useRef(1024)
-  const oneMegaByte=useRef(1024*1024)
-  const oneGigaByte=useRef(1024*1024*1024)
 
-  const formatSize = (size: number): string => {
-    if (size < oneKiloByte.current) {
-        return `${size.toFixed(0)} B`;
-    } else if (size < oneMegaByte.current) {
-        return `${(size / 1024).toFixed(2)} KB`;
-    } else if (size < oneGigaByte.current) {
-        return `${(size / (1024 * 1024)).toFixed(2)} MB`;
-    }else{
-      return `${(size / (1024 * 1024*1024)).toFixed(2)} GB`;
-    }
-};
 
   const handleFileUpload = async () => {
     if (file) {

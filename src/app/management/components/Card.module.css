@@ -1,7 +1,7 @@
 .cardContainer {
   background-color: rgba(var(--background-rgb));
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
-  padding: 20px;
+  padding: 15px;
   margin: 10px;
   border: 1px solid rgb(var(--main-color));
   border-radius: 8px;
@@ -211,10 +211,12 @@
   border-radius: 3px;
   overflow: hidden;
   margin: 5px 0px;
+  min-width: 300px;
 }
 
 .filledBar {
   height: 100%;
+  border-radius: 3px;
   background-color:rgb(var(--secondary-color));
   transition: width 0.5s ease;
 }
@@ -226,13 +228,27 @@
   width: 100%;
   gap:10px;
 }
-
+.storageText{
+  color: rgb(90, 90, 90);
+  font-size: 13px;
+  
+}
 .left {
   text-align: left;
 }
 
 .right {
   text-align: right;
+}
+
+.fileInfoContainer{
+  margin: 10px 0px;
+}
+
+@media (prefers-color-scheme: dark) {
+  .storageText {
+    color:rgb(190, 190, 190)
+  }
 }
 
 
@@ -281,6 +297,5 @@
 
   .tracker{
     min-width: 100%;
-
   }
 }

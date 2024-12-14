@@ -1,9 +1,9 @@
 const IS_DEPLOYMENT_STATIC = process.env.NEXT_PUBLIC_IS_DEPLOYMENT_STATIC === "true";
 const API_BASE_URL = IS_DEPLOYMENT_STATIC ? "" : process.env.NEXT_PUBLIC_SERVER_ADDRESS ?? "";
 
-import { resolve } from "path";
-import { FileDataList } from "../types/FileDataList";
 
+import { FileDataList } from "../types/FileDataList";
+import {ServerStats} from './../types/Types'
 export const ServerRequest = {
   
   async fetchFiles(page?:number): Promise<FileDataList> {
@@ -93,24 +93,56 @@ export const ServerRequest = {
       }
     }
   },
+  async fetchStats (signal: AbortSignal): Promise<ServerStats>{
+    try {
+      const response = await fetch(`${API_BASE_URL}/server/stats`,{signal});
+
+      if (!response.ok) {
+        throw new Error(`Failed to fetch stats. Status: ${response.status}`);
+      }
+      const data = await response.json();
+
+      const responseContent = {
+        files: data.files,
+        freeInternal: data.freeInternal,  
+        totalInternal: data.totalInternal,
+        freeExternal: data.freeExternal,
+        totalExternal: data.totalExternal,
+        hasExternalStorage: data.hasExternalStorage,
+      };
+
+
+
+      return responseContent
+
+    }catch (error) {
+      if((error as Error).name === 'AbortError') {
+        var abortError=new Error('Fetch request aborted')
+        abortError.name="AbortError"
+        throw abortError
+      } else {
+        throw new Error('An error occurred while fetching stats.')
+      }
+    }
+  },
   async  testUploadFile(
     file: File | undefined, 
     onProgress: (progress: number, speed: number) => void
   ): Promise<any> {
     if (file) {
-      const sizeInBytes = file.size;
-      const sizeInMB = (sizeInBytes / (1024 * 1024)).toFixed(2);
-      console.log(`File size: ${sizeInMB} MB`);
-  
-      // Simulate the file upload with an interval that mimics progress
-      const totalSize = sizeInBytes;
-      let uploaded = 0;
-      const chunkSize = Math.min(2*1024 * 1024, totalSize / 10); // Simulate chunks of 1MB or 10% of total size
-      const totalChunks = Math.ceil(totalSize / chunkSize);
-      
-      let lastTime = Date.now();
-      let lastLoaded = 0;
-  
+        const sizeInBytes = file.size;
+        const sizeInMB = (sizeInBytes / (1024 * 1024)).toFixed(2);
+        console.log(`File size: ${sizeInMB} MB`);
+    
+        // Simulate the file upload with an interval that mimics progress
+        const totalSize = sizeInBytes;
+        let uploaded = 0;
+        const chunkSize = Math.min(2*1024 * 1024, totalSize / 10); // Simulate chunks of 1MB or 10% of total size
+        const totalChunks = Math.ceil(totalSize / chunkSize);
+        
+        let lastTime = Date.now();
+        let lastLoaded = 0;
+    
       return new Promise((resolve, reject) => {
         const interval = setInterval(() => {
           if (uploaded < totalSize) {
@@ -128,7 +160,7 @@ export const ServerRequest = {
             lastTime = currentTime;
             lastLoaded = uploaded;
   
-            // Call the onProgress callback with simulated progress and speed
+            
             onProgress(percentComplete, speed);
           }
   
