@@ -298,4 +298,7 @@
   .tracker{
     min-width: 100%;
   }
+  .statsContainer{
+    width:auto;
+  }
 }
