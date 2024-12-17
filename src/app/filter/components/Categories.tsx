@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import Card from "./CommonCard";
-import { Category } from "../../types/Types";
+import { Category } from "@/app/types/Types";
 
 const CategoriesCard = () => {
   const [categories, setCategories] = useState<Category[]>([

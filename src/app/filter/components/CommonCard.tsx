@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState , useEffect} from "react";
-import styles from "./Card.module.css";
+import styles from "./filter.module.css";
 import AddPanel from "./AddPanel";
 
 // Generic types for items like Performer or Category

@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import { ServerRequest } from "@/app/service/ServerRequest";
 import { formatSize } from "@/app/service/formatSize";
-import styles from "./Card.module.css";
+import styles from "./management.module.css";
 
 
 interface ProgressTrackerProps {

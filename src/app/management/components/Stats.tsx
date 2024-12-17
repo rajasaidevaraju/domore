@@ -1,6 +1,6 @@
 'use client'
 
-import styles from './Card.module.css'
+import styles from "./management.module.css";
 import { useState,useEffect } from 'react'
 import {ServerRequest} from './../../service/ServerRequest'
 import { ServerStats } from '@/app/types/Types'
@@ -38,7 +38,7 @@ export default function Stats(){
     },[])
 
     return(
-        <div className={`${styles.cardContainer} ${styles.statsContainer}`}>
+        <div className={`${styles.cardContainer}`}>
              <div className={styles.header}>
              <h1>Stats</h1>
              </div>

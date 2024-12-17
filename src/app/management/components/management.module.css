@@ -5,6 +5,7 @@
   margin: 10px;
   border: 1px solid rgb(var(--main-color));
   border-radius: 8px;
+  width: fit-content;
 }
 
 .trackerContainer{
@@ -13,9 +14,6 @@
   flex-wrap: wrap;
 }
 
-.statsContainer{
-  width: fit-content;
-}
 
 .header {
   display: flex;
@@ -28,29 +26,11 @@
   font-size: 20px;
 }
 
-.cardList {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
-}
-
-.card {
-  position: relative;
-  background-color: rgba(var( --main-color));
-  padding: 10px;
-  border-radius: 8px;
-}
-
 .buttons {
  display: flex;
- gap:5px
+ gap:5px;
+ margin: 0px 10px;
 }
-
-
-.card:hover {
-  cursor: pointer;
-}
-
 
 
 .commonButton{
@@ -92,12 +72,6 @@
   vertical-align: middle;
 }
 
-
-.commonButton.editButton {
-  background-color: #2196f3; 
-  color: white;
-}
-
 .commonButton.removeButton {
   background-color: rgba(var(--red));
   color: white;
@@ -116,11 +90,6 @@
   opacity: 0;
   pointer-events: none;
 }
-.icon {
-  color: white;
-  height: 20px; 
-  width: 20px; 
-}
 
 .input {
   padding: 8px;
@@ -128,74 +97,6 @@
   border-radius: 4px;
   flex-grow: 1;
 }
-
-.checkboxLabel {
-  position: absolute;
-  top: 5px;
-  right: 5px;
-  z-index: 10; /* Ensure it is above the performer content */
-}
-
-.checkbox {
-  width: 20px;
-  height: 20px;
-}
-
-
-.selected {
-  filter: blur(1px);
-}
-
-.addPanel {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 80%;
-  max-width: 600px;
-  opacity: 0; 
-  z-index: 1000;
-  transition: opacity 0.3s ease;
-}
-
-.addPanel.enter, .overlay.enter {
-  animation: fadeIn 0.3s forwards;
-}
-.addPanel.exit, .overlay.exit {
-  animation: fadeOut 0.3s forwards;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes fadeOut {
-  from {
-    opacity: 1;
-  }
-  to {
-    opacity: 0;
-  }
-}
-
-.overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background-color: rgba(0, 0, 0, 0.5);
-  z-index: 999;
-  pointer-events: auto;
-}
-
-
-
 
 .tracker{
   min-width: 400px;
@@ -275,30 +176,15 @@
     font-size: 16px;
   }
 
-  .icon {
-    height: 16px;
-    width: 16px;
-  }
-
   .input {
     padding: 6px;
     font-size: 16px;
   }
 
-  .checkbox {
-    width: 16px;
-    height: 16px;
-  }
-
-  .addPanel {
-    width: 90%;
-    max-width: 400px;
-  }
-
   .tracker{
     min-width: 100%;
   }
-  .statsContainer{
+  .cardContainer{
     width:auto;
   }
 }
