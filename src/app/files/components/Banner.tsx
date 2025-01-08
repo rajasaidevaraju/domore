@@ -1,28 +1,59 @@
 'use client'
 
-import React from 'react';
+import React, { useState, useEffect } from "react";
 import styles from './Banner.module.css';
-import Link from 'next/link';
+import ActionItems from './ActionItems'
+import RippleButton from "@/app/types/RippleButton";
+import RippleButtonLink from "@/app/types/RippleButtonLink";
+
+
 const Banner = () => {
+    const [isMobile, setIsMobile] = useState<boolean | null>(null);
+    const [menuOpen, setMenuOpen] = useState<boolean>(false);
+
+    const resizeEvent="resize"
+    useEffect(()=>{
+        const checkScreenSize=()=>{
+            if(window.innerWidth<=768){
+                setIsMobile(true)
+            }else{
+                setIsMobile(false)
+                setMenuOpen(false)
+            }
+        }
+        checkScreenSize();
+
+        window.addEventListener(resizeEvent,checkScreenSize)
+        return()=>{
+            window.removeEventListener(resizeEvent,checkScreenSize)
+        }
+    },[])
+
+    function toggleActionItems(){
+        setMenuOpen((prev) => !prev);
+    }
 
     return (
       <div className={styles.banner}>
-        <Link href="/" className={styles.icon_container}>
+        <RippleButtonLink href="/" className={styles.actionItem}>
             <img src="/svg/home.svg" alt="Filter" className={styles.icon} />
             <span className={styles.icon_text}>Home</span>
-        </Link>
-        <Link href="/filter" className={`${styles.icon_container} ${styles['item-to-start']}`}>
-            <img src="/svg/filter.svg" alt="Filter" className={styles.icon} />
-            <span className={styles.icon_text}>Filter</span>
-        </Link>
-        <Link href="/management" className={styles.icon_container}>
-            <img src="/svg/management.svg" alt="Management" className={styles.icon} />
-            <span className={styles.icon_text}>Management</span>
-        </Link>
-        {/*<div className={`${styles.icon_container}`}>
-            <img src="/svg/switch.svg" alt="Change Server" className={styles.icon} />
-            <span className={styles.icon_text}>Change Server</span>
-        </div>*/}
+        </RippleButtonLink>
+        {isMobile!=null && !isMobile && <ActionItems isMobile={isMobile}/>}
+        
+        {isMobile!=null && isMobile &&
+            <div className={styles.dropdown}>
+                <RippleButton className={styles.actionItem} onClick={toggleActionItems}>
+                    <img src="/svg/menu.svg" alt="Menu" className={styles.icon} />
+                    <span className={styles.iconText}>Menu</span>
+                </RippleButton>
+                {isMobile && menuOpen && 
+                    <div className={styles.dropdownContent}>
+                        <ActionItems isMobile={isMobile} />
+                    </div>
+                }
+            </div>
+        }
     </div>
   );
 };

@@ -6,52 +6,77 @@
     padding: 10px;
     border-bottom: 1px;
     border-style: solid;
-    border-color: rgb(var(--main-color));; 
+    border-color: rgb(var(--main-color));
   }
 
-  .banner .item-to-start {
-    margin-left: auto;
-  }
-
-  .icon_container {
-    display: flex;
-    align-items: center;
-    margin: 0 20px;
-    border-radius: 8px;
-    padding: 10px;
-    cursor: default;
-    transition: background-color 0.3s ease;
-  }
-
-  .icon_container:hover {
-    cursor: pointer;
-    background-color: rgba(var(--main-color-hover));
-  }
-  
-  .icon_container:active {
-    background-color: rgba(var(--main-color-active));
+.actionItems {
+  margin-left: auto;
+  display: flex;
 }
 
-  .icon_text {
-    font-size: 20px;
-    text-decoration: none;
-    color: inherit;
-  }
-  
-  .icon {
-    margin-right:5px ;
-    height: 20px; 
-    width: 20px; 
-  }
+.actionItemsMenu{
+  flex-direction: column;
+  gap:10px;
+}
+
+.dropdown{
+  position: relative;
+  display: inline-block;
+}
+
+.dropdownContent{
+  padding: 10px 0px;
+  position: absolute;
+  z-index: 1;
+  background-color: rgb(var(--background-rgb));
+  margin: 10px 0px;
+  border: 1px solid rgb(var(--main-color));
+  box-shadow:0 2px 4px rgba(var(--foreground-rgb), .1);
+  right:0;
+  width: max-content;
+}
+
+.actionItem {
+  display: flex;
+  align-items: center;
+  margin: 0 10px;
+  border-radius: 8px;
+  padding: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.link.actionItem:hover {
+
+  background-color: rgba(var(--main-color-hover));
+}
+
+.link.actionItem:active {
+  background-color: rgba(var(--main-color-active));
+}
+
+
+
+
+.iconText {
+  font-size: 20px;
+  text-decoration: none;
+  color: inherit;
+}
+
+.icon {
+  margin-right:5px ;
+  height: 20px; 
+  width: 20px; 
+}
 
   @media (max-width: 768px) {
 
-    .icon_container{
-      margin: 0px 10px;
+    .actionItem{
+      margin: 0px 5px;
+      padding: 10px;
     }
-    .icon_container:hover {
-      background-color: initial;
-    }
+
     .banner {
       justify-content: space-between;
       padding-left: 5px;
@@ -60,7 +85,7 @@
       padding-bottom: 10px; 
     }
   
-    .icon_text {
+    .iconText {
         font-size: 16px;
     }
     .icon {
