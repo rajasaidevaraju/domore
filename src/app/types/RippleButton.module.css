@@ -18,6 +18,17 @@
     animation: rippleAnimation 0.6s linear;
     background-color: rgb(var(--main-color-active));
   }
+
+  @media (hover: hover) and (pointer: fine) {
+    .rippleButton:hover {
+      background-color: rgba(var(--main-color-hover));
+    }
+    
+    .rippleButton:active {
+      background-color: rgba(var(--main-color-active));
+    }
+  }
+  
   
   @keyframes rippleAnimation {
     to {
