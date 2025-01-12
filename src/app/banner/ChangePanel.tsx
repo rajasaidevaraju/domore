@@ -42,7 +42,7 @@ const ChangePanel=(props:ChangePanelProps)=>{
             <RippleButton className={styles.cancelButton} onClick={props.onClose}>Cancel</RippleButton>
         </div>
         {showLoading &&
-        <Loading></Loading>
+        <Loading minHeight={true}></Loading>
         }
         {error!=null && (
         <p className={styles.errorText}>{error}</p>

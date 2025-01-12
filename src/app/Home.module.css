@@ -31,16 +31,17 @@
 }
 
 
-.mainContainer .loadingContainer{
-  height: 100vh;
-}
-
 .loadingContainer {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   font-size: 1.2rem;
+  height: 100vh;
+}
+
+.minHeight{
+  height: 100%;
 }
 
 .spinner {
