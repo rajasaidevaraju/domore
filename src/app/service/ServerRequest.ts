@@ -98,7 +98,7 @@ export const ServerRequest = {
       const response = await fetch(`${API_BASE_URL}/server/stats`,{signal});
 
       if (!response.ok) {
-        throw new Error(`Failed to fetch stats. Status: ${response.status}`);
+        throw new Error(`Failed to fetch storage stats. Status: ${response.status}`);
       }
       const data = await response.json();
 
@@ -117,13 +117,37 @@ export const ServerRequest = {
 
     }catch (error) {
       if((error as Error).name === 'AbortError') {
-        var abortError=new Error('Fetch request aborted')
+        let abortError=new Error('Fetch request aborted')
         abortError.name="AbortError"
         throw abortError
       } else {
-        throw new Error('An error occurred while fetching stats.')
+        throw new Error('An error occurred while fetching storage stats.')
       }
     }
+  },
+  async getActiveServersList(signal: AbortSignal):Promise<string[]>{
+    let result:string[]=[]
+    try {
+
+      const response = await fetch(`${API_BASE_URL}/server/servers`,{signal});
+      if (!response.ok) {
+        throw new Error(`Failed to fetch server list. Status: ${response.status}`);
+      }
+      let data = await response.json();
+      if(typeof data === 'object' && data!==null && data.activeServers!==undefined && Array.isArray(data.activeServers)){
+        return data.activeServers
+      }
+
+      return result
+
+    }catch(error){
+      if((error as Error).name === 'AbortError') {
+       return result
+      }
+      throw new Error(`An error occurred while fetching server list`);
+
+    }
+
   },
   async  testUploadFile(
     file: File | undefined, 

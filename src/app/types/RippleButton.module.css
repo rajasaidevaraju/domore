@@ -1,7 +1,6 @@
 .rippleButton {
     position: relative;
     overflow: hidden;
-    background-color:rgb(var(--background-rgb));
     border: none;
     cursor:pointer;
     transition: background-color 0.3s;

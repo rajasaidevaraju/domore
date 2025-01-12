@@ -6,12 +6,13 @@ import ActionItems from './ActionItems'
 import RippleButton from "@/app/types/RippleButton";
 import RippleButtonLink from "@/app/types/RippleButtonLink";
 
-
 const Banner = () => {
     const [isMobile, setIsMobile] = useState<boolean | null>(null);
     const [menuOpen, setMenuOpen] = useState<boolean>(false);
 
     const resizeEvent="resize"
+
+    
     useEffect(()=>{
         const checkScreenSize=()=>{
             if(window.innerWidth<=768){

@@ -123,7 +123,7 @@
     position: absolute;
     top: 5px;
     right: 5px;
-    z-index: 10; /* Ensure it is above the performer content */
+    z-index: 10;
   }
   
   .checkbox {
@@ -144,7 +144,7 @@
     width: 80%;
     max-width: 600px;
     opacity: 0; 
-    z-index: 1000;
+    z-index: 22;
     transition: opacity 0.3s ease;
   }
   
@@ -173,14 +173,14 @@
     }
   }
   
-  .overlay {
+  .overlay { 
     position: fixed;
     top: 0;
     left: 0;
     width: 100vw;
     height: 100vh;
     background-color: rgba(0, 0, 0, 0.5);
-    z-index: 999;
+    z-index: 20;
     pointer-events: auto;
   }
 

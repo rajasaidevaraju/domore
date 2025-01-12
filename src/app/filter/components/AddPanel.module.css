@@ -62,7 +62,8 @@
     background-color: rgba(var(--red));
     filter: brightness(85%) !important; 
   }
-  
+
+
   @media (max-width: 768px) {
     .panel {
       padding: 15px;

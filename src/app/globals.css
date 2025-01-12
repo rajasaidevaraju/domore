@@ -32,4 +32,17 @@ body {
   background-color: rgb(var(--background-rgb)); 
 }
 
+table {
+  width: 100%;
+  border-collapse: collapse;
+  color: rgb(var(--foreground-rgb));
+}
+
+th, td {
+  padding: 10px 5px;
+  text-align: center;
+  border: 1px solid rgb(var(--foreground-rgb));
+}
+
+
 

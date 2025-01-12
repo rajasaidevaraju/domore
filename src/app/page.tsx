@@ -34,6 +34,7 @@ export default function Home() {
      {files.length === 0 && !error && (
        <Loading/>
      )}
+     
      {error && (
        <p className={styles.errorText}>{error}</p>
      )}
