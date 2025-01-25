@@ -27,17 +27,18 @@ function ActionItems({isMobile}:ActionItemsProps){
 
 
     let style=`${styles['actionItems']} ${isMobile? styles['actionItemsMenu']:""}`
+    let buttonStyle=`${styles['actionItem']} ${isMobile? styles['actionItemMobile']:""}`
     return(
     <div className={style}>
-        <RippleButtonLink href="/filter" className={styles.actionItem}>
+        <RippleButtonLink href="/filter" className={buttonStyle}>
             <img src="/svg/filter.svg" alt="Filter" className={styles.icon} />
             <span className={styles.iconText}>Filter</span>
         </RippleButtonLink>
-        <RippleButtonLink href="/management" className={styles.actionItem}>
+        <RippleButtonLink href="/management" className={buttonStyle}>
             <img src="/svg/management.svg" alt="Management" className={styles.icon} />
             <span className={styles.iconText}>Management</span>
         </RippleButtonLink>
-        <RippleButton className={styles.actionItem} onClick={openPanel}>
+        <RippleButton className={buttonStyle} onClick={openPanel}>
         <img src="/svg/switch.svg" alt="Change Server" className={styles.icon} />
         <span className={styles.iconText}>Change Server</span>
         </RippleButton>

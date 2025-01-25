@@ -3,30 +3,28 @@ const API_BASE_URL = IS_DEPLOYMENT_STATIC ? "" : process.env.NEXT_PUBLIC_SERVER_
 
 
 import { FileDataList } from "../types/FileDataList";
-import {ServerStats} from './../types/Types'
+import { ServerStats } from './../types/Types'
 export const ServerRequest = {
   
   async fetchFiles(page?:number): Promise<FileDataList> {
-    try {
-      let url=`${API_BASE_URL}/server/files`
-      if(page!=undefined){
-        url=`${API_BASE_URL}/server/files?page=${page}`
-      }
-      console.log(url)
-      const response = await fetch(url,{method:"GET",redirect:"follow"});
-      if (!response.ok) {
-        throw new Error('Failed to fetch files');
-      }
-      return await response.json();
-    } catch (error) {
-      throw new Error('Failed to fetch files');
+    
+    let url=`${API_BASE_URL}/server/files`
+    if(page!=undefined){
+      url=`${API_BASE_URL}/server/files?page=${page}`
     }
+    const response = await fetch(url,{method:"GET",redirect:"follow"});
+    if (!response.ok) {
+      const error = await response.json().catch(() => null);
+      throw new Error(error?.message || "Failed to fetch files");
+    }
+    return await response.json();
+    
   },
 
-  async sendScreenshot(fileId: string, imageData: string) {
+  async uploadThumbnail(fileId: string, imageData: string):Promise<void> {
 
     let requestBody = JSON.stringify({ fileId, imageData });
-    const response = await fetch(`${API_BASE_URL}/server/upload-screenshot`, {
+    const response = await fetch(`${API_BASE_URL}/server/thumbnail`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -34,12 +32,13 @@ export const ServerRequest = {
       body: requestBody,
     });
     if (!response.ok) {
-      throw new Error(`status ${response.status} from server`);
+      const error = await response.json().catch(() => null);
+      throw new Error(error?.message || "Thumbnail upload failed");
     }
     return await response.json();
   },
 
-  async requestThumbnail(fileId: string): Promise<{ imageData: string, exists: boolean }> {
+  async fetchThumbnail(fileId: string): Promise<{ imageData: string, exists: boolean }> {
     const response = await fetch(`${API_BASE_URL}/server/thumbnail?fileId=${fileId}`);
     if (!response.ok) {
       return { imageData: "", exists: false }
@@ -47,50 +46,49 @@ export const ServerRequest = {
     return await response.json();
   },
   async uploadFile(file: File|undefined, onProgress: (progress: number, speed: number) => void, passXMLObj:(xhr:XMLHttpRequest)=>void): Promise<any> {
-
+  
     if (file) {
+      
       const sizeInBytes = file.size; 
       const sizeInMB = (sizeInBytes / (1024 * 1024)).toFixed(2);
       console.log(`File size: ${sizeInMB} MB`);
       const formData = new FormData();
       formData.append('file', file);
-   
-      try {
-          const xhr = new XMLHttpRequest();
-          passXMLObj(xhr)
-          xhr.open('POST', `${API_BASE_URL}/server/upload`, true);
-          let lastTime = Date.now();
-          let lastLoaded = 0;
-          
-          let progressTracker = function(event: ProgressEvent<EventTarget>) {
-            if (event.lengthComputable) {
-              const percentComplete = (event.loaded / event.total) * 100;
-              // Calculate speed
-              const currentTime = Date.now();
-              const timeElapsed = (currentTime - lastTime) / 1000;
-              const bytesTransferred = event.loaded - lastLoaded; 
-              const speed = (bytesTransferred / timeElapsed)
-              lastTime = currentTime;
-              lastLoaded = event.loaded;
-              onProgress(percentComplete, speed);
-            } else {
-              console.warn('Progress not computable');
-            }
-          };
-        xhr.upload.addEventListener("progress",progressTracker,false)
-        xhr.onload = function() {
-          if (xhr.status === 200) {
-            return 'File uploaded successfully!';
-          } else {
-            throw new Error('Upload failed.')
-          }
-        };
-        xhr.send(formData);
+      formData.append('fileName', file.name);
+      
+      const xhr = new XMLHttpRequest();
+      passXMLObj(xhr)
+      xhr.responseType = 'json'
+      xhr.open('POST', `${API_BASE_URL}/server/file`, true);
+      let lastTime = Date.now();
+      let lastLoaded = 0;
+      
+      let progressTracker = function(event: ProgressEvent<EventTarget>) {
+        if (event.lengthComputable) {
+          const percentComplete = (event.loaded / event.total) * 100;
+          // Calculate speed
+          const currentTime = Date.now();
+          const timeElapsed = (currentTime - lastTime) / 1000;
+          const bytesTransferred = event.loaded - lastLoaded; 
+          const speed = (bytesTransferred / timeElapsed)
+          lastTime = currentTime;
+          lastLoaded = event.loaded;
+          onProgress(percentComplete, speed);
+        } else {
+          console.warn('Progress not computable');
+        }
+      };
+      xhr.upload.addEventListener("progress",progressTracker,false)
+      xhr.onload = function() {
+        if (xhr.status === 200) {
+          return 'File uploaded successfully!';
+        } else {
+          const response = xhr.response;
+          throw new Error(`Upload failed with error code ${xhr.status} and message ${response.message}.`)
+        }
+      };
+      xhr.send(formData);
 
-      }catch (error) {
-        console.error('Error:', error);
-        throw new Error('An error occurred while uploading the file.')
-      }
     }
   },
   async fetchStats (signal: AbortSignal): Promise<ServerStats>{
@@ -98,7 +96,8 @@ export const ServerRequest = {
       const response = await fetch(`${API_BASE_URL}/server/stats`,{signal});
 
       if (!response.ok) {
-        throw new Error(`Failed to fetch storage stats. Status: ${response.status}`);
+        const error = await response.json().catch(() => null);
+        throw new Error(error?.message || "Failed to fetch file stats");
       }
       const data = await response.json();
 
@@ -110,41 +109,36 @@ export const ServerRequest = {
         totalExternal: data.totalExternal,
         hasExternalStorage: data.hasExternalStorage,
       };
-
-
-
       return responseContent
 
-    }catch (error) {
+    }catch (error:any) {
       if((error as Error).name === 'AbortError') {
         let abortError=new Error('Fetch request aborted')
         abortError.name="AbortError"
         throw abortError
       } else {
-        throw new Error('An error occurred while fetching storage stats.')
+        throw new Error(error.message)
       }
     }
   },
   async getActiveServersList(signal: AbortSignal):Promise<string[]>{
     let result:string[]=[]
     try {
-
       const response = await fetch(`${API_BASE_URL}/server/servers`,{signal});
       if (!response.ok) {
-        throw new Error(`Failed to fetch server list. Status: ${response.status}`);
+        const error = await response.json().catch(() => null);
+        throw new Error(error?.message || "Failed to fetch server list");
       }
       let data = await response.json();
       if(typeof data === 'object' && data!==null && data.activeServers!==undefined && Array.isArray(data.activeServers)){
         return data.activeServers
       }
-
       return result
-
-    }catch(error){
+    }catch(error:any){
       if((error as Error).name === 'AbortError') {
        return result
       }
-      throw new Error(`An error occurred while fetching server list`);
+      throw new Error(error.message);
 
     }
 

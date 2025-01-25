@@ -30,6 +30,7 @@
   z-index: 1;
   background-color: rgb(var(--background-rgb));
   margin: 10px 0px;
+  border-radius: 5px;
   border: 1px solid rgb(var(--main-color));
   box-shadow:0 2px 4px rgba(var(--foreground-rgb), .1);
   right:0;
@@ -42,12 +43,15 @@
   margin: 0 10px;
   max-width: fit-content;
   justify-content: center;
-  border-radius: 8px;
+  border-radius: 5px;
   padding: 10px;
   cursor: pointer;
   transition: background-color 0.3s ease;
 }
 
+.actionItemMobile{
+  max-width: none;
+}
 .link.actionItem:hover {
 
   background-color: rgba(var(--main-color-hover));
@@ -114,7 +118,7 @@
 .panel {
   background: rgba(var(--background-rgb));
   padding: 20px;
-  border-radius: 8px;
+  border-radius: 5px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
   text-align: center;
 }
@@ -131,7 +135,7 @@
   font-weight: bold;
 }
 .cancelButton{
-  border-radius: 8px;
+  border-radius: 5px;
   padding: 10px;
 }
 

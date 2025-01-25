@@ -20,7 +20,6 @@ const ProgressTracker: React.FC<ProgressTrackerProps>  = ({file,startUpload,remo
 
   const handleFileUpload = async () => {
     if (file) {
-        console.log(file)
         setProgress(0);
         setSpeed(0);
         try{
@@ -34,6 +33,7 @@ const ProgressTracker: React.FC<ProgressTrackerProps>  = ({file,startUpload,remo
             
         }
         catch(error){
+          console.log("Inside error")
             console.error(error);
         }
        

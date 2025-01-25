@@ -1,6 +1,6 @@
 .videoCard {
   border: 1px solid rgb(var(--main-color));
-  border-radius: 8px;
+  border-radius: 5px;
   padding: 12px;
   margin: 8px;
   text-align: center;
@@ -21,7 +21,7 @@
 .videoCard img {
   height: 150px;
   width: 270px;
-  border-radius: 8px;
+  border-radius: 5px;
   margin-bottom: 8px;
 }
 
@@ -35,7 +35,7 @@
   height: 150px;
   width: 270px;
   background-color: rgb(var(--main-color));
-  border-radius: 8px;
+  border-radius: 5px;
   margin-bottom: 8px;
   display: flex;
   align-items: center;
@@ -43,4 +43,10 @@
   font-size: 14px; 
   font-weight: bold;
   text-align: center;
+}
+
+.cardText{
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }

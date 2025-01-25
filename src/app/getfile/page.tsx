@@ -41,11 +41,12 @@ const GetFile = () => {
         if (!videoRef.current || typeof fileId !== 'string') return;
 
         try {
-            const canvas = await html2canvas(videoRef.current);
+            const canvas = await html2canvas(videoRef.current,{allowTaint: true});
             const imageData = canvas.toDataURL("image/jpeg", 0.3);
             // Send the screenshot to the server
-            await ServerRequest.sendScreenshot(fileId,imageData);
+            await ServerRequest.uploadThumbnail(fileId,imageData);
             showToast("Screenshot set as Thumbnail","success")
+            
         } catch (error: Error | any) {
             if( error instanceof Error){
                 showToast(error.message, 'danger')
@@ -59,7 +60,7 @@ const GetFile = () => {
         <div>
             <div className={styles.videoContainer}>
                 
-            <video  ref={videoRef} controls className={styles.videoElement}>
+            <video crossOrigin="anonymous" ref={videoRef} controls className={styles.videoElement}>
                 <source src="null" type="video/mp4" />
             </video>
                 

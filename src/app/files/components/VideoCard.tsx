@@ -12,13 +12,12 @@ interface VideoCardProps {
 const VideoCard: React.FC<VideoCardProps> = ({ video }) => {
   const [imageData, setImageData] = useState<string | null>(null);
   const requestMadeRef = useRef(false);
-
-
+  const cleanedString=video.fileName.replace(/\.[a-zA-Z0-9]+$/, "")
     if (!requestMadeRef.current && !imageData) {
       try {
         (async () => {
           requestMadeRef.current = true;
-          const requestData = await ServerRequest.requestThumbnail(video.fileId.toString());
+          const requestData = await ServerRequest.fetchThumbnail(video.fileId.toString());
           if (requestData.exists) {
             setImageData(requestData.imageData);
           }
@@ -46,7 +45,7 @@ const VideoCard: React.FC<VideoCardProps> = ({ video }) => {
               <p> Thumbnail not created </p>
             </div>
           )}
-          <h2>{video.fileName}</h2>
+          <h2 className={styles.cardText}>{cleanedString}</h2>
         </div>
       </a>
   );
