@@ -23,3 +23,15 @@ export interface ServerStats{
   totalExternal: number,
   hasExternalStorage: Boolean
 }
+
+export enum MessageType {
+  SUCCESS = 'success',
+  DANGER = 'danger',
+  WARNING = 'warning',
+}
+
+export interface ToastData {
+  id: number;
+  message: string;
+  type: MessageType; 
+}

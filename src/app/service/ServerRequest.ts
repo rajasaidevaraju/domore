@@ -92,7 +92,6 @@ export const ServerRequest = {
     }
   },
   async fetchStats (signal: AbortSignal): Promise<ServerStats>{
-    try {
       const response = await fetch(`${API_BASE_URL}/server/stats`,{signal});
 
       if (!response.ok) {
@@ -110,16 +109,21 @@ export const ServerRequest = {
         hasExternalStorage: data.hasExternalStorage,
       };
       return responseContent
+  },
+  async fetchName(fileId: string,signal: AbortSignal): Promise<string>{
+   
+    const response = await fetch(`${API_BASE_URL}/server/name?fileId=${fileId}`,{signal});
 
-    }catch (error:any) {
-      if((error as Error).name === 'AbortError') {
-        let abortError=new Error('Fetch request aborted')
-        abortError.name="AbortError"
-        throw abortError
-      } else {
-        throw new Error(error.message)
+      if (!response.ok) {
+        const error = await response.json().catch(() => null);
+        throw new Error(error?.message || "Failed to fetch file stats");
       }
-    }
+      const data = await response.json();
+      
+      // removing file extension
+      let name=data.fileName.replace(/\.[a-zA-Z0-9]+$/, "")
+      return name
+
   },
   async getActiveServersList(signal: AbortSignal):Promise<string[]>{
     let result:string[]=[]
@@ -143,6 +147,18 @@ export const ServerRequest = {
     }
 
   },
+  async deleteVideo(fileId: string): Promise<void>{
+   
+    const response = await fetch(`${API_BASE_URL}/server/file?fileId=${fileId}`,{method:"DELETE"});
+
+      if (!response.ok) {
+        const error = await response.json().catch(() => null);
+        throw new Error(error?.message || "Failed to delete the file");
+      }
+      
+
+  },
+
   async  testUploadFile(
     file: File | undefined, 
     onProgress: (progress: number, speed: number) => void

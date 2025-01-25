@@ -32,6 +32,7 @@ const VideoCard: React.FC<VideoCardProps> = ({ video }) => {
     <a href={`/getfile?fileId=${video.fileId}`} >
         <div
           className={styles.videoCard}
+          title={cleanedString}
         >
           {imageData ? (
             <img
