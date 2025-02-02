@@ -134,9 +134,11 @@
   padding: 10px;
   font-weight: bold;
 }
-.cancelButton{
+.changePanelButton{
   border-radius: 5px;
-  padding: 10px;
+  padding: 7px;
+  height: fit-content;
+  background-color: rgb(var(--main-color-faint));
 }
 
 .errorText{
@@ -144,7 +146,6 @@
 }
 
 .iconText {
-  
   text-decoration: none;
   color: inherit;
 }

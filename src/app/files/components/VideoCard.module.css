@@ -21,6 +21,7 @@
 .videoCard img {
   height: 150px;
   width: 270px;
+  object-fit: scale-down;
   border-radius: 5px;
   margin-bottom: 8px;
 }

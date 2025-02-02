@@ -9,7 +9,9 @@
 
 .videoElement {
     height: 80%;
+    background: rgb(var(--main-color));
     width: fit-content;
+    min-width: 500px;
 }
 
 .buttonsDiv{
@@ -27,6 +29,8 @@
     .videoElement {
        width: 100%;
        height: fit-content;
+       min-width:auto;
+       max-height: 80%;
     }
 }
 

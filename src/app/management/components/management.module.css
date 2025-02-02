@@ -2,6 +2,9 @@
   background-color: rgba(var(--background-rgb));
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
   padding: 15px;
+  gap:10px;
+  display: flex;
+  flex-direction: column;
   margin: 10px;
   border: 1px solid rgb(var(--main-color));
   border-radius: 8px;
@@ -143,9 +146,6 @@
   text-align: right;
 }
 
-.fileInfoContainer{
-  margin: 10px 0px;
-}
 
 @media (prefers-color-scheme: dark) {
   .storageText {

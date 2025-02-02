@@ -2,15 +2,18 @@
 
 import { useEffect, useState,Suspense } from 'react'
 import VideoCard from './components/VideoCard';
+import { usePathname } from 'next/navigation'
 import { ServerRequest } from '../service/ServerRequest';
 import { FileDataList, FileData,Meta } from '../types/FileDataList';
 import Pagination from './components/Pagination';
 import { useSearchParams } from 'next/navigation'
 import styles from './Files.module.css'; 
 import Loading from './../loading'
+import path from 'path';
 
 function AltHome(){
     const searchParams = useSearchParams()
+    const pathname = usePathname()
     const [files, setFiles] = useState<FileData[]>([]);
     const [error, setError] = useState<string | null>(null);
     const [meta,setMeta]=useState<Meta>({page: 1,limit: 1,total: 1})
@@ -22,7 +25,7 @@ function AltHome(){
             const filesDataList = await ServerRequest.fetchFiles(pageNo);
             setFiles(filesDataList.data);
             setMeta(filesDataList.meta)
-            
+            sessionStorage.setItem('lastPage', pathname);            
         } catch (error) {
             setError('Failed to fetch files');
             console.error('Error fetching files:', error);

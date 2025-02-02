@@ -107,6 +107,8 @@ export const ServerRequest = {
         freeExternal: data.freeExternal,
         totalExternal: data.totalExternal,
         hasExternalStorage: data.hasExternalStorage,
+        percentage: data.percentage ?? -1,
+        charging: data.charging ?? false
       };
       return responseContent
   },

@@ -39,7 +39,7 @@ const ChangePanel=(props:ChangePanelProps)=>{
     <div className={styles.panel}>
         <div className={styles.heading}>
             <h1>Change Server</h1>
-            <RippleButton className={styles.cancelButton} onClick={props.onClose}>Cancel</RippleButton>
+            <RippleButton className={styles.changePanelButton} onClick={props.onClose}>Cancel</RippleButton>
         </div>
         {showLoading &&
         <Loading minHeight={true}></Loading>
@@ -60,7 +60,7 @@ const ChangePanel=(props:ChangePanelProps)=>{
                 {activeServers.map((item, index) => (
                     <tr key={index}>
                         <td>{item}</td>
-                        <td><div className={styles.cell}><RippleButtonLink className={styles.actionItem} href={`http://${item}:1280`}>Navigate</RippleButtonLink></div></td>
+                        <td><div className={styles.cell}><RippleButtonLink className={styles.changePanelButton} href={`http://${item}:1280`}>Navigate</RippleButtonLink></div></td>
                     </tr>
                     ))}
                 </tbody>

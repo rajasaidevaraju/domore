@@ -21,7 +21,9 @@ export interface ServerStats{
   totalInternal: number,
   freeExternal: number,
   totalExternal: number,
-  hasExternalStorage: Boolean
+  hasExternalStorage: boolean,
+  percentage: number,
+  charging: boolean
 }
 
 export enum MessageType {

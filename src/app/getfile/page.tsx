@@ -96,9 +96,16 @@ const GetFile = () => {
             return;
         }
         try {
-            if (confirm("This is a sample alert message!")) {
+            if (confirm("Do you want to delete the file!")) {
                 await ServerRequest.deleteVideo(fileId)
-                router.push("/")
+                const lastPage = sessionStorage.getItem('lastPage');
+                if (lastPage) {
+                    router.push(lastPage);
+                    sessionStorage.removeItem('lastPage');
+                }else{
+                    router.push("/")
+                }
+               
               } 
         } catch (error: Error | any) {
             if (error instanceof Error){

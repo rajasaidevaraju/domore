@@ -21,7 +21,8 @@
 @media (prefers-color-scheme: dark) {
   :root {
     --foreground-rgb: 230, 230, 230;
-    --background-rgb: 30, 30, 30; 
+    --background-rgb: 30, 30, 30;
+    --main-color-faint: 40, 40, 40;  
     --main-color: 68, 68, 68;
     --main-color-hover: 78, 78, 78;
     --main-color-active: 88, 88, 88;
