@@ -18,9 +18,6 @@ const PressableLink = ({ href, children, className = '' }: PressableLinkProps) =
         <Link
             href={href}
             className={`${styles.pressable} ${isPressed ? styles.pressed : ''} ${className}`}
-            onMouseDown={handlePress}
-            onMouseUp={handleRelease}
-            onMouseLeave={handleRelease}
             onTouchStart={handlePress}
             onTouchEnd={handleRelease}
             onTouchCancel={handleRelease}
