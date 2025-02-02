@@ -42,12 +42,15 @@ export default function Stats(){
 
     return(
         <div className={`${styles.cardContainer}`}>
-             <div className={styles.header}>
-             <h1>Stats</h1>
-             </div>
-            <p className={styles.text}> Files: {files}</p>
-            <p className={styles.text}>Percentage: {batteryPercentage}%</p>
-            <p className={styles.text}>Charging: {isCharging ? "Yes" : "No"}</p>
+            <div className={styles.header}>
+            <h1>Stats</h1>
+            </div>
+            <div>
+                <p className={styles.text}>Files: {files}</p>
+                <p className={styles.text}>Percentage: {batteryPercentage}%</p>
+                <p className={styles.text}>Charging: {isCharging ? "Yes" : "No"}</p>
+            </div>
+            
             <div>
                 <p className={styles.text}> Internal Storage</p>
                 <div className={styles.progressBar}>

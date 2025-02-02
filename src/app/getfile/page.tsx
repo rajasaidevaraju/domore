@@ -20,6 +20,8 @@ const GetFile = () => {
     const [fileName,setFileName]= useState<string>();
     const videoRef = useRef<HTMLVideoElement>(null);
     const router = useRouter();
+    const rateChnage="ratechange"
+    const volumeChange="volumechange"
 
     const [toasts, setToasts] = useState<ToastData[]>([]);
 
@@ -33,6 +35,24 @@ const GetFile = () => {
         setToasts((prev) => prev.filter((toast) => toast.id !== id));
     };
 
+    const handleRateChange = () => {
+        if (videoRef.current) {
+            const speed = videoRef.current.playbackRate;
+            localStorage.setItem('videoPlaybackSpeed', speed.toString());
+        }
+    };
+
+    const handleVolumeChange = () => {
+        if (videoRef.current) {
+            let volume = videoRef.current.volume;
+            if (videoRef.current.muted) {
+                volume = 0;
+            }
+            localStorage.setItem('videoVolume', volume.toString());
+        }
+    };
+
+
     useEffect(() => {
 
         const currentFileId = searchParams.get('fileId')
@@ -42,6 +62,14 @@ const GetFile = () => {
             if(videoRef.current){
                 videoRef.current.src=`${API_BASE_URL}/server/file?fileId=${currentFileId}`
                 videoRef.current.load();
+
+                const playbackRate = parseFloat(localStorage.getItem('videoPlaybackSpeed') ?? '1');
+                const volume = parseFloat(localStorage.getItem('videoVolume') ?? '1');
+                videoRef.current.playbackRate = (playbackRate >= 0.5 && playbackRate <= 2.0) ? playbackRate : 1;
+                videoRef.current.volume = (volume >= 0 && volume <= 1) ? volume : 1;
+                
+                videoRef.current.addEventListener(rateChnage,handleRateChange)
+                videoRef.current.addEventListener(volumeChange,handleVolumeChange)
             }
             let requestName=async ()=>{
                 try{
@@ -65,6 +93,10 @@ const GetFile = () => {
         
         return () => {
             controller.abort();
+            if(videoRef.current){
+                videoRef.current.removeEventListener(rateChnage,handleRateChange)
+                videoRef.current.removeEventListener(volumeChange,handleVolumeChange)
+            }
         }
 
     }, [searchParams]);
