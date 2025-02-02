@@ -15,8 +15,9 @@ const RippleButtonLink: React.FC<RippleButtonLinkProps> = ({
   ...props
 }) => {
   const handleClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
+    event.preventDefault();
     const link = event.currentTarget;
-
+    const href = link.getAttribute('href');
     // Remove existing ripple if present
     const existingRipple = link.querySelector(`.${styles.ripple}`);
     if (existingRipple) {
@@ -41,6 +42,9 @@ const RippleButtonLink: React.FC<RippleButtonLinkProps> = ({
     // Remove the ripple after animation
     ripple.addEventListener("animationend", () => {
       ripple.remove();
+      if (href) {
+        window.location.href = href;
+      }
     });
   };
 
