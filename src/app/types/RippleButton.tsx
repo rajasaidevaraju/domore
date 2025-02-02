@@ -1,5 +1,5 @@
 import React, { ButtonHTMLAttributes } from "react";
-import styles from "./RippleButton.module.css";
+import styles from "./CustomButton.module.css";
 
 interface RippleButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   children: React.ReactNode;

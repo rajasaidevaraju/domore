@@ -1,6 +1,6 @@
 import React from "react";
 import Link from "next/link";
-import styles from "./RippleButton.module.css";
+import styles from "./CustomButton.module.css";
 
 interface RippleButtonLinkProps {
   href: string;

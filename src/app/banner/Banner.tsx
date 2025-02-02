@@ -5,6 +5,7 @@ import styles from './Banner.module.css';
 import ActionItems from './ActionItems'
 import RippleButton from "@/app/types/RippleButton";
 import RippleButtonLink from "@/app/types/RippleButtonLink";
+import PressableLink from "../types/PressableLink";
 
 const Banner = () => {
     const [isMobile, setIsMobile] = useState<boolean | null>(null);
@@ -36,10 +37,10 @@ const Banner = () => {
 
     return (
       <div className={styles.banner}>
-        <RippleButtonLink href="/" className={styles.actionItem}>
+        <PressableLink href="/" className={styles.actionItem}>
             <img src="/svg/home.svg" alt="Filter" className={styles.icon} />
             <span className={styles.icon_text}>Home</span>
-        </RippleButtonLink>
+        </PressableLink>
         {isMobile!=null && !isMobile && <ActionItems isMobile={isMobile}/>}
         
         {isMobile!=null && isMobile &&

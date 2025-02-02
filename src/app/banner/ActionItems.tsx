@@ -1,6 +1,7 @@
 import styles from './Banner.module.css'
 import { useState } from 'react';
 import RippleButtonLink from "@/app/types/RippleButtonLink";
+import PressableLink from "@/app/types/PressableLink";
 import RippleButton from "@/app/types/RippleButton";
 import ChangePanel from './ChangePanel'
 
@@ -30,14 +31,14 @@ function ActionItems({isMobile}:ActionItemsProps){
     let buttonStyle=`${styles['actionItem']} ${isMobile? styles['actionItemMobile']:""}`
     return(
     <div className={style}>
-        <RippleButtonLink href="/filter" className={buttonStyle}>
+        <PressableLink href="/filter" className={buttonStyle}>
             <img src="/svg/filter.svg" alt="Filter" className={styles.icon} />
             <span className={styles.iconText}>Filter</span>
-        </RippleButtonLink>
-        <RippleButtonLink href="/management" className={buttonStyle}>
+        </PressableLink>
+        <PressableLink href="/management" className={buttonStyle}>
             <img src="/svg/management.svg" alt="Management" className={styles.icon} />
             <span className={styles.iconText}>Management</span>
-        </RippleButtonLink>
+        </PressableLink>
         <RippleButton className={buttonStyle} onClick={openPanel}>
         <img src="/svg/switch.svg" alt="Change Server" className={styles.icon} />
         <span className={styles.iconText}>Change Server</span>
