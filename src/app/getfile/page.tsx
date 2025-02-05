@@ -22,6 +22,9 @@ const GetFile = () => {
     const router = useRouter();
     const rateChnage="ratechange"
     const volumeChange="volumechange"
+    const videoVolume="videoVolume"
+    const videoMuted="videoMuted"
+    const videoPlaybackSpeed="videoPlaybackSpeed"
 
     const [toasts, setToasts] = useState<ToastData[]>([]);
 
@@ -38,17 +41,18 @@ const GetFile = () => {
     const handleRateChange = () => {
         if (videoRef.current) {
             const speed = videoRef.current.playbackRate;
-            localStorage.setItem('videoPlaybackSpeed', speed.toString());
+            localStorage.setItem(videoPlaybackSpeed, speed.toString());
         }
     };
 
     const handleVolumeChange = () => {
         if (videoRef.current) {
             let volume = videoRef.current.volume;
-            if (videoRef.current.muted) {
-                volume = 0;
+            const isMuted = videoRef.current.muted;
+            localStorage.setItem(videoMuted, isMuted.toString());
+            if (!isMuted && volume > 0) {
+                localStorage.setItem(videoVolume, volume.toString());
             }
-            localStorage.setItem('videoVolume', volume.toString());
         }
     };
 
@@ -63,10 +67,13 @@ const GetFile = () => {
                 videoRef.current.src=`${API_BASE_URL}/server/file?fileId=${currentFileId}`
                 videoRef.current.load();
 
-                const playbackRate = parseFloat(localStorage.getItem('videoPlaybackSpeed') ?? '1');
-                const volume = parseFloat(localStorage.getItem('videoVolume') ?? '1');
+                const playbackRate = parseFloat(localStorage.getItem(videoPlaybackSpeed) ?? '1');
+                const storedVolume = parseFloat(localStorage.getItem(videoVolume) ?? '1');
+                const storedMuted =  localStorage.getItem(videoMuted) === 'true';
+        
                 videoRef.current.playbackRate = (playbackRate >= 0.5 && playbackRate <= 2.0) ? playbackRate : 1;
-                videoRef.current.volume = (volume >= 0 && volume <= 1) ? volume : 1;
+                videoRef.current.volume = Math.min(Math.max(storedVolume, 0.1), 1);
+                videoRef.current.muted = storedMuted;
                 
                 videoRef.current.addEventListener(rateChnage,handleRateChange)
                 videoRef.current.addEventListener(volumeChange,handleVolumeChange)
