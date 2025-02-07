@@ -12,6 +12,7 @@
     background: rgb(var(--main-color));
     width: fit-content;
     min-width: 500px;
+    border-radius: 8px;
 }
 
 .buttonsDiv{
