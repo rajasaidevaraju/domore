@@ -9,7 +9,7 @@ import Pagination from './components/Pagination';
 import { useSearchParams } from 'next/navigation'
 import styles from './Files.module.css'; 
 import Loading from './../loading'
-import path from 'path';
+import calculateItemsPerPage from '@/app/service/GridCalculation'
 
 function AltHome(){
     const searchParams = useSearchParams()
@@ -22,7 +22,13 @@ function AltHome(){
        let pageNo = getPageNumber(searchParams.get("page"))
        async function fetchFiles() {
         try {
-            const filesDataList = await ServerRequest.fetchFiles(pageNo);
+            const itemsPerPage=calculateItemsPerPage()
+            console.log(itemsPerPage)
+            let lastFileID=-1
+            if(files.length>0){
+                lastFileID=files[files.length-1].fileId
+            }
+            const filesDataList = await ServerRequest.fetchFiles(pageNo,lastFileID,itemsPerPage);
             setFiles(filesDataList.data);
             setMeta(filesDataList.meta)
             sessionStorage.setItem('lastPage', pathname);            

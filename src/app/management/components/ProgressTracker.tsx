@@ -35,7 +35,7 @@ const ProgressTracker: React.FC<ProgressTrackerProps>  = ({file,startUpload,remo
         }
         catch(error){
           setError(error instanceof Error ? error.message : 'Upload failed');
-          console.error(error);
+
         }
        
     }
@@ -74,7 +74,6 @@ useEffect(()=>{
         <button className={`${styles.removeButton} ${styles.commonButton} ${styles.right} ${aborted || progress === 100 ? styles.hidden : ''}`} onClick={stopUpload}>
           <img src="/svg/delete.svg" alt="Stop Upload" />
         </button>
-        
       </div>  
       
       <div className={styles.progressBar}>
@@ -82,8 +81,13 @@ useEffect(()=>{
       </div>
       <div className={styles.infoRow}>
         <p className={`${styles.text} ${styles.left}`}>{formatSize(file.size)}</p>
-        {!aborted && !error && progress>0 && progress < 100 && <p className={`${styles.text} ${styles.right}`}>{formatSize(speed)}/s</p>}
-        {aborted && <p className={`${styles.text} ${styles.right}`}>Upload Aborted</p>}
+        {!aborted && !error && progress>0 &&(<>
+          {progress < 100 && (<p className={`${styles.text} ${styles.right}`}>{formatSize(speed)}/s</p>)}
+          {progress == 100 && (<p className={`${styles.text} ${styles.right}`}>Upload Success</p>)}
+         </>
+        )}
+        {!aborted && !error && progress>0 && progress < 100 }
+        {aborted && !error && <p className={`${styles.text} ${styles.right}`}>Upload Aborted</p>}
         {error && (
           <p className={`${styles.text} ${styles.right} ${styles.error}`}>{error}</p>
         )}

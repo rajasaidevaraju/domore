@@ -6,11 +6,11 @@ import { FileDataList } from "../types/FileDataList";
 import { ServerStats } from './../types/Types'
 export const ServerRequest = {
   
-  async fetchFiles(page?:number): Promise<FileDataList> {
+  async fetchFiles(page?:number,lastFileID=-1,itemsPerPage=20): Promise<FileDataList> {
     
     let url=`${API_BASE_URL}/server/files`
     if(page!=undefined){
-      url=`${API_BASE_URL}/server/files?page=${page}`
+      url=`${API_BASE_URL}/server/files?page=${page}&lastFileID=${lastFileID}&itemsPerPage=${itemsPerPage}`
     }
     const response = await fetch(url,{method:"GET",redirect:"follow"});
     if (!response.ok) {

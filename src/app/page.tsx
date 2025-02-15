@@ -7,6 +7,8 @@ import { FileDataList, FileData,Meta } from './types/FileDataList';
 import Pagination from './files/components/Pagination';
 import styles from './Home.module.css';
 import Loading from './loading';
+import calculateItemsPerPage from '@/app/service/GridCalculation'
+
 export default function Home() {
 
   const [files, setFiles] = useState<FileData[]>([]);
@@ -17,7 +19,13 @@ export default function Home() {
   useEffect(() => {
     async function fetchFiles() {
         try {
-            const filesDataList = await ServerRequest.fetchFiles(1);
+          const itemsPerPage=calculateItemsPerPage()
+            console.log(itemsPerPage)
+            let lastFileID=-1
+            if(files.length>0){
+                lastFileID=files[files.length-1].fileId
+            }
+            const filesDataList = await ServerRequest.fetchFiles(1,lastFileID,itemsPerPage);
             setFiles(filesDataList.data);
             setMeta(filesDataList.meta)
             sessionStorage.setItem('lastPage', pathname);
