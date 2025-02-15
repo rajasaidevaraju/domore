@@ -15,6 +15,7 @@ const ProgressTracker: React.FC<ProgressTrackerProps>  = ({file,startUpload,remo
   const [speed, setSpeed] = useState<number>(0); 
   const xhr = useRef<XMLHttpRequest | null>(null);
   const uploadStarted = useRef(false);
+  const [error, setError] = useState<string | null>(null);
   const [aborted,setAborted] = useState(false)
 
 
@@ -33,8 +34,8 @@ const ProgressTracker: React.FC<ProgressTrackerProps>  = ({file,startUpload,remo
             
         }
         catch(error){
-          console.log("Inside error")
-            console.error(error);
+          setError(error instanceof Error ? error.message : 'Upload failed');
+          console.error(error);
         }
        
     }
@@ -81,8 +82,11 @@ useEffect(()=>{
       </div>
       <div className={styles.infoRow}>
         <p className={`${styles.text} ${styles.left}`}>{formatSize(file.size)}</p>
-        {!aborted && progress>0 && progress < 100 && <p className={`${styles.text} ${styles.right}`}>{formatSize(speed)}/s</p>}
+        {!aborted && !error && progress>0 && progress < 100 && <p className={`${styles.text} ${styles.right}`}>{formatSize(speed)}/s</p>}
         {aborted && <p className={`${styles.text} ${styles.right}`}>Upload Aborted</p>}
+        {error && (
+          <p className={`${styles.text} ${styles.right} ${styles.error}`}>{error}</p>
+        )}
       </div>
     </div>
   );

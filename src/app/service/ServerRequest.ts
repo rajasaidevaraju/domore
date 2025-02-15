@@ -45,13 +45,13 @@ export const ServerRequest = {
     }
     return await response.json();
   },
-  async uploadFile(file: File|undefined, onProgress: (progress: number, speed: number) => void, passXMLObj:(xhr:XMLHttpRequest)=>void): Promise<any> {
-  
-    if (file) {
+  async uploadFile(file: File|undefined, onProgress: (progress: number, speed: number) => void, passXMLObj:(xhr:XMLHttpRequest)=>void): Promise<string> {
+    return new Promise((resolve, reject) => {
+      if (!file) {
+        reject(new Error('No file provided'));
+        return;
+      } 
       
-      const sizeInBytes = file.size; 
-      const sizeInMB = (sizeInBytes / (1024 * 1024)).toFixed(2);
-      console.log(`File size: ${sizeInMB} MB`);
       const formData = new FormData();
       formData.append('file', file);
       formData.append('fileName', file.name);
@@ -60,10 +60,11 @@ export const ServerRequest = {
       passXMLObj(xhr)
       xhr.responseType = 'json'
       xhr.open('POST', `${API_BASE_URL}/server/file`, true);
+
       let lastTime = Date.now();
       let lastLoaded = 0;
       
-      let progressTracker = function(event: ProgressEvent<EventTarget>) {
+      xhr.upload.addEventListener("progress",function(event: ProgressEvent<EventTarget>) {
         if (event.lengthComputable) {
           const percentComplete = (event.loaded / event.total) * 100;
           // Calculate speed
@@ -77,19 +78,22 @@ export const ServerRequest = {
         } else {
           console.warn('Progress not computable');
         }
+      },false)
+      xhr.onerror = function() {
+        reject(new Error('Failed to upload file'));
       };
-      xhr.upload.addEventListener("progress",progressTracker,false)
       xhr.onload = function() {
         if (xhr.status === 200) {
-          return 'File uploaded successfully!';
+          resolve('File uploaded successfully!');
         } else {
           const response = xhr.response;
-          throw new Error(`Upload failed with error code ${xhr.status} and message ${response.message}.`)
+          console.error(`Upload failed with error code ${xhr.status} and message ${response?.message || 'Unknown error'}`);
+          reject(new Error(`Upload failed with error code ${xhr.status}'}`));
         }
       };
       xhr.send(formData);
-
-    }
+    });  
+    
   },
   async fetchStats (signal: AbortSignal): Promise<ServerStats>{
       const response = await fetch(`${API_BASE_URL}/server/stats`,{signal});

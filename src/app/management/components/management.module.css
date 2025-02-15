@@ -146,6 +146,9 @@
   text-align: right;
 }
 
+.error{
+  color: rgb(var(--red));
+}
 
 @media (prefers-color-scheme: dark) {
   .storageText {
