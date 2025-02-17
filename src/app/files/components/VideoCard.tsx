@@ -35,12 +35,7 @@ const VideoCard: React.FC<VideoCardProps> = ({ video }) => {
           title={cleanedString}
         >
           {imageData ? (
-            <img
-              height={270}
-              width={150}
-              src={imageData}
-              alt="Thumbnail of the video"
-            />
+            <img src={imageData} alt="Thumbnail of the video"/>
           ) : (
             <div className={styles.placeholderDiv}>
               <p> Thumbnail not created </p>

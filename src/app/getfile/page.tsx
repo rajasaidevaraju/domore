@@ -158,8 +158,8 @@ const GetFile = () => {
         <div>
             <div className={styles.videoContainer}>
                 
-                <video crossOrigin="anonymous" ref={videoRef} controls className={styles.videoElement}>
-                    <source src="null" type="video/mp4" />
+                <video crossOrigin="anonymous" ref={videoRef} controls className={styles.videoElement} >
+                    <source src="null" type="video/mp4"/>
                 </video>
                 <h2>{fileName?fileName:"name.."}</h2>
                 <div className={styles.buttonsDiv}>

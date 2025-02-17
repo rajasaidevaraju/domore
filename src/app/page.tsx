@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { ServerRequest } from './service/ServerRequest';
 import { usePathname  } from 'next/navigation';
 import { FileDataList, FileData,Meta } from './types/FileDataList';
-import Pagination from './files/components/Pagination';
+import Pagination from '@/app/files/components/Pagination';
 import styles from './Home.module.css';
 import Loading from './loading';
 export default function Home() {

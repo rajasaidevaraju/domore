@@ -6,13 +6,17 @@ import ProgressTracker from "./ProgressTracker";
 const UploadCard=()=>{
 
     const [files, setFiles]=useState<File[]>([]);
-    const [startUpload, setStartUpload] = useState(false);
+    const [uploadingFiles, setUploadingFiles] = useState<Set<string>>(new Set());
     const [uploadVisible, setUploadVisible] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
     const initiateUpload=async()=>{
         if (files.length > 0) {
-            setStartUpload(true);
             setUploadVisible(false)
+            files.forEach((file, index) => {
+                setTimeout(() => {
+                    setUploadingFiles(prev => new Set(prev).add(file.name));
+                }, index * 300); 
+            });
           }
 
     }
@@ -27,20 +31,16 @@ const UploadCard=()=>{
         const newFiles=event.target.files;
         const noDuplicates:File[]=[]
         if(newFiles){
-            for (var file of newFiles){
-                var exists=false
-                for(var sFile of files){
-                    if(sFile.name==file.name){
-                        exists=true
-                        break
-                    }
+            Array.from(newFiles).forEach(file => {
+                const isDuplicate = files.some(existingFile => 
+                    existingFile.name === file.name
+                );
+                
+                if (!isDuplicate) {
+                    noDuplicates.push(file);
                 }
-                if(exists==false){
-                    noDuplicates.push(file)
-                }
-            }
+            });
             if(noDuplicates.length>0){
-                setStartUpload(false)
                 setUploadVisible(true)
                 setFiles((prevItems)=>{return[...prevItems,...noDuplicates]})
             }
@@ -83,9 +83,14 @@ const UploadCard=()=>{
                 </div>
             </div>
             <div className={styles.trackerContainer}>
-            {files.map((item,index)=>{
-                return <ProgressTracker key={item.name} file={item} startUpload={startUpload} removeFile={removeFile}></ProgressTracker>
-            })}
+                {files.map((item, index) => (
+                    <ProgressTracker 
+                        key={item.name} 
+                        file={item} 
+                        startUpload={uploadingFiles.has(item.name)} 
+                        removeFile={removeFile}
+                    />
+                ))}
             </div>
         </div>
     )
