@@ -14,6 +14,9 @@ export const ServerRequest = {
     }
     const response = await fetch(url,{method:"GET",redirect:"follow"});
     if (!response.ok) {
+      if (response.status === 404) {
+        throw new Error(`No files found on page ${page}`);
+      }
       const error = await response.json().catch(() => null);
       throw new Error(error?.message || "Failed to fetch files");
     }

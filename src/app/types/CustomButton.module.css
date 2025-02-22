@@ -7,7 +7,6 @@
 }
 
 .pressable {
-  position: relative;
   overflow: hidden;
   border: none;
   cursor:pointer;

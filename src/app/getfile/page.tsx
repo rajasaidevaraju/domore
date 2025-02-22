@@ -89,6 +89,7 @@ const GetFile = () => {
                     }else{
                         if (error instanceof Error){
                             showToast(error.message,MessageType.DANGER)
+                            setFileName(error.message)
                         }
                         console.error('Error:', error);
                     }
@@ -150,7 +151,7 @@ const GetFile = () => {
             if (error instanceof Error){
                 showToast(error.message,MessageType.DANGER)
             }
-            console.error('Error taking screenshot:', error);
+            console.error('Error while deleting video:', error);
         };
     }
 

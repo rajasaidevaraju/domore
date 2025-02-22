@@ -22,8 +22,12 @@ export default function Home() {
             setMeta(filesDataList.meta)
             sessionStorage.setItem('lastPage', pathname);
         } catch (error) {
+          if (error instanceof Error) {
+            setError(error.message)
+          }else{
             setError('Failed to fetch files');
-            console.error('Error fetching files:', error);
+          }
+          console.error('Error fetching files:', error);
         }
     }
 

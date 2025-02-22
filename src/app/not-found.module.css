@@ -1,0 +1,19 @@
+
+.returnHomeText{
+    margin: 10px;
+}
+
+.returnHome{
+background-color: rgba(var(--main-color));
+padding: 10px;
+border-radius: 5px;
+margin: 10px;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 80vh;
+}

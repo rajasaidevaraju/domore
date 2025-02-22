@@ -27,7 +27,11 @@ function AltHome(){
             setMeta(filesDataList.meta)
             sessionStorage.setItem('lastPage', pathname);            
         } catch (error) {
-            setError('Failed to fetch files');
+            if (error instanceof Error) {
+              setError(error.message)
+            }else{
+              setError('Failed to fetch files');
+            }
             console.error('Error fetching files:', error);
         }
     }
