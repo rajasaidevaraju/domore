@@ -5,7 +5,7 @@ import { ServerRequest } from './service/ServerRequest';
 import { usePathname  } from 'next/navigation';
 import { FileDataList, FileData,Meta } from './types/FileDataList';
 import Pagination from '@/app/files/components/Pagination';
-import styles from './Home.module.css';
+import styles from '@/app/files/Files.module.css'
 import Loading from './loading';
 export default function Home() {
 
@@ -53,7 +53,9 @@ export default function Home() {
        ))}
      </div>
      }
-   <Pagination {...meta}></Pagination>
+     {meta.page>1 && !error && (
+       <Pagination {...meta}></Pagination>
+     )}
    </main>
  );
 }

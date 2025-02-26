@@ -59,7 +59,9 @@ function AltHome(){
         ))}
       </div>
       }
-    <Pagination {...meta}></Pagination>
+      {meta.page>1 && !error && (
+         <Pagination {...meta}></Pagination>
+      )}
     </main>
   );
 }
