@@ -1,13 +1,20 @@
 .container {
     background-color: rgba(var(--background-rgb));
     box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgb(var(--main-color));;
     padding: 20px;
     border-radius: 8px;
     width: 100%;
     max-width: 400px;
     margin: 0 auto;
 }
-
+.mainContainer{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 80%;
+}
 .title {
     font-size: 24px;
     margin-bottom: 20px;

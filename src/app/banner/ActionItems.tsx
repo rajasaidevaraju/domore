@@ -39,6 +39,10 @@ function ActionItems({isMobile}:ActionItemsProps){
             <img src="/svg/management.svg" alt="Management" className={styles.icon} />
             <span className={styles.iconText}>Management</span>
         </PressableLink>
+        <PressableLink href="/login" className={buttonStyle}>
+            <img src="/svg/login.svg" alt="Login" className={styles.icon} />
+            <span className={styles.iconText}>Login</span>
+        </PressableLink>
         <RippleButton className={buttonStyle} onClick={openPanel}>
         <img src="/svg/switch.svg" alt="Change Server" className={styles.icon} />
         <span className={styles.iconText}>Change Server</span>

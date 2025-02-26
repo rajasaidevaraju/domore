@@ -5,6 +5,8 @@ import styles from './login.module.css';
 import { ToastData, MessageType } from "@/app/types/Types";
 import ToastMessage from "@/app/types/ToastMessages";
 import RippleButton from '../types/RippleButton';
+import {ServerRequest} from '@/app/service/ServerRequest';
+import { useRouter } from 'next/router';
 
 const Login: React.FC = () => {
     const [username, setUsername] = useState('');
@@ -12,6 +14,8 @@ const Login: React.FC = () => {
     const [usernameError, setUsernameError] = useState('');
     const [passwordError, setPasswordError] = useState('');
     const [toasts, setToasts] = useState<ToastData[]>([]);
+    const [errorText, setErrorText] = useState<string | null>(null);
+    const router = useRouter();
 
     const showToast = (message: string, type: MessageType) => {
         const id = Date.now();
@@ -89,12 +93,19 @@ const Login: React.FC = () => {
     const handleLogin = async () => {
         const isUsernameValid = checkUsernameCharacters(username) && checkUsernameLength(username);
         const isPasswordValid = checkPasswordCharacters(password) && checkPasswordLength(password);
-
+        setErrorText(null);
         if (isUsernameValid && isPasswordValid) {
             try {
-                // Perform login logic here with sanitized inputs
-                // Example: await ServerRequest.login(username, password);
-                showToast('Login successful', MessageType.SUCCESS);
+                let {token,error}=await ServerRequest.loginUser(username, password);
+                if(error!=null){
+
+                }
+                if(token!=null){
+                    localStorage.setItem('token',token);
+                    showToast('Login successful', MessageType.SUCCESS);
+                    router.push('/');
+
+                }
             } catch (error) {
                 if (error instanceof Error) {
                     showToast(error.message, MessageType.DANGER);
@@ -105,6 +116,7 @@ const Login: React.FC = () => {
     };
 
     return (
+        <div className={styles.mainContainer}>
         <div className={styles.container}>
             <h2 className={styles.title}>Login</h2>
             <div className={styles.inputGroup}>
@@ -133,8 +145,10 @@ const Login: React.FC = () => {
                 />
                 {passwordError && <p className={styles.error}>{passwordError}</p>}
             </div>
+            {errorText && <p className={styles.error}>{errorText}</p>}
             <RippleButton onClick={handleLogin} className={styles.button}>Login</RippleButton>
             {toasts.length > 0 && <ToastMessage toasts={toasts} onClose={removeToast} />}
+        </div>
         </div>
     );
 };

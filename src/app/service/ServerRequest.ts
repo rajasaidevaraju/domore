@@ -134,6 +134,35 @@ export const ServerRequest = {
       return name
 
   },
+  async loginUser(username: string, password: string): Promise<{ token: string|null,error:string|null }> {
+    try {
+      const response = await fetch(`${API_BASE_URL}/auth/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username, password })
+      });
+  
+      if (!response.ok) {
+        const error = await response.json().catch(() => null);
+        return {token:null,error:error?.message || `Login failed: ${response.statusText}`};
+      }
+  
+      const data = await response.json();
+  
+      if (typeof data === 'object' && data !== null && typeof data.token === 'string') {
+        return { token: data.token ,error:null};
+      } else {
+        throw new Error("Invalid login response from server. Missing or invalid token.");
+      }
+    } catch (error: any) {
+      if (error instanceof TypeError && error.message === 'Failed to fetch') {
+        throw new Error("Server is unreachable. Please check your network connection.");
+      }
+      throw error;
+    }
+  },
   async getActiveServersList(signal: AbortSignal): Promise<string[]> {
     return new Promise(async (resolve, reject) => {
       let result: string[] = [];
