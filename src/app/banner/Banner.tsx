@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect,useRef } from "react";
 import styles from './Banner.module.css';
 import ActionItems from './ActionItems'
 import RippleButton from "@/app/types/RippleButton";
@@ -10,6 +10,7 @@ import PressableLink from "../types/PressableLink";
 const Banner = () => {
     const [isMobile, setIsMobile] = useState<boolean | null>(null);
     const [menuOpen, setMenuOpen] = useState<boolean>(false);
+    const dropdownRef = useRef<HTMLDivElement | null>(null);
 
     const resizeEvent="resize"
 
@@ -23,16 +24,26 @@ const Banner = () => {
                 setMenuOpen(false)
             }
         }
+        const handleClickOutside = (event:MouseEvent) => {
+            
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+              setMenuOpen(false);
+            }
+        };
         checkScreenSize();
-
+        document.addEventListener("mousedown", handleClickOutside);
         window.addEventListener(resizeEvent,checkScreenSize)
         return()=>{
             window.removeEventListener(resizeEvent,checkScreenSize)
+            document.removeEventListener("mousedown", handleClickOutside);
         }
     },[])
 
     function toggleActionItems(){
-        setMenuOpen((prev) => !prev);
+       
+            setMenuOpen((prev) => !prev);
+       
+       
     }
 
     return (
@@ -44,7 +55,7 @@ const Banner = () => {
         {isMobile!=null && !isMobile && <ActionItems isMobile={isMobile}/>}
         
         {isMobile!=null && isMobile &&
-            <div className={styles.dropdown}>
+            <div className={styles.dropdown} ref={dropdownRef}>
                 <RippleButton className={styles.actionItem} onClick={toggleActionItems}>
                     <img src="/svg/menu.svg" alt="Menu" className={styles.icon} />
                     <span className={styles.iconText}>Menu</span>

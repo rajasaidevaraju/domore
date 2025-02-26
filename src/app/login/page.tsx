@@ -6,7 +6,7 @@ import { ToastData, MessageType } from "@/app/types/Types";
 import ToastMessage from "@/app/types/ToastMessages";
 import RippleButton from '../types/RippleButton';
 import {ServerRequest} from '@/app/service/ServerRequest';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 
 const Login: React.FC = () => {
     const [username, setUsername] = useState('');

@@ -30,37 +30,37 @@ function ActionItems({isMobile}:ActionItemsProps){
     let style=`${styles['actionItems']} ${isMobile? styles['actionItemsMenu']:""}`
     let buttonStyle=`${styles['actionItem']} ${isMobile? styles['actionItemMobile']:""}`
     return(
-    <div className={style}>
-        <PressableLink href="/filter" className={buttonStyle}>
-            <img src="/svg/filter.svg" alt="Filter" className={styles.icon} />
-            <span className={styles.iconText}>Filter</span>
-        </PressableLink>
-        <PressableLink href="/management" className={buttonStyle}>
-            <img src="/svg/management.svg" alt="Management" className={styles.icon} />
-            <span className={styles.iconText}>Management</span>
-        </PressableLink>
-        <PressableLink href="/login" className={buttonStyle}>
-            <img src="/svg/login.svg" alt="Login" className={styles.icon} />
-            <span className={styles.iconText}>Login</span>
-        </PressableLink>
-        <RippleButton className={buttonStyle} onClick={openPanel}>
-        <img src="/svg/switch.svg" alt="Change Server" className={styles.icon} />
-        <span className={styles.iconText}>Change Server</span>
-        </RippleButton>
-
-        {showChangePanel && (
-        <div>
-          <div className={`${styles.overlay} ${isAnimating ? styles.enter : styles.exit}`}></div>
-          <div
-            className={`${styles.changePanel} ${isAnimating ? styles.enter : styles.exit}`}
-            onAnimationEnd={() => !showChangePanel && setIsAnimating(false)}
-          >
-            <ChangePanel onClose={closePanel}></ChangePanel>
-          </div>
-        </div>
-        )}
-
-    </div>
+        <>
+            <div className={style}>
+                <PressableLink href="/filter" className={buttonStyle}>
+                    <img src="/svg/filter.svg" alt="Filter" className={styles.icon} />
+                    <span className={styles.iconText}>Filter</span>
+                </PressableLink>
+                <PressableLink href="/management" className={buttonStyle}>
+                    <img src="/svg/management.svg" alt="Management" className={styles.icon} />
+                    <span className={styles.iconText}>Management</span>
+                </PressableLink>
+                <PressableLink href="/login" className={buttonStyle}>
+                    <img src="/svg/login.svg" alt="Login" className={styles.icon} />
+                    <span className={styles.iconText}>Login</span>
+                </PressableLink>
+                <RippleButton className={buttonStyle} onClick={openPanel}>
+                <img src="/svg/switch.svg" alt="Change Server" className={styles.icon} />
+                <span className={styles.iconText}>Change Server</span>
+                </RippleButton>
+            </div>
+            {showChangePanel && (
+                <div>
+                  <div className={`${styles.overlay} ${isAnimating ? styles.enter : styles.exit}`}></div>
+                  <div
+                    className={`${styles.changePanel} ${isAnimating ? styles.enter : styles.exit}`}
+                    onAnimationEnd={() => !showChangePanel && setIsAnimating(false)}
+                  >
+                    <ChangePanel onClose={closePanel}></ChangePanel>
+                  </div>
+                </div>
+                )}
+        </>
     )
 }
 
