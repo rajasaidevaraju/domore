@@ -2,7 +2,7 @@ import styles from './Banner.module.css'
 import RippleButton from "@/app/types/RippleButton";
 import Loading from '@/app/loading'
 import { ServerRequest } from '@/app/service/ServerRequest';
-import { useState,useEffect } from 'react';
+import { useState,useEffect,useRef } from 'react';
 import RippleButtonLink from '../types/RippleButtonLink';
 
 interface ChangePanelProps{
@@ -16,18 +16,22 @@ const ChangePanel=(props:ChangePanelProps)=>{
     const [error, setError] = useState<string | null>(null);
     useEffect(()=>{
         const controller = new AbortController();
-        const {signal} = controller;
+        const signal = controller.signal;
         let requestActiveServers=async ()=>{
             try{
+                setShowLoading(true)
+                setError(null)
                 let result=await ServerRequest.getActiveServersList(signal)
+                
                 setActiveServers(result)
                 setShowLoading(false)
             }catch(error){
-                setShowLoading(false)
-                setError('Failed to fetch list of Active servers');
-                console.error('Error:', error);
+                if (error instanceof Error &&  error.name !== 'AbortError') {
+                    setShowLoading(false)
+                    setError('Failed to fetch list of Active servers');
+                    console.error('Error:', error);
+                }
             }
-           
         }
         requestActiveServers()
         return () => {
@@ -49,25 +53,27 @@ const ChangePanel=(props:ChangePanelProps)=>{
         )}
 
         {error===null && activeServers!==undefined && (
-            <table>
-                <thead>
-                <tr>
-                    <th>Server IP</th>
-                    <th>Action</th>
-                </tr>
-                </thead>
-                <tbody>
-                {activeServers.map((item, index) => (
-                    <tr key={index}>
-                        <td>{item}</td>
-                        <td><div className={styles.cell}><RippleButtonLink className={styles.changePanelButton} href={`http://${item}:1280`}>Navigate</RippleButtonLink></div></td>
+            activeServers.length > 0 ? (
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Server IP</th>
+                        <th>Action</th>
                     </tr>
-                    ))}
-                </tbody>
-            </table>
-            
+                    </thead>
+                    <tbody>
+                    {activeServers.map((item, index) => (
+                        <tr key={index}>
+                            <td>{item}</td>
+                            <td><div className={styles.cell}><RippleButtonLink className={styles.changePanelButton} href={`http://${item}:1280`}>Navigate</RippleButtonLink></div></td>
+                        </tr>
+                        ))}
+                    </tbody>
+                </table>
+            ) : (
+                <p>No active servers available.</p>
+            )
         )}
-       
     </div>
     )
 }

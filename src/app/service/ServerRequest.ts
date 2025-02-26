@@ -134,28 +134,32 @@ export const ServerRequest = {
       return name
 
   },
-  async getActiveServersList(signal: AbortSignal):Promise<string[]>{
-    let result:string[]=[]
-    try {
-      const response = await fetch(`${API_BASE_URL}/server/servers`,{signal});
-      if (!response.ok) {
-        const error = await response.json().catch(() => null);
-        throw new Error(error?.message || "Failed to fetch server list");
+  async getActiveServersList(signal: AbortSignal): Promise<string[]> {
+    return new Promise(async (resolve, reject) => {
+      let result: string[] = [];
+      try {
+        const response = await fetch(`${API_BASE_URL}/server/servers`, { signal });
+        if (!response.ok) {
+          const error = await response.json().catch(() => null);
+          reject(new Error(error?.message || "Failed to fetch server list"));
+          return;
+        }
+        let data = await response.json();
+        if (typeof data === 'object' && data !== null && data.activeServers !== undefined && Array.isArray(data.activeServers)) {
+          resolve(data.activeServers);
+          return;
+        }
+        resolve(result);
+      } catch (error: any) {
+        if ((error as Error).name === 'AbortError') {
+          reject(error);
+          return;
+        }
+        reject(new Error(error.message));
       }
-      let data = await response.json();
-      if(typeof data === 'object' && data!==null && data.activeServers!==undefined && Array.isArray(data.activeServers)){
-        return data.activeServers
-      }
-      return result
-    }catch(error:any){
-      if((error as Error).name === 'AbortError') {
-       return result
-      }
-      throw new Error(error.message);
-
-    }
-
+    });
   },
+
   async deleteVideo(fileId: string): Promise<void>{
    
     const response = await fetch(`${API_BASE_URL}/server/file?fileId=${fileId}`,{method:"DELETE"});
