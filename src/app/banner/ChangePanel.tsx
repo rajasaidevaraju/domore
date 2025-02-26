@@ -28,7 +28,7 @@ const ChangePanel=(props:ChangePanelProps)=>{
             }catch(error){
                 if (error instanceof Error &&  error.name !== 'AbortError') {
                     setShowLoading(false)
-                    setError('Failed to fetch list of Active servers');
+                    setError(error.message);
                     console.error('Error:', error);
                 }
             }

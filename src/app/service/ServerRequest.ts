@@ -151,11 +151,14 @@ export const ServerRequest = {
         }
         resolve(result);
       } catch (error: any) {
-        if ((error as Error).name === 'AbortError') {
-          reject(error);
-          return;
+        if(error instanceof Error){
+          if(error.message==="Failed to fetch"){
+            reject(new Error("Server is unreachable."));
+            
+          }else{
+            reject(error);
+          }
         }
-        reject(new Error(error.message));
       }
     });
   },
