@@ -136,7 +136,7 @@ export const ServerRequest = {
   },
   async loginUser(username: string, password: string): Promise<{ token: string|null,error:string|null }> {
     try {
-      const response = await fetch(`${API_BASE_URL}/auth/login`, {
+      const response = await fetch(`${API_BASE_URL}/server/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
