@@ -1,18 +1,21 @@
 {
   "name": "domore",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build",
+    "postbuild": "node scripts/postbuild-static.js",
     "start": "next start",
     "lint": "next lint"
   },
   "dependencies": {
+    "fs-extra": "^11.3.0",
     "html2canvas": "^1.4.1",
     "next": "15.0.3",
     "react": "19.0.0-rc-66855b96-20241106",
-    "react-dom": "19.0.0-rc-66855b96-20241106"
+    "react-dom": "19.0.0-rc-66855b96-20241106",
+    "winston": "^3.17.0"
   },
   "devDependencies": {
     "@types/node": "^20",
