@@ -22,16 +22,18 @@ const UploadCard=()=>{
     }
 
     const removeFile=(fileToRemove:File)=>{
-        setFiles((previousFiles)=>{
-          return  previousFiles.filter((file) => file.name !== fileToRemove.name)
-        })
+        let newArray=files.filter((file)=>file.name!==fileToRemove.name)
+        if(newArray.length===0){
+            setUploadVisible(false)
+        }
+        setFiles(newArray)
     }
     const addFile=async(event:ChangeEvent<HTMLInputElement>)=>{
         
         const newFiles=event.target.files;
         const noDuplicates:File[]=[]
         if(newFiles){
-            Array.from(newFiles).forEach(file => {
+            for(let file of newFiles){
                 const isDuplicate = files.some(existingFile => 
                     existingFile.name === file.name
                 );
@@ -39,10 +41,14 @@ const UploadCard=()=>{
                 if (!isDuplicate) {
                     noDuplicates.push(file);
                 }
-            });
+            }
+            
             if(noDuplicates.length>0){
                 setUploadVisible(true)
-                setFiles((prevItems)=>{return[...prevItems,...noDuplicates]})
+                for(const file of noDuplicates){
+                    await new Promise((resolve) => setTimeout(resolve, 100));
+                    setFiles((prevItems)=>{return[...prevItems, file]});
+                }
             }
             if (fileInputRef.current) {
                 fileInputRef.current.value = "";

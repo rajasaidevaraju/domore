@@ -2,9 +2,6 @@
     display: flex;
     margin: 10px;
     align-items: center;
-    position:fixed;
-    bottom: 0;
-
 }
 
 .disabled{

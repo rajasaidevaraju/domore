@@ -5,6 +5,9 @@ import { useState,useEffect } from 'react'
 import {ServerRequest} from './../../service/ServerRequest'
 import { ServerStats } from '@/app/types/Types'
 import { formatSize } from '@/app/service/formatSize'
+import { Suspense } from "react";
+import Loading from '@/app/loading'
+
 export default function Stats(){
 
     const [stats,setStats]=useState<ServerStats>()
@@ -40,6 +43,17 @@ export default function Stats(){
         }
     },[])
 
+    if(!stats || stats==null){
+        return (
+        <div className={`${styles.cardContainer}`}>
+            <div className={styles.header}>
+                <h1>Stats</h1>
+            </div>
+            <Loading/>
+        </div>
+        )
+    }
+
     return(
         <div className={`${styles.cardContainer}`}>
             <div className={styles.header}>
@@ -52,26 +66,30 @@ export default function Stats(){
             </div>
             
             <div>
-                <p className={styles.text}> Internal Storage</p>
-                <div className={styles.progressBar}>
-                    <div className={styles.filledBar} style={{ width: `${((totalInternal-freeInternal)/totalInternal)*100}%` }}></div>
-                </div>
-                <div>
-                    <p className={styles.storageText}>{`${formatSize(totalInternal-freeInternal)} / ${formatSize(totalInternal)}`}</p>
-                </div>
+                <StorageBar total={totalInternal} free={freeInternal} storageName="Internal Storage"/>
             </div>
             {hasExternalStorage&&
             <div>
-                <p className={styles.text}> External Storage</p>
-                <div className={styles.progressBar}>
-                    <div className={styles.filledBar} style={{ width: `${((totalExternal-freeExternal)/totalExternal)*100}%` }}></div>
-                </div>
-                <div>
-                    <p className={styles.storageText}>{`${formatSize(totalExternal-freeExternal)} / ${formatSize(totalExternal)}`}</p>
-                </div>
+                <StorageBar total={totalExternal} free={freeExternal} storageName="External Storage"/>
             </div>
             }
             
         </div>
+    )
+}
+
+function StorageBar(props:{total:number,free:number,storageName:string}){
+    return(
+        <div>
+            <p className={styles.text}>{props.storageName}</p>
+            <div className={styles.progressBar}>
+                <div className={styles.filledBar} style={{ width: `${((props.total-props.free)/props.total)*100}%` }}/>
+            </div>
+            <div>
+                <p className={styles.storageText}>{`${formatSize(props.total-props.free)} / ${formatSize(props.total)}`}</p>
+            </div>
+        
+        </div>
+        
     )
 }

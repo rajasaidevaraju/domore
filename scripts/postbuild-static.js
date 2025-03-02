@@ -23,7 +23,7 @@ async function postBuildStatic() {
     const buildDir = path.join(process.cwd(), 'build');
     const nextDir = path.join(buildDir, '_next');
     const newNextDir = path.join(buildDir, 'next');
-    const destinationDir = path.resolve(__dirname, '../../ServerApp/app/src/main/assets/web');
+    const destinationDir = path.resolve(__dirname, '../../server/app/src/main/assets/web');
 
     try {
         // Rename _next to next

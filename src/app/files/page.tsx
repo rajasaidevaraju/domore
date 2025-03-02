@@ -17,7 +17,7 @@ function AltHome(){
     const [files, setFiles] = useState<FileData[]>([]);
     const [error, setError] = useState<string | null>(null);
     const [meta,setMeta]=useState<Meta>({page: 1,limit: 1,total: 1})
-
+    const totalPages = Math.ceil(meta.total / meta.limit);
     useEffect(() => {
        let pageNo = getPageNumber(searchParams.get("page"))
        async function fetchFiles() {
@@ -59,7 +59,7 @@ function AltHome(){
         ))}
       </div>
       }
-      {meta.page>1 && !error && (
+      {totalPages>1 && !error && (
          <Pagination {...meta}></Pagination>
       )}
     </main>
