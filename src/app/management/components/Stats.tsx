@@ -11,6 +11,7 @@ import Loading from '@/app/loading'
 export default function Stats(){
 
     const [stats,setStats]=useState<ServerStats>()
+    const [error,setError]=useState<string | null>(null)
     let files = stats?.files ?? 0;
     let freeInternal = stats?.freeInternal ?? 0;
     let freeExternal = stats?.freeExternal ?? 0;
@@ -28,10 +29,13 @@ export default function Stats(){
                 let result=await ServerRequest.fetchStats(signal)
                 setStats(result)
             }catch(error){
-                if((error as Error).name === 'AbortError') {
-                    return;
-                }else{
-                    console.error('Error:', error);
+                if(error instanceof Error){
+                    if(error.name === 'AbortError') {
+                        return;
+                    }else{
+                        setError((error.message))
+                        console.error('Error:', error);
+                    }
                 }
                 
             }
@@ -43,6 +47,19 @@ export default function Stats(){
         }
     },[])
 
+
+    if(error){
+        return (
+            <div className={`${styles.cardContainer}`}>
+                <div className={styles.header}>
+                    <h1>Stats</h1>
+                </div>
+                <div>
+                    <p className="errorText">Error: {error}</p>
+                </div>
+            </div>
+        )
+    }
     if(!stats || stats==null){
         return (
         <div className={`${styles.cardContainer}`}>

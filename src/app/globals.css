@@ -47,5 +47,8 @@ th, td {
   border: 1px solid rgb(var(--foreground-rgb));
 }
 
+.errorText{
+  color:rgb(var(--red))
+}
 
 

@@ -44,7 +44,7 @@ export default function Home() {
      )}
      
      {error && (
-       <p className={styles.errorText}>{error}</p>
+       <p className="errorText">{error}</p>
      )}
      </div>
 

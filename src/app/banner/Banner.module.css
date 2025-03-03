@@ -141,10 +141,6 @@
   background-color: rgb(var(--main-color-faint));
 }
 
-.errorText{
-  color: rgba(var(--red));
-}
-
 .iconText {
   text-decoration: none;
   color: inherit;

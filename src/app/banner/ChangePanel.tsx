@@ -49,7 +49,7 @@ const ChangePanel=(props:ChangePanelProps)=>{
         <Loading minHeight={true}></Loading>
         }
         {error!=null && (
-        <p className={styles.errorText}>{error}</p>
+        <p className="errorText">{error}</p>
         )}
 
         {error===null && activeServers!==undefined && (

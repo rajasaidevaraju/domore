@@ -48,7 +48,7 @@ function AltHome(){
         <Loading/>
       )}
       {error && (
-        <p className={styles.errorText}>{error}</p>
+        <p className="errorText">{error}</p>
       )}
       </div>
 
