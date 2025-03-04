@@ -39,11 +39,6 @@
     box-sizing: border-box;
 }
 
-.error {
-    color: rgb(var(--red));
-    margin-top: 5px;
-    font-size: 14px;
-}
 
 .button {
     width: 100%;

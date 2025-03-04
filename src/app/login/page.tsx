@@ -13,8 +13,8 @@ const Login: React.FC = () => {
     const [password, setPassword] = useState('');
     const [usernameError, setUsernameError] = useState('');
     const [passwordError, setPasswordError] = useState('');
+    const [loginError, setLoginError] = useState('');
     const [toasts, setToasts] = useState<ToastData[]>([]);
-    const [errorText, setErrorText] = useState<string | null>(null);
     const router = useRouter();
 
     const showToast = (message: string, type: MessageType) => {
@@ -91,14 +91,19 @@ const Login: React.FC = () => {
     };
 
     const handleLogin = async () => {
+
+        setUsernameError('');
+        setPasswordError('');
+        setLoginError('');
+
         const isUsernameValid = checkUsernameCharacters(username) && checkUsernameLength(username);
         const isPasswordValid = checkPasswordCharacters(password) && checkPasswordLength(password);
-        setErrorText(null);
+        
         if (isUsernameValid && isPasswordValid) {
             try {
                 let {token,error}=await ServerRequest.loginUser(username, password);
                 if(error!=null){
-
+                    setLoginError(error);
                 }
                 if(token!=null){
                     localStorage.setItem('token',token);
@@ -120,6 +125,7 @@ const Login: React.FC = () => {
         <div className={styles.container}>
             <h2 className={styles.title}>Login</h2>
             <div className={styles.inputGroup}>
+            <p className="errorText">{loginError}</p>
                 <label className={styles.label}>Username:</label>
                 <input
                     type="text"
@@ -130,7 +136,7 @@ const Login: React.FC = () => {
                     }}
                     className={styles.input}
                 />
-                {usernameError && <p className={styles.error}>{usernameError}</p>}
+                <p className="errorText">{usernameError}</p>
             </div>
             <div className={styles.inputGroup}>
                 <label className={styles.label}>Password:</label>
@@ -143,9 +149,8 @@ const Login: React.FC = () => {
                     }}
                     className={styles.input}
                 />
-                {passwordError && <p className={styles.error}>{passwordError}</p>}
+                <p className="errorText">{passwordError}</p>
             </div>
-            {errorText && <p className={styles.error}>{errorText}</p>}
             <RippleButton onClick={handleLogin} className={styles.button}>Login</RippleButton>
             {toasts.length > 0 && <ToastMessage toasts={toasts} onClose={removeToast} />}
         </div>
