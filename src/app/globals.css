@@ -20,13 +20,14 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --foreground-rgb: 230, 230, 230;
+    --foreground-rgb: 210, 210, 210;
     --background-rgb: 30, 30, 30;
     --main-color-faint: 40, 40, 40;  
     --main-color: 68, 68, 68;
     --main-color-hover: 78, 78, 78;
     --main-color-active: 88, 88, 88;
   }
+  
 }
 
 body {
@@ -45,6 +46,10 @@ th, td {
   padding: 10px 5px;
   text-align: center;
   border: 1px solid rgb(var(--foreground-rgb));
+}
+
+input{
+  background-color: rgb(var(--main-color-faint)); 
 }
 
 .errorText{

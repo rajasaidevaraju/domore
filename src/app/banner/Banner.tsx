@@ -40,10 +40,7 @@ const Banner = () => {
     },[])
 
     function toggleActionItems(){
-       
             setMenuOpen((prev) => !prev);
-       
-       
     }
 
     return (

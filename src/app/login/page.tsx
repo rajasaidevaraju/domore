@@ -7,12 +7,14 @@ import ToastMessage from "@/app/types/ToastMessages";
 import RippleButton from '../types/RippleButton';
 import {ServerRequest} from '@/app/service/ServerRequest';
 import { useRouter } from 'next/navigation';
+import EyeIcon from './eyeIcon';
 
 const Login: React.FC = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [usernameError, setUsernameError] = useState('');
     const [passwordError, setPasswordError] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
     const [loginError, setLoginError] = useState('');
     const [toasts, setToasts] = useState<ToastData[]>([]);
     const router = useRouter();
@@ -124,8 +126,9 @@ const Login: React.FC = () => {
         <div className={styles.mainContainer}>
         <div className={styles.container}>
             <h2 className={styles.title}>Login</h2>
-            <div className={styles.inputGroup}>
             <p className="errorText">{loginError}</p>
+            <div className={styles.inputGroup}>
+            <div>
                 <label className={styles.label}>Username:</label>
                 <input
                     type="text"
@@ -138,18 +141,20 @@ const Login: React.FC = () => {
                 />
                 <p className="errorText">{usernameError}</p>
             </div>
-            <div className={styles.inputGroup}>
+            <div>
                 <label className={styles.label}>Password:</label>
-                <input
-                    type="password"
-                    value={password}
-                    onChange={(e) => {
-                        setPassword(e.target.value);
-                        checkPasswordCharacters(e.target.value);
-                    }}
-                    className={styles.input}
-                />
+                <div className={styles.passwordContainer}>
+                    <input type={showPassword ? "text" : "password"} value={password}
+                        onChange={(e) => {
+                            setPassword(e.target.value);
+                            checkPasswordCharacters(e.target.value);
+                        }}
+                        className={`${styles.input} ${styles.passwordInput}`}
+                    />
+                    <EyeIcon showPassword={showPassword} setShowPassword={setShowPassword} />
+                </div>
                 <p className="errorText">{passwordError}</p>
+            </div>
             </div>
             <RippleButton onClick={handleLogin} className={styles.button}>Login</RippleButton>
             {toasts.length > 0 && <ToastMessage toasts={toasts} onClose={removeToast} />}
