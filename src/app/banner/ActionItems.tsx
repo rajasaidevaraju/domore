@@ -1,9 +1,11 @@
+'use client'
+
 import styles from './Banner.module.css'
-import { useState } from 'react';
-import RippleButtonLink from "@/app/types/RippleButtonLink";
+import { useState, useEffect } from 'react';
 import PressableLink from "@/app/types/PressableLink";
 import RippleButton from "@/app/types/RippleButton";
 import ChangePanel from './ChangePanel'
+import { useRouter } from 'next/navigation';
 
 interface ActionItemsProps{
     isMobile:Boolean
@@ -12,8 +14,30 @@ interface ActionItemsProps{
 function ActionItems({isMobile}:ActionItemsProps){
     const [showChangePanel, setChangePanel] = useState(false);
     const [isAnimating, setIsAnimating] = useState(false);
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const router = useRouter();
 
-    
+    useEffect(() => {
+        const checkLoginStatus = () => {
+            setIsLoggedIn(!!localStorage.getItem('token'));
+        };
+
+        checkLoginStatus();
+
+        const storageListener = () => checkLoginStatus();
+        window.addEventListener('storage', storageListener);
+
+        return () => window.removeEventListener('storage', storageListener);
+    }, []);
+
+    const handleLogout = () => {
+        // TODO: Add logout api call
+        localStorage.removeItem('token');
+        setIsLoggedIn(false);
+        router.push('/');
+    };
+
+
     const openPanel = () => {
         setChangePanel(true);
         setIsAnimating(true);
@@ -40,10 +64,17 @@ function ActionItems({isMobile}:ActionItemsProps){
                     <img src="/svg/management.svg" alt="Management" className={styles.icon} />
                     <span className={styles.iconText}>Management</span>
                 </PressableLink>
-                <PressableLink href="/login" className={buttonStyle}>
-                    <img src="/svg/login.svg" alt="Login" className={styles.icon} />
-                    <span className={styles.iconText}>Login</span>
-                </PressableLink>
+                {isLoggedIn ? (
+                    <RippleButton className={buttonStyle} onClick={handleLogout}>
+                        <img src="/svg/logout.svg" alt="Logout" className={styles.icon} />
+                        <span className={styles.iconText}>Logout</span>
+                    </RippleButton>
+                ) : (
+                    <PressableLink href="/login" className={buttonStyle}>
+                        <img src="/svg/login.svg" alt="Login" className={styles.icon} />
+                        <span className={styles.iconText}>Login</span>
+                    </PressableLink>
+                )}
                 <RippleButton className={buttonStyle} onClick={openPanel}>
                 <img src="/svg/switch.svg" alt="Change Server" className={styles.icon} />
                 <span className={styles.iconText}>Change Server</span>
