@@ -66,7 +66,9 @@ export const ServerRequest = {
 
       let lastTime = Date.now();
       let lastLoaded = 0;
-      
+      let lastUpdate = 0;
+      const UPDATE_INTERVAL = 1000;
+
       xhr.upload.addEventListener("progress",function(event: ProgressEvent<EventTarget>) {
         if (event.lengthComputable) {
           const percentComplete = (event.loaded / event.total) * 100;
@@ -75,9 +77,15 @@ export const ServerRequest = {
           const timeElapsed = (currentTime - lastTime) / 1000;
           const bytesTransferred = event.loaded - lastLoaded; 
           const speed = (bytesTransferred / timeElapsed)
+
+          if (currentTime - lastUpdate >= UPDATE_INTERVAL|| percentComplete === 100) {
+            onProgress(percentComplete, speed);
+            lastUpdate = currentTime;
+          }
+
           lastTime = currentTime;
           lastLoaded = event.loaded;
-          onProgress(percentComplete, speed);
+          
         } else {
           console.warn('Progress not computable');
         }
@@ -155,6 +163,35 @@ export const ServerRequest = {
         return { token: data.token ,error:null};
       } else {
         throw new Error("Invalid login response from server. Missing or invalid token.");
+      }
+    } catch (error: any) {
+      if (error instanceof TypeError && error.message === 'Failed to fetch') {
+        throw new Error("Server is unreachable. Please check your network connection.");
+      }
+      throw error;
+    }
+  },
+  async logoutUser(token: string): Promise<{ message: string|null, error: string|null }> {
+    try {
+      const response = await fetch(`${API_BASE_URL}/server/logout`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (!response.ok) {
+        const error = await response.json().catch(() => null);
+        return { message: null, error: error?.message || `Logout failed: ${response.statusText}` };
+      }
+
+      const data = await response.json();
+
+      if (typeof data === 'object' && data !== null && typeof data.message === 'string') {
+        return { message: data.message, error: null };
+      } else {
+        throw new Error("Invalid logout response from server.");
       }
     } catch (error: any) {
       if (error instanceof TypeError && error.message === 'Failed to fetch') {

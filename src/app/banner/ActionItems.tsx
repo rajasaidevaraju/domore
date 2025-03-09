@@ -6,7 +6,7 @@ import PressableLink from "@/app/types/PressableLink";
 import RippleButton from "@/app/types/RippleButton";
 import ChangePanel from './ChangePanel'
 import { useRouter } from 'next/navigation';
-
+import { ServerRequest } from '../service/ServerRequest';
 interface ActionItemsProps{
     isMobile:Boolean
 }
@@ -17,24 +17,39 @@ function ActionItems({isMobile}:ActionItemsProps){
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const router = useRouter();
 
+    const checkLoginStatus = () => {
+        setIsLoggedIn(!!localStorage.getItem('token'));
+    };
     useEffect(() => {
-        const checkLoginStatus = () => {
-            setIsLoggedIn(!!localStorage.getItem('token'));
-        };
 
         checkLoginStatus();
-
         const storageListener = () => checkLoginStatus();
         window.addEventListener('storage', storageListener);
 
         return () => window.removeEventListener('storage', storageListener);
     }, []);
 
-    const handleLogout = () => {
-        // TODO: Add logout api call
-        localStorage.removeItem('token');
+    const handleLogout = async () => {
+        let token = localStorage.getItem('token');
+        let success = false;
+        if (!!token) {
+            try {
+                const response = await ServerRequest.logoutUser(token);
+                if (!!response.error) {
+                    console.error('Logout failed:', response.error);
+                } else {
+                    localStorage.removeItem('token');
+                    success = true;
+                }
+            } catch (error) {
+                console.error('Logout failed:', error);
+            }
+        }
+        checkLoginStatus();
         setIsLoggedIn(false);
-        router.push('/');
+        if (success) {
+            router.push('/');
+        }
     };
 
 
