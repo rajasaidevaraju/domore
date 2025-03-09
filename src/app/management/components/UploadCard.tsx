@@ -9,6 +9,8 @@ const UploadCard=()=>{
     const [uploadingFiles, setUploadingFiles] = useState<Set<string>>(new Set());
     const [uploadVisible, setUploadVisible] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
+    const token=useRef<string | null>(null)
+
     const initiateUpload=async()=>{
         if (files.length > 0) {
             setUploadVisible(false)
@@ -20,6 +22,10 @@ const UploadCard=()=>{
           }
 
     }
+
+    useEffect(() => {
+        token.current = localStorage.getItem('token');  
+    }, []);
 
     const removeFile=(fileToRemove:File)=>{
         let newArray=files.filter((file)=>file.name!==fileToRemove.name)
@@ -92,7 +98,8 @@ const UploadCard=()=>{
                 {files.map((item, index) => (
                     <ProgressTracker 
                         key={item.name} 
-                        file={item} 
+                        file={item}
+                        token={token.current} 
                         startUpload={uploadingFiles.has(item.name)} 
                         removeFile={removeFile}
                     />

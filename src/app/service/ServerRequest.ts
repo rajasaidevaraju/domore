@@ -24,21 +24,25 @@ export const ServerRequest = {
     
   },
 
-  async uploadThumbnail(fileId: string, imageData: string):Promise<void> {
+  async uploadThumbnail(fileId: string, imageData: string,token:string):Promise<void> {
 
     let requestBody = JSON.stringify({ fileId, imageData });
     const response = await fetch(`${API_BASE_URL}/server/thumbnail`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
       },
+      credentials: "include",
       body: requestBody,
     });
     if (!response.ok) {
       const error = await response.json().catch(() => null);
       throw new Error(error?.message || "Thumbnail upload failed");
     }
-    return await response.json();
+    await response.json();
+
+    return;
   },
 
   async fetchThumbnail(fileId: string): Promise<{ imageData: string, exists: boolean }> {
@@ -48,7 +52,7 @@ export const ServerRequest = {
     }
     return await response.json();
   },
-  async uploadFile(file: File|undefined, onProgress: (progress: number, speed: number) => void, passXMLObj:(xhr:XMLHttpRequest)=>void): Promise<string> {
+  async uploadFile(file: File|undefined, token:string, onProgress: (progress: number, speed: number) => void, passXMLObj:(xhr:XMLHttpRequest)=>void): Promise<string> {
     return new Promise((resolve, reject) => {
       if (!file) {
         reject(new Error('No file provided'));
@@ -63,6 +67,7 @@ export const ServerRequest = {
       passXMLObj(xhr)
       xhr.responseType = 'json'
       xhr.open('POST', `${API_BASE_URL}/server/file`, true);
+      xhr.setRequestHeader('Authorization', `Bearer ${token}`);
 
       let lastTime = Date.now();
       let lastLoaded = 0;
@@ -178,7 +183,8 @@ export const ServerRequest = {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
-        }
+        },
+        credentials: "include"
       });
 
       if (!response.ok) {
@@ -229,9 +235,14 @@ export const ServerRequest = {
     });
   },
 
-  async deleteVideo(fileId: string): Promise<void>{
+  async deleteVideo(fileId: string,token:string): Promise<void>{
    
-    const response = await fetch(`${API_BASE_URL}/server/file?fileId=${fileId}`,{method:"DELETE"});
+    const response = await fetch(`${API_BASE_URL}/server/file?fileId=${fileId}`,
+      {
+        method:"DELETE",
+        headers: {'Authorization': `Bearer ${token}`},
+        credentials: "include"
+      });
 
       if (!response.ok) {
         const error = await response.json().catch(() => null);

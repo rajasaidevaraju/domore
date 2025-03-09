@@ -19,6 +19,7 @@ const GetFile = () => {
     const [fileId, setFileId] = useState<string>();
     const [fileName,setFileName]= useState<string>();
     const videoRef = useRef<HTMLVideoElement>(null);
+    const token=useRef<string | null>(null)
     const router = useRouter();
     const rateChnage="ratechange"
     const volumeChange="volumechange"
@@ -58,7 +59,7 @@ const GetFile = () => {
 
 
     useEffect(() => {
-
+        token.current=localStorage.getItem('token')
         const currentFileId = searchParams.get('fileId')
         const controller = new AbortController();
         const {signal} = controller;
@@ -110,49 +111,57 @@ const GetFile = () => {
     }, [searchParams]);
     
     const handleTakeScreenshot = async () => {
-        if (!videoRef.current || typeof fileId !== 'string'){
-            showToast("Invalid File ID",MessageType.WARNING)
-            return;
-        }
-        try {
-            const canvas = await html2canvas(videoRef.current,{allowTaint: true});
-            const imageData = canvas.toDataURL("image/jpeg", 0.3);
-            // Send the screenshot to the server
-            await ServerRequest.uploadThumbnail(fileId,imageData);
-            showToast("Screenshot set as Thumbnail",MessageType.SUCCESS)
-            
-        } catch (error: Error | any) {
-           
-            if (error instanceof Error){
-                showToast(error.message,MessageType.DANGER)
+        let currToken=token.current
+        if(currToken!=null){
+            if (!videoRef.current || typeof fileId !== 'string'){
+                showToast("Invalid File ID",MessageType.WARNING)
+                return;
             }
-            console.error('Error taking screenshot:', error);
-        };
+            try {
+                const canvas = await html2canvas(videoRef.current,{allowTaint: true});
+                const imageData = canvas.toDataURL("image/jpeg", 0.3);
+                // Send the screenshot to the server
+                await ServerRequest.uploadThumbnail(fileId,imageData,currToken);
+                showToast("Screenshot set as Thumbnail",MessageType.SUCCESS)
+                
+            } catch (error: Error | any) {
+               
+                if (error instanceof Error){
+                    showToast(error.message,MessageType.DANGER)
+                }
+                console.error('Error taking screenshot:', error);
+            };
+        }
+        
     };
 
     const deleteVideo = async()=>{
+        let currToken=token.current
         if (typeof fileId !== 'string'){
             showToast("Invalid File ID ",MessageType.WARNING)
             return;
         }
-        try {
-            if (confirm("Do you want to delete the file!")) {
-                await ServerRequest.deleteVideo(fileId)
-                const lastPage = sessionStorage.getItem('lastPage');
-                if (lastPage) {
-                    router.push(lastPage);
-                    sessionStorage.removeItem('lastPage');
-                }else{
-                    router.push("/")
+        if(currToken!=null){
+            try {
+                if (confirm("Do you want to delete the file!")) {
+                    await ServerRequest.deleteVideo(fileId,currToken)
+                    const lastPage = sessionStorage.getItem('lastPage');
+                    if (lastPage) {
+                        router.push(lastPage);
+                        sessionStorage.removeItem('lastPage');
+                    }else{
+                        router.push("/")
+                    }
+                   
+                } 
+            } catch (error: Error | any) {
+                if (error instanceof Error){
+                    showToast(error.message,MessageType.DANGER)
                 }
-               
-              } 
-        } catch (error: Error | any) {
-            if (error instanceof Error){
-                showToast(error.message,MessageType.DANGER)
-            }
-            console.error('Error while deleting video:', error);
-        };
+                console.error('Error while deleting video:', error);
+            };
+        }
+        
     }
 
     return (
@@ -163,10 +172,12 @@ const GetFile = () => {
                     <source src="null" type="video/mp4"/>
                 </video>
                 <h2>{fileName?fileName:"name.."}</h2>
-                <div className={styles.buttonsDiv}>
-                    <RippleButton className={styles.scbutton} onClick={handleTakeScreenshot}>Set As Thumbnail</RippleButton>
-                    <RippleButton className={styles.scbutton} onClick={deleteVideo}>Delete Video</RippleButton>
-                </div> 
+                {token.current !=null && 
+                    <div className={styles.buttonsDiv}>
+                        <RippleButton className={styles.scbutton} onClick={handleTakeScreenshot}>Set As Thumbnail</RippleButton>
+                        <RippleButton className={styles.scbutton} onClick={deleteVideo}>Delete Video</RippleButton>
+                    </div> 
+                }
             </div>
             {toasts.length > 0 && (<ToastMessage toasts={toasts} onClose={removeToast} />
       )}

@@ -8,9 +8,10 @@ interface ProgressTrackerProps {
     file: File;
     startUpload:boolean
     removeFile:(file:File)=>void
+    token:string|null
   }
 
-const ProgressTracker: React.FC<ProgressTrackerProps>  = ({file,startUpload,removeFile}) => {
+const ProgressTracker: React.FC<ProgressTrackerProps>  = ({file,startUpload,removeFile,token}) => {
   const [progress, setProgress] = useState<number>(0);
   const [speed, setSpeed] = useState<number>(0); 
   const xhr = useRef<XMLHttpRequest | null>(null);
@@ -20,11 +21,17 @@ const ProgressTracker: React.FC<ProgressTrackerProps>  = ({file,startUpload,remo
 
 
   const handleFileUpload = async () => {
+    if(token==null){
+      setError('Unauthorized')
+      return  
+    }else{
+      setError(null)
+    }
     if (file) {
         setProgress(0);
         setSpeed(0);
         try{
-            await ServerRequest.uploadFile(file,(progress,speed)=>{
+            await ServerRequest.uploadFile(file,token,(progress,speed)=>{
                 setProgress(progress);
                 setSpeed(speed);
              },(xhrObj:XMLHttpRequest)=>{
