@@ -34,13 +34,10 @@ function ActionItems({isMobile}:ActionItemsProps){
         let success = false;
         if (!!token) {
             try {
-                const response = await ServerRequest.logoutUser(token);
-                if (!!response.error) {
-                    console.error('Logout failed:', response.error);
-                } else {
-                    localStorage.removeItem('token');
-                    success = true;
-                }
+                await ServerRequest.logoutUser(token);
+                localStorage.removeItem('token');
+                success = true;
+                
             } catch (error) {
                 console.error('Logout failed:', error);
             }
