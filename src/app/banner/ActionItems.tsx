@@ -43,7 +43,6 @@ function ActionItems({isMobile}:ActionItemsProps){
             }
         }
         checkLoginStatus();
-        setIsLoggedIn(false);
         if (success) {
             router.push('/');
         }
