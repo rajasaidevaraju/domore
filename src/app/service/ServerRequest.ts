@@ -37,8 +37,12 @@ export const ServerRequest = {
       body: requestBody,
     });
     if (!response.ok) {
+      let defaultErrorMessage = "Thumbnail upload failed";
+      if(response.status===401){
+         defaultErrorMessage="Unauthorized"
+      }
       const error = await response.json().catch(() => null);
-      throw new Error(error?.message || "Thumbnail upload failed");
+      throw new Error(error?.message || defaultErrorMessage);
     }
     await response.json();
 

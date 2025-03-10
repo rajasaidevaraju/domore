@@ -3,7 +3,7 @@
 import React,{useState,useEffect} from "react";
 import UploadCard from "./components/UploadCard";
 import Stats from "./components/Stats";
-const management=()=>{
+const Management=()=>{
 
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const checkLoginStatus = () => {
@@ -25,4 +25,4 @@ const management=()=>{
 
 }
 
-export default management;
+export default Management;
