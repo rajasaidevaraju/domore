@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react';
-import styles from './login.module.css';
+import styles from './Login.module.css';
 import { ToastData, MessageType } from "@/app/types/Types";
 import ToastMessage from "@/app/types/ToastMessages";
 import RippleButton from '../types/RippleButton';
