@@ -2,17 +2,17 @@
 
 import React, { useState } from "react";
 import Card from "./CommonCard";
-import { Category } from "@/app/types/Types";
+import { Category,CardProps } from "@/app/types/Types";
 
-const CategoriesCard = () => {
+const CategoriesCard: React.FC<CardProps> = ({ isLoggedIn })=>{
   const [categories, setCategories] = useState<Category[]>([
     { id: 1, name: "category1" },
     { id: 2, name: "category2" },
     { id: 3, name: "category3" },
   ]);
 
-  const handleAddCategories = (newCategories: Category[]) => {
-    setCategories((prev) => [...prev, ...newCategories]);
+  const handleAddCategories = (names: string[]) => {
+   // TODO: Add new categories to the list
   };
 
   const handleDeleteCategories = (selectedIds: Set<number>) => {
@@ -27,6 +27,7 @@ const CategoriesCard = () => {
       onAdd={handleAddCategories}
       onDelete={handleDeleteCategories}
       label="Categories"
+      isLoggedIn={isLoggedIn}
     />
   );
 };

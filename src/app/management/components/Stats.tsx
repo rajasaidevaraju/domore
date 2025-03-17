@@ -74,7 +74,7 @@ export default function Stats(){
     return(
         <div className={`${styles.cardContainer}`}>
             <div className={styles.header}>
-            <h1>Stats</h1>
+                <h1>Stats</h1>
             </div>
             <div>
                 <p className={styles.text}>Files: {files}</p>

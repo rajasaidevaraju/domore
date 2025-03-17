@@ -12,13 +12,58 @@
     background: rgb(var(--main-color));
     width: fit-content;
     min-width: 500px;
-    border-radius: 8px;
+    border-radius: 5px;
+}
+.input{
+    height: 34px;
+    border-radius: 5px;
+    padding: 5px;
+}
+
+.scbutton:disabled{
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+.name{
+    font-size: 1.2rem;
+    font-weight: bold;
 }
 
 .buttonsDiv{
-   display: flex;
-   flex-direction: row;
-   gap:10px
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    gap:10px;
+    align-items: center;
+}
+
+.suggestions {
+    position: absolute;
+    top: 50px;
+    left: 0;
+    width: 100%;
+    max-height: 200px;
+    overflow-y: auto;
+    background-color: rgb(var(--background-rgb));
+    border: 1px solid rgb(var(--main-color));
+    border-radius: 4px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    z-index: 100;
+}
+
+.suggestionItem {
+    padding: 10px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.suggestionItem:hover {
+    background-color: rgb(var(--main-color-faint));
+}
+
+.suggestions:empty {
+    display: none;
 }
 
 
@@ -41,6 +86,7 @@
     justify-content: center;
     display: flex;
     padding: 7px;
+    height: 34px;
     font-size: small;
     background-color: rgb(var(--main-color-faint));
     text-decoration: none;

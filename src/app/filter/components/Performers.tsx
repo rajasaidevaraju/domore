@@ -1,25 +1,65 @@
 'use client';
 
-import React, { useState } from "react";
-import { Performer } from "../../types/Types";
+import React, { useEffect, useState } from "react";
+import { Item,CardProps,EntityType, MessageType } from "../../types/Types";
+import {FilterRequests}  from "@/app/service/FilterRequests";
 import Card from "./CommonCard";
 
-const PerformersCard = () => {
-  const [performers, setPerformers] = useState<Performer[]>([
-    { id: 1, name: "TestName1" },
-    { id: 2, name: "TestName2" },
-    { id: 3, name: "TestName3" },
-  ]);
+const PerformersCard: React.FC<CardProps> = ({ isLoggedIn,showToast }) => {
+  const [performers, setPerformers] = useState<Item[]>([]);
+  const [loading, setLoading] = useState(false);
 
-  const handleAddPerformers = (newPerformers: Performer[]) => {
-    setPerformers((prev) => [...prev, ...newPerformers]);
+  const handleAddPerformers = async (newPerformers: string[]) => {
+    try{
+      const data=await FilterRequests.addItems(EntityType.Performer,newPerformers,localStorage.getItem('token') ?? "");
+      showToast({ type: MessageType.SUCCESS, message:data.message})
+    }catch(err){
+      let message="Failed to add performers"
+      if(err instanceof Error){
+        message=err.message;
+      }
+      showToast({ type: MessageType.DANGER, message:message})
+    }
+    finally{
+      fetchPerformers();
+    }
   };
 
-  const handleDeletePerformers = (selectedIds: Set<number>) => {
-    setPerformers((prev) =>
-      prev.filter((performer) => !selectedIds.has(performer.id))
-    );
+  const handleDeletePerformers = async(selectedIds: Set<number>) => {
+    try{
+      const data=await FilterRequests.deleteItems(EntityType.Performer,[...selectedIds],localStorage.getItem('token') ?? "");
+      showToast({ type: MessageType.SUCCESS, message:data.message})
+    }catch(err){
+      let message="Failed to delete performers"
+      if(err instanceof Error){
+        message=err.message;
+      }
+      showToast({ type: MessageType.DANGER, message:message})
+    }
+    finally{
+      fetchPerformers();
+    }
   };
+
+  const fetchPerformers = async () => {
+    try {
+      setLoading(true);
+      const data = await FilterRequests.fetchItems(EntityType.Performer);
+      setPerformers(data);
+    } catch (err) {
+      let message="Failed to fetch performers"
+      if(err instanceof Error){
+        message=err.message;
+      }
+      showToast({ type: MessageType.DANGER, message:message});
+    }finally{
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchPerformers();
+  }, []);
 
   return (
     <Card
@@ -27,6 +67,8 @@ const PerformersCard = () => {
       onAdd={handleAddPerformers}
       onDelete={handleDeletePerformers}
       label="Performers"
+      isLoggedIn={isLoggedIn}
+      loading={loading}
     />
   );
 };

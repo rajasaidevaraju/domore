@@ -3,22 +3,28 @@
 import React, { useState , useEffect} from "react";
 import styles from "./filter.module.css";
 import AddPanel from "./AddPanel";
+import {Item} from "@/app/types/Types";
+import Loading from "@/app/loading";
 
 // Generic types for items like Performer or Category
 interface CardProps<T> {
   items: T[];
-  onAdd: (newEntries: { id: number; name: string }[])=>void;
+  onAdd: (name: string[])=>void;
   onDelete: (selectedIds: Set<number>) => void;
   onEdit?: () => void;
   label: string;
+  isLoggedIn: boolean;
+  loading: boolean;
 }
 
-const Card = <T extends { id: number; name: string }>({
+const Card = <T extends Item>({
   items,
   onAdd,
   onDelete,
   onEdit,
   label,
+  isLoggedIn,
+  loading
 }: CardProps<T>) => {
   const [isSelecting, setIsSelecting] = useState(false);
   const [selectedItems, setSelectedItems] = useState<Set<number>>(new Set());
@@ -78,15 +84,11 @@ const Card = <T extends { id: number; name: string }>({
     <div className={styles.cardContainer}>
       <div className={styles.header}>
         <h1>{label}</h1>
-        <div className={styles.buttons}>
+        {isLoggedIn && 
+          <div className={styles.buttons}>
           {!isSelecting ? (
             <>
-              <button
-                className={`${styles.commonButton}`}
-                onClick={openPanel}
-              >
-                <img src="/svg/add.svg" alt="Add" />
-              </button>
+              <button className={`${styles.commonButton}`} onClick={openPanel}><img src="/svg/add.svg" alt="Add" /></button>
               {onEdit && (
                 <button
                   className={`${styles.editButton} ${styles.commonButton}`}
@@ -95,12 +97,7 @@ const Card = <T extends { id: number; name: string }>({
                   <img src="/svg/edit.svg" alt="Edit" />
                 </button>
               )}
-              <button
-                className={`${styles.removeButton} ${styles.commonButton}`}
-                onClick={handleDeleteMode}
-              >
-                <img src="/svg/delete.svg" alt="Delete" />
-              </button>
+              <button className={`${styles.removeButton} ${styles.commonButton}`} onClick={handleDeleteMode}><img src="/svg/delete.svg" alt="Delete" /></button>
             </>
           ) : (
             <>
@@ -118,9 +115,15 @@ const Card = <T extends { id: number; name: string }>({
               </button>
             </>
           )}
-        </div>
+          </div>
+        
+        }
       </div>
-
+      {loading ? (
+        <Loading />
+      ) : items.length === 0 ? (
+        <p className={styles.noItems}>No {label} found.</p>
+      ) : null}
       <div className={styles.cardList}>
         {items.map((item) => (
           <div
@@ -163,5 +166,6 @@ const Card = <T extends { id: number; name: string }>({
     </div>
   );
 };
+
 
 export default Card;

@@ -1,7 +1,6 @@
 'use client'
 import { useEffect, useState, useRef, ChangeEvent } from "react";
 import styles from "./management.module.css";
-import { ServerRequest } from "@/app/service/ServerRequest";
 import ProgressTracker from "./ProgressTracker";
 const UploadCard=()=>{
 

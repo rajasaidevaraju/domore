@@ -8,8 +8,10 @@ import html2canvas from "html2canvas";
 import {ServerRequest} from './../service/ServerRequest'
 import ToastMessage from '../types/ToastMessages'
 import Loading from './../loading'
-import { ToastData,MessageType } from "@/app/types/Types";
+import { ToastData,MessageType, EntityType,Item } from "@/app/types/Types";
 import RippleButton from "@/app/types/RippleButton";
+import AddPerformerPanel from "./components/AddPanel";
+import { FilterRequests } from "../service/FilterRequests";
 const IS_DEPLOYMENT_STATIC = process.env.NEXT_PUBLIC_IS_DEPLOYMENT_STATIC === "true";
 const API_BASE_URL = IS_DEPLOYMENT_STATIC ? "" : process.env.NEXT_PUBLIC_SERVER_ADDRESS ?? "";
 
@@ -18,20 +20,27 @@ const GetFile = () => {
     const searchParams = useSearchParams()
     const [fileId, setFileId] = useState<string>();
     const [fileName,setFileName]= useState<string>();
+    const [performers,setPerformers]=useState<Item[]>()
+    const [addPanel,setAddPanel]=useState<boolean>(false)
+
     const videoRef = useRef<HTMLVideoElement>(null);
     const token=useRef<string | null>(null)
     const router = useRouter();
+
     const rateChnage="ratechange"
     const volumeChange="volumechange"
     const videoVolume="videoVolume"
     const videoMuted="videoMuted"
     const videoPlaybackSpeed="videoPlaybackSpeed"
 
+    let currentPerformer=[{id:20,name:"Test 1"},{id:21,name:"Test 2"}]
+    currentPerformer = currentPerformer.concat(performers ?? [])
+    
     const [toasts, setToasts] = useState<ToastData[]>([]);
 
     const showToast = (message: string, type: MessageType) => {
         const id = Date.now();
-        const newMessage: ToastData = {id: Date.now(), message,type,};
+        const newMessage: ToastData = {id: Date.now(), message,type};
         setToasts((prev) => [...prev, newMessage]);
     };
 
@@ -57,6 +66,59 @@ const GetFile = () => {
         }
     };
 
+    async function savePerformer(performerId:number){
+        try {
+            
+            setAddPanel(false)
+            let token=localStorage.getItem('token')
+
+            if(token==null){
+                throw new Error("Unauthorized access. Please Login")
+            }
+
+            if(typeof fileId !== 'string' || isNaN(Number(fileId))){
+                throw new Error("Invalid File ID")
+            }else{
+                showToast("Request sent to Server",MessageType.SUCCESS)
+                let response=await FilterRequests.addItemToFile(Number(fileId),performerId, EntityType.Performer, token)
+                if(response.message){
+                    requestFileDetails(fileId)
+                    showToast(response.message,MessageType.SUCCESS)
+                }
+
+
+            }
+            
+
+        } catch (error) {
+            let message=`Failed to add performer to file ${fileId}`
+            if(error instanceof Error){
+                message=error.message
+            }
+            showToast(message,MessageType.DANGER)
+
+        }
+    }
+    
+    async function requestFileDetails(currentFileId:string,signal?:AbortSignal){
+        try{
+            let result=await ServerRequest.fetchfileDetails(currentFileId,signal)
+            console.log(result)
+            setFileId(currentFileId)
+            setFileName(result.name)
+        }catch(error){
+            if((error as Error).name === 'AbortError') {
+
+            }else{
+                if (error instanceof Error){
+                    showToast(error.message,MessageType.DANGER)
+                    setFileName(error.message)
+                }
+                console.error('Error:', error);
+            }
+        }
+    }
+
 
     useEffect(() => {
         token.current=localStorage.getItem('token')
@@ -79,24 +141,7 @@ const GetFile = () => {
                 videoRef.current.addEventListener(rateChnage,handleRateChange)
                 videoRef.current.addEventListener(volumeChange,handleVolumeChange)
             }
-            let requestName=async ()=>{
-                try{
-                    let result=await ServerRequest.fetchName(currentFileId,signal)
-                    setFileId(currentFileId)
-                    setFileName(result)
-                }catch(error){
-                    if((error as Error).name === 'AbortError') {
-    
-                    }else{
-                        if (error instanceof Error){
-                            showToast(error.message,MessageType.DANGER)
-                            setFileName(error.message)
-                        }
-                        console.error('Error:', error);
-                    }
-                }
-            }
-            requestName()
+            requestFileDetails(currentFileId,signal)
         }
        
         
@@ -171,16 +216,35 @@ const GetFile = () => {
                 <video crossOrigin="anonymous" ref={videoRef} controls className={styles.videoElement} >
                     <source src="null" type="video/mp4"/>
                 </video>
-                <h2>{fileName?fileName:"name.."}</h2>
+                <p className={styles.name}>{fileName?fileName:"name.."}</p>
+                <div className={styles.buttonsDiv}>
+                    <p>Performers: </p>
+                    {currentPerformer.map((performer)=>(
+                        <RippleButton className={styles.scbutton} key={performer.id}><p>{performer.name}</p></RippleButton>
+                    ))}
+                    {token.current != null && (
+                    <>
+                        {addPanel ? (
+                            <AddPerformerPanel onClose={() => setAddPanel(false)} onSave={savePerformer} showToast={showToast} />
+                        ) : (
+                            <RippleButton className={`${styles.scbutton}`} onClick={() => setAddPanel(true)}>
+                                <img src="/svg/add.svg" alt="Add" />
+                            </RippleButton>
+                        )}
+                    </>
+                    )}
+                </div>
                 {token.current !=null && 
                     <div className={styles.buttonsDiv}>
+                         <p>Actions: </p>
                         <RippleButton className={styles.scbutton} onClick={handleTakeScreenshot}>Set As Thumbnail</RippleButton>
                         <RippleButton className={styles.scbutton} onClick={deleteVideo}>Delete Video</RippleButton>
+                        <RippleButton className={styles.scbutton}>Edit Name</RippleButton>
                     </div> 
                 }
+                
             </div>
-            {toasts.length > 0 && (<ToastMessage toasts={toasts} onClose={removeToast} />
-      )}
+            {toasts.length > 0 && (<ToastMessage toasts={toasts} onClose={removeToast} />)}
             
         </div>
     );

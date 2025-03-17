@@ -1,14 +1,18 @@
 
-// Define the structure of a Category
-export interface Category {
-    id: number;
-    name: string;
-  }
-  
-// Define the structure of a Performer
-export interface Performer {
+export interface Item {
   id: number;
   name: string;
+}
+
+  
+// Define the structure of a Performer
+export interface Performer extends Item {
+
+}
+
+// Define the structure of a Category
+export interface Category extends Item {
+
 }
 
 export interface NetworkReturn{
@@ -26,14 +30,33 @@ export interface ServerStats{
   charging: boolean
 }
 
+export interface ToastMessageDetails {
+  message: string;
+  type: MessageType;
+}
+
 export enum MessageType {
   SUCCESS = 'success',
   DANGER = 'danger',
   WARNING = 'warning',
 }
 
+export enum EntityType {
+  Category = "category",
+  Performer = "performer",
+}
+
 export interface ToastData {
   id: number;
   message: string;
   type: MessageType; 
+}
+
+export interface CardProps {
+  isLoggedIn: boolean;
+  showToast:(toastDetails: ToastMessageDetails) => void
+}
+
+export interface ApiResponse {
+  message: string;
 }

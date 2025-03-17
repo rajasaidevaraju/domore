@@ -3,7 +3,7 @@ const API_BASE_URL = IS_DEPLOYMENT_STATIC ? "" : process.env.NEXT_PUBLIC_SERVER_
 
 
 import { FileDataList } from "../types/FileDataList";
-import { ServerStats } from './../types/Types'
+import { ServerStats,Item } from './../types/Types'
 export const ServerRequest = {
   
   async fetchFiles(page?:number): Promise<FileDataList> {
@@ -133,10 +133,10 @@ export const ServerRequest = {
         hasExternalStorage: data.hasExternalStorage,
         percentage: data.percentage ?? -1,
         charging: data.charging ?? false
-      };
+      }
       return responseContent
   },
-  async fetchName(fileId: string,signal: AbortSignal): Promise<string>{
+  async fetchName(fileId: string,signal?: AbortSignal): Promise<string>{
    
     const response = await fetch(`${API_BASE_URL}/server/name?fileId=${fileId}`,{signal});
 
@@ -149,6 +149,21 @@ export const ServerRequest = {
       // removing file extension
       let name=data.fileName.replace(/\.[a-zA-Z0-9]+$/, "")
       return name
+
+  },
+
+  async fetchfileDetails(fileId: string,signal?: AbortSignal): Promise<{id:number, name:string,performers:Item[]}>{
+
+    const response = await fetch(`${API_BASE_URL}/server/fileDetails/${fileId}`,{signal});
+
+    if (!response.ok) {
+      const error = await response.json().catch(() => null);
+      throw new Error(error?.message || "Failed to fetch file details");
+    }
+    const data = await response.json();
+    // removing file extension
+    let name=data.name.replace(/\.[a-zA-Z0-9]+$/, "")
+    return {id:data.id, name:name	,performers:data.performers}
 
   },
   async loginUser(username: string, password: string): Promise<{ token: string|null,error:string|null }> {

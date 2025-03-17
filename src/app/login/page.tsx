@@ -132,6 +132,7 @@ const Login: React.FC = () => {
                 <label className={styles.label}>Username:</label>
                 <input
                     type="text"
+                    placeholder='Enter username'
                     value={username}
                     onChange={(e) => {
                         setUsername(e.target.value);
@@ -145,6 +146,7 @@ const Login: React.FC = () => {
                 <label className={styles.label}>Password:</label>
                 <div className={styles.passwordContainer}>
                     <input type={showPassword ? "text" : "password"} value={password}
+                        placeholder='Enter password'
                         onChange={(e) => {
                             setPassword(e.target.value);
                             checkPasswordCharacters(e.target.value);

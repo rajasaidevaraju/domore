@@ -5,7 +5,7 @@ import styles from "./AddPanel.module.css";
 
 interface AddPanelProps<T extends { id: number; name: string }> {
   onClose: () => void;
-  onSave: (newEntries: { id: number; name: string }[])  => void; // Accepts T[], where T is any type extending { id: number; name: string }
+  onSave: (names: string [])  => void;
   label: string;
 }
 
@@ -53,11 +53,7 @@ const AddPanel = <T extends { id: number; name: string }>({
       return;
     }
 
-    const newEntries = validEntries.map((name, index) => ({
-      id: Date.now() + index,
-      name,
-    }));
-    onSave(newEntries);
+    onSave(validEntries);
     onClose();
   };
 

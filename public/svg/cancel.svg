@@ -1,0 +1,13 @@
+<svg width="20px" height="20px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <style>
+        @media (prefers-color-scheme: dark) {
+            path { stroke: #ffffff; }
+        }
+    </style>
+    <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+    <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+    <g id="SVGRepo_iconCarrier"> 
+        <circle cx="12" cy="12" r="9" stroke-width="2" stroke="#000000"></circle> 
+        <path d="M18 18L6 6" stroke-width="2" stroke="#000000"></path> 
+    </g>
+</svg>

@@ -1,8 +1,9 @@
-'use client'
+"use client"
 
 import React,{useState,useEffect} from "react";
 import UploadCard from "./components/UploadCard";
 import Stats from "./components/Stats";
+import Operations from "./components/Operations";
 const Management=()=>{
 
     const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -20,6 +21,7 @@ const Management=()=>{
 
     return (<div>
         {isLoggedIn && <UploadCard/>}
+        <Operations/>
         <Stats/>
     </div>)
 
