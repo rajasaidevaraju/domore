@@ -3,12 +3,14 @@ import styles from "./CustomButton.module.css";
 
 interface RippleButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   children: React.ReactNode;
+  suggestion?: string;
 }
 
 const RippleButton: React.FC<RippleButtonProps> = ({
   children,
   onClick,
   className,
+  suggestion,
   ...props
 }) => {
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -46,13 +48,16 @@ const RippleButton: React.FC<RippleButtonProps> = ({
     }
   };
   return (
-    <button
-      className={`${styles.rippleButton} ${className || ""}`}
-      onClick={handleClick}
-      {...props}
-    >
-      {children}
-    </button>
+    <div className={styles.rippleButtonContainer}>
+      <button
+        className={`${styles.rippleButton} ${className || ""}`}
+        onClick={handleClick}
+        {...props}
+      >
+        {children}
+      </button>
+      {suggestion && <div className={styles.suggestion}>{suggestion}</div>}
+    </div>
   );
 };
 

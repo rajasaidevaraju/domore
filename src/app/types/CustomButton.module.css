@@ -3,7 +3,12 @@
   overflow: hidden;
   border: none;
   cursor:pointer;
+  width: 100%;
   transition: background-color 0.3s;
+}
+
+.rippleButtonContainer{
+  position: relative;
 }
 
 .pressable {
@@ -11,6 +16,30 @@
   border: none;
   cursor:pointer;
   transition: background-color 0.3s;
+}
+
+.suggestion {
+  position: absolute;
+  top: 0;
+  transform: translateY(-100%) translateX(-50%);
+  left: 50%;
+  margin-top: -5px;
+  width: fit-content;
+  background-color: rgb(var(--background-rgb));
+  border: 1px solid rgb(var(--main-color));
+  border-radius: 5px;
+  padding: 5px 10px;
+  opacity: 0;
+  z-index: 10;
+  pointer-events: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: opacity 0.3s ease;
+  white-space: nowrap;
+}
+
+.rippleButtonContainer:hover .suggestion {
+  opacity: 1;
+  pointer-events: auto;
 }
 
 @media (hover: hover) and (pointer: fine) {

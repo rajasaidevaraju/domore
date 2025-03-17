@@ -16,9 +16,9 @@ const Operations: React.FC = () => {
             </div>
            
             <div className={styles.trackerContainer}>
-                <RippleButton className={styles.commonButton}>Scan</RippleButton>
-                <RippleButton className={styles.commonButton}>Cleanup</RippleButton>
-                <RippleButton className={styles.commonButton}>Migrate</RippleButton>
+                <RippleButton className={styles.commonButton} suggestion='scan the server file system' >Scan</RippleButton>
+                <RippleButton className={styles.commonButton} suggestion='remove any db entries not found in the file system'>Cleanup</RippleButton>
+                <RippleButton className={styles.commonButton} suggestion='Broken file paths will be searched and updated.'>Migrate</RippleButton>
             </div>
             
         </div>
