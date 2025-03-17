@@ -106,6 +106,7 @@ const GetFile = () => {
             console.log(result)
             setFileId(currentFileId)
             setFileName(result.name)
+            setPerformers(result.performers)
         }catch(error){
             if((error as Error).name === 'AbortError') {
 
