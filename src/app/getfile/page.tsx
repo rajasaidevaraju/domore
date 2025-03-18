@@ -127,20 +127,21 @@ const GetFile = () => {
         const controller = new AbortController();
         const {signal} = controller;
         if(typeof currentFileId ==="string"){
-            if(videoRef.current){
-                videoRef.current.src=`${API_BASE_URL}/server/file?fileId=${currentFileId}`
-                videoRef.current.load();
+            const videoElement = videoRef.current;
+            if(videoElement){
+                videoElement.src=`${API_BASE_URL}/server/file?fileId=${currentFileId}`
+                videoElement.load();
 
                 const playbackRate = parseFloat(localStorage.getItem(videoPlaybackSpeed) ?? '1');
                 const storedVolume = parseFloat(localStorage.getItem(videoVolume) ?? '1');
                 const storedMuted =  localStorage.getItem(videoMuted) === 'true';
         
-                videoRef.current.playbackRate = (playbackRate >= 0.5 && playbackRate <= 2.0) ? playbackRate : 1;
-                videoRef.current.volume = Math.min(Math.max(storedVolume, 0.1), 1);
-                videoRef.current.muted = storedMuted;
+                videoElement.playbackRate = (playbackRate >= 0.5 && playbackRate <= 2.0) ? playbackRate : 1;
+                videoElement.volume = Math.min(Math.max(storedVolume, 0.1), 1);
+                videoElement.muted = storedMuted;
                 
-                videoRef.current.addEventListener(rateChnage,handleRateChange)
-                videoRef.current.addEventListener(volumeChange,handleVolumeChange)
+                videoElement.addEventListener(rateChnage,handleRateChange)
+                videoElement.addEventListener(volumeChange,handleVolumeChange)
             }
             requestFileDetails(currentFileId,signal)
         }
@@ -148,9 +149,10 @@ const GetFile = () => {
         
         return () => {
             controller.abort();
-            if(videoRef.current){
-                videoRef.current.removeEventListener(rateChnage,handleRateChange)
-                videoRef.current.removeEventListener(volumeChange,handleVolumeChange)
+            const videoElement = videoRef.current;
+            if(videoElement){
+                videoElement.removeEventListener(rateChnage,handleRateChange)
+                videoElement.removeEventListener(volumeChange,handleVolumeChange)
             }
         }
 
@@ -159,12 +161,13 @@ const GetFile = () => {
     const handleTakeScreenshot = async () => {
         let currToken=token.current
         if(currToken!=null){
-            if (!videoRef.current || typeof fileId !== 'string'){
+            const videoElement = videoRef.current;
+            if (!videoElement || typeof fileId !== 'string'){
                 showToast("Invalid File ID",MessageType.WARNING)
                 return;
             }
             try {
-                const canvas = await html2canvas(videoRef.current,{allowTaint: true});
+                const canvas = await html2canvas(videoElement,{allowTaint: true});
                 const imageData = canvas.toDataURL("image/jpeg", 0.3);
                 // Send the screenshot to the server
                 await ServerRequest.uploadThumbnail(fileId,imageData,currToken);

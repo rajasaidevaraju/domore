@@ -6,7 +6,7 @@ import CategoriesCard from "./components/Categories";
 import { ToastData,ToastMessageDetails } from "@/app/types/Types";
 import ToastMessage from "@/app/types/ToastMessages";
 
-const management=()=>{
+const Filter=()=>{
 
     const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
     const [toasts, setToasts] = useState<ToastData[]>([]);
@@ -33,4 +33,4 @@ const management=()=>{
     )
 }
 
-export default management;
+export default Filter;

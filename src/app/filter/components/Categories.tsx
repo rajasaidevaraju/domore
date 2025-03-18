@@ -28,6 +28,7 @@ const CategoriesCard: React.FC<CardProps> = ({ isLoggedIn })=>{
       onDelete={handleDeleteCategories}
       label="Categories"
       isLoggedIn={isLoggedIn}
+      loading={false}
     />
   );
 };
