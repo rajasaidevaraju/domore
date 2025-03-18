@@ -21,9 +21,9 @@
 .suggestion {
   position: absolute;
   top: 0;
-  transform: translateY(-100%) translateX(-50%);
+  transform: translateY(100%) translateX(-50%);
   left: 50%;
-  margin-top: -5px;
+  margin-top: 5px;
   width: fit-content;
   background-color: rgb(var(--background-rgb));
   border: 1px solid rgb(var(--main-color));
@@ -37,10 +37,7 @@
   white-space: nowrap;
 }
 
-.rippleButtonContainer:hover .suggestion {
-  opacity: 1;
-  pointer-events: auto;
-}
+
 
 @media (hover: hover) and (pointer: fine) {
   .pressable:hover {
@@ -57,6 +54,11 @@
   
   .rippleButton:active {
     background-color: rgba(var(--main-color-active));
+  }
+
+  .rippleButtonContainer:hover .suggestion {
+    opacity: 1;
+    pointer-events: auto;
   }
 
 }

@@ -3,22 +3,21 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: 1.2rem;
+  gap: 10px;
   height: 100%;
 }
 
 .minHeight{
-  height: 100%;
+  height: inherit
 }
 
 .spinner {
   width: 50px;
   height: 50px;
-  border: 4px solid rgba(var(--foreground-rgb));
-  border-top: 4px solid #0070f3; /* Accent color */
+  border: 4px solid rgba(var(--main-color));
+  border-top: 4px solid rgba(var(--secondary-color));
   border-radius: 50%;
   animation: spin 1s linear infinite;
-  margin-bottom: 16px;
 }
 
 @keyframes spin {

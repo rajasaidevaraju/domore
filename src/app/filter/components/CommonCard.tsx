@@ -120,7 +120,7 @@ const Card = <T extends Item>({
         }
       </div>
       {loading ? (
-        <Loading />
+        <Loading text={"Requesting "+label}/>
       ) : items.length === 0 ? (
         <p className={styles.noItems}>No {label} found.</p>
       ) : null}

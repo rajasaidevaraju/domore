@@ -2,6 +2,7 @@
 import { useEffect, useState, useRef, ChangeEvent } from "react";
 import styles from "./management.module.css";
 import ProgressTracker from "./ProgressTracker";
+import RippleButton from "@/app/types/RippleButton";
 const UploadCard=()=>{
 
     const [files, setFiles]=useState<File[]>([]);
@@ -9,7 +10,7 @@ const UploadCard=()=>{
     const [uploadVisible, setUploadVisible] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
     const token=useRef<string | null>(null)
-
+    let suggestion=uploadVisible?undefined:"Choose files first"
     const initiateUpload=async()=>{
         if (files.length > 0) {
             setUploadVisible(false)
@@ -83,14 +84,15 @@ const UploadCard=()=>{
                         onChange={addFile}
                         multiple
                     />
-                    <button
+                    <RippleButton
                         className={`${styles.commonButton}`}
                         onClick={initiateUpload}
-                        disabled={!uploadVisible} 
+                        disabled={!uploadVisible}
+                        suggestion={suggestion} 
                     >
                         <img src="/svg/upload.svg" alt="Add" />
                         <p>Upload</p>
-                    </button>
+                    </RippleButton>
                 </div>
             </div>
             <div className={styles.trackerContainer}>

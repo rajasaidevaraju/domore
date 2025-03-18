@@ -66,7 +66,7 @@ export default function Stats(){
             <div className={styles.header}>
                 <h1>Stats</h1>
             </div>
-            <Loading/>
+            <Loading text="Requesting Stats"/>
         </div>
         )
     }

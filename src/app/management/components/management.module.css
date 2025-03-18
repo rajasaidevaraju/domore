@@ -9,7 +9,7 @@
   border: 1px solid rgb(var(--main-color));
   border-radius: 8px;
   width: fit-content;
-  min-width: 400px;
+  min-width: 600px;
 }
 
 .trackerContainer{
@@ -18,6 +18,12 @@
   flex-wrap: wrap;
 }
 
+.itemContainer{
+  display: flex;
+  gap: 10px;
+  flex-direction: column;
+  align-items: start;
+}
 
 .header {
   display: flex;
@@ -41,6 +47,7 @@
   padding: 6px 12px;
   flex-shrink: 0;
   border: none;
+  width: fit-content;
   border-radius: 4px;
   cursor: pointer;
   transition: background-color 0.3s ease; 
@@ -49,6 +56,14 @@
   align-items: center;
   gap:5px;
   background-color: rgb(var(--main-color));
+}
+
+
+.operationItem{
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ gap:10px
 }
 
 
@@ -103,7 +118,7 @@
 }
 
 .tracker{
-  min-width: 400px;
+  min-width: 600px;
   border: 1px solid rgb(var(--main-color));
   border-radius: 8px;
   padding: 10px;
@@ -116,7 +131,6 @@
   border-radius: 3px;
   overflow: hidden;
   margin: 5px 0px;
-  min-width: 300px;
 }
 
 .filledBar {
