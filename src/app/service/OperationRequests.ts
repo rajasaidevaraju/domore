@@ -4,9 +4,9 @@ import { EntityType, Item, ApiResponse } from '../types/Types'
 
 
 export const OperationRequests = {
-    async fetchScan():Promise<ApiResponse>{
+    async fetchScan(token:string):Promise<ApiResponse>{
 
-        const response = await fetch(`${API_BASE_URL}/server/scan`, { method: "POST" });
+        const response = await fetch(`${API_BASE_URL}/server/scan`, { method: "POST",headers: {'Authorization': `Bearer ${token}`}, });
         
         if (!response.ok) {
             const error = await response.json().catch(() => null);

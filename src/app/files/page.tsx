@@ -32,7 +32,6 @@ function AltHome(){
             }else{
               setError('Failed to fetch files');
             }
-            console.error('Error fetching files:', error);
         }
     }
 

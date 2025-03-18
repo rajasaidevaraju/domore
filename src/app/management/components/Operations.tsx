@@ -15,10 +15,13 @@ const Operations: React.FC<OperationsProps> = ({showToast}:OperationsProps) => {
     const handleScan = async () => {
         setIsScanning(true);
         try{
-            let data= await OperationRequests.fetchScan();
-            showToast(data.message, MessageType.SUCCESS);
-            //showToast("success", MessageType.SUCCESS);
-
+            let token=localStorage.getItem('token');
+            if(token===null){
+                showToast("Unauthorized access", MessageType.DANGER);
+            }else{
+                let data= await OperationRequests.fetchScan(token);
+                showToast(data.message, MessageType.SUCCESS);
+            }
        }catch(error){
             if(error instanceof Error){
                 showToast(error.message, MessageType.DANGER);
