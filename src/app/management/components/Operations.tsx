@@ -15,10 +15,9 @@ const Operations: React.FC<OperationsProps> = ({showToast}:OperationsProps) => {
     const handleScan = async () => {
         setIsScanning(true);
         try{
-            //let data= await OperationRequests.fetchScan();
-            await new Promise(resolve => setTimeout(resolve, 1000));
-            //showToast(data.message, MessageType.SUCCESS);
-            showToast("success", MessageType.SUCCESS);
+            let data= await OperationRequests.fetchScan();
+            showToast(data.message, MessageType.SUCCESS);
+            //showToast("success", MessageType.SUCCESS);
 
        }catch(error){
             if(error instanceof Error){

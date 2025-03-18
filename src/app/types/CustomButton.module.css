@@ -23,7 +23,7 @@
   top: 0;
   transform: translateY(100%) translateX(-50%);
   left: 50%;
-  margin-top: 5px;
+  margin: 5px;
   width: fit-content;
   background-color: rgb(var(--background-rgb));
   border: 1px solid rgb(var(--main-color));

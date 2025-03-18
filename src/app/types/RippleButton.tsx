@@ -1,4 +1,4 @@
-import React, { ButtonHTMLAttributes } from "react";
+import React, { ButtonHTMLAttributes, useRef, useEffect } from "react";
 import styles from "./CustomButton.module.css";
 
 interface RippleButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
@@ -13,6 +13,42 @@ const RippleButton: React.FC<RippleButtonProps> = ({
   suggestion,
   ...props
 }) => {
+  const buttonRef = useRef<HTMLButtonElement | null>(null);
+  const suggestionRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (suggestionRef.current && buttonRef.current) {
+      const buttonEl = buttonRef.current;
+      const suggestionEl = suggestionRef.current;
+      const buttonRect = buttonEl.getBoundingClientRect();
+      const suggestionWidth = suggestionEl.offsetWidth;
+
+
+      // Horizontal positioning: Center the suggestion, but clamp within viewport
+      const idealLeft = (buttonRect.width - suggestionWidth) / 2; // Center relative to button
+      const minLeft = -buttonRect.left; // Ensure left edge >= 0 on screen
+      const maxLeft = window.innerWidth - suggestionWidth - buttonRect.left; // Ensure right edge <= window.innerWidth
+      const clampedLeft = Math.max(minLeft, Math.min(maxLeft, idealLeft));
+      suggestionEl.style.left = `${clampedLeft}px`;
+
+      // Vertical positioning: Start below, flip to above if needed
+      suggestionEl.style.top = "0";
+      suggestionEl.style.bottom = "auto";
+      suggestionEl.style.transform = "translateY(100%)";
+      suggestionEl.style.marginBottom = "0";
+
+      // Check if it goes off the bottom after positioning
+      const rect = suggestionEl.getBoundingClientRect();
+      if (rect.bottom > window.innerHeight) {
+        suggestionEl.style.top = "auto";
+        suggestionEl.style.bottom = "100%"; // Bottom of suggestion at top of button
+        suggestionEl.style.transform = "none";
+        suggestionEl.style.marginTop = "0";
+        suggestionEl.style.marginBottom = "5px"; // Space above button
+      }
+    }
+  }, [suggestion]);
+
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     const button = event.currentTarget;
 
@@ -47,16 +83,22 @@ const RippleButton: React.FC<RippleButtonProps> = ({
       onClick(event);
     }
   };
+
   return (
     <div className={styles.rippleButtonContainer}>
       <button
+        ref={buttonRef}
         className={`${styles.rippleButton} ${className || ""}`}
         onClick={handleClick}
         {...props}
       >
         {children}
       </button>
-      {suggestion && <div className={styles.suggestion}>{suggestion}</div>}
+      {suggestion && (
+        <div ref={suggestionRef} className={styles.suggestion}>
+          {suggestion}
+        </div>
+      )}
     </div>
   );
 };
