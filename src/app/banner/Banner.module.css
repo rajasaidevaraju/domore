@@ -138,6 +138,7 @@
   border-radius: 5px;
   padding: 7px;
   height: fit-content;
+  width: fit-content !important;
   background-color: rgb(var(--main-color-faint));
 }
 

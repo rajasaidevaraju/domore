@@ -55,19 +55,19 @@ const Operations: React.FC<OperationsProps> = ({showToast}:OperationsProps) => {
        
         <div className={styles.itemContainer}>
             <div className={styles.operationItem}>
-                <RippleButton suggestion={scanningToolTip} className={styles.commonButton} onClick={handleScan} disabled={isScanning}>
+                <RippleButton suggestion={scanningToolTip} className={`${styles.commonButton} ${styles.minWidth}`} onClick={handleScan} disabled={isScanning}>
                     Scan
                 </RippleButton>
                 <p className={styles.explanation}>This will scan the file system and add new files to the database.</p>
             </div>
             <div className={styles.operationItem}>
-                <RippleButton className={styles.commonButton} onClick={handleCleanup}>
+                <RippleButton  className={`${styles.commonButton} ${styles.minWidth}`}  onClick={handleCleanup}>
                     Cleanup
                 </RippleButton>
                 <p className={styles.explanation}>This will remove any db entries not found in the file system.</p>
             </div>
             <div className={styles.operationItem}>
-                <RippleButton className={styles.commonButton} onClick={handleMigrate}>
+                <RippleButton  className={`${styles.commonButton} ${styles.minWidth}`} onClick={handleMigrate}>
                     Migrate
                 </RippleButton>
                 <p className={styles.explanation}>Broken file paths will be searched and updated.</p>

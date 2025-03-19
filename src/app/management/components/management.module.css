@@ -1,3 +1,10 @@
+.managementpanel{
+  display: flex;
+  flex-direction: column;
+  gap: 10px;  
+  margin: 10px;
+}
+
 .cardContainer {
   background-color: rgba(var(--background-rgb));
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
@@ -9,7 +16,7 @@
   border: 1px solid rgb(var(--main-color));
   border-radius: 8px;
   width: fit-content;
-  min-width: 600px;
+  min-width: 650px;
 }
 
 .trackerContainer{
@@ -56,6 +63,10 @@
   align-items: center;
   gap:5px;
   background-color: rgb(var(--main-color));
+}
+
+.minWidth{
+  min-width: 100px;
 }
 
 
@@ -174,7 +185,6 @@
 @media (max-width: 768px) {
   .cardContainer {
     padding: 10px;
-    margin: 7px;
     width:auto;
     min-width: 90%;
   }

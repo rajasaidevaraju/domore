@@ -6,6 +6,7 @@ import Stats from "./components/Stats";
 import Operations from "./components/Operations";
 import { ToastData,MessageType } from "../types/Types";
 import ToastMessage from "@/app/types/ToastMessages";
+import styles from "./components/management.module.css";
 const Management=()=>{
 
     const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -34,7 +35,7 @@ const Management=()=>{
     }, []);
 
     return (
-        <div>
+        <div className={styles.managementpanel}>
             {isLoggedIn && <UploadCard/>}
             <Operations showToast={showToast}/>
             <Stats/>

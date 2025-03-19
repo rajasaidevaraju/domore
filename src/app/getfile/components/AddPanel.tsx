@@ -3,6 +3,7 @@ import styles  from "./../GetFile.module.css";
 import RippleButton from "@/app/types/RippleButton";
 import { FilterRequests } from "@/app/service/FilterRequests";
 import { EntityType, Item, MessageType } from "@/app/types/Types";
+import { wrap } from "module";
 interface AddPerformerPanelProps {
     onClose: () => void;
     onSave: (performerId:number) => void;
@@ -56,30 +57,34 @@ function AddPerformerPanel({onClose,onSave,showToast}:AddPerformerPanelProps) {
     };
 
     return (
-        <div className={styles.buttonsDiv}>
-            <input
-                type="text"
-                placeholder="Performer name"
-                value={name}
-                onChange={(e) => {setName(e.target.value);}}
-                className={styles.input}
-                disabled={selectedId != null} />
-             {name.length>0 && filteredPerformers.length > 0 && (
-                <div className={styles.suggestions}>
-                    {filteredPerformers.map((performer) => (
-                        <div
-                            key={performer.id}
-                            className={styles.suggestionItem}
-                            onClick={() => handleSuggestionClick(performer.name,performer.id)}
-                        >
-                            {performer.name}
-                        </div>
-                    ))}
-                </div>
-            )}
+        <div style={{display:"flex", flexDirection:"row",gap:"10px", flexWrap:"wrap"}}>
+            <div className={styles.buttonsDiv}> 
+                <input
+                    type="text"
+                    placeholder="Performer name"
+                    value={name}
+                    onChange={(e) => {setName(e.target.value);}}
+                    className={styles.input}
+                    disabled={selectedId != null} />
+                {name.length>0 && filteredPerformers.length > 0 && (
+                    <div className={styles.suggestions}>
+                        {filteredPerformers.map((performer) => (
+                            <div
+                                key={performer.id}
+                                className={styles.suggestionItem}
+                                onClick={() => handleSuggestionClick(performer.name,performer.id)}
+                            >
+                                {performer.name}
+                            </div>
+                        ))}
+                    </div>
+                )}
+            </div>
+            <div style={{display:"flex", flexDirection:"row", gap:"10px"}}>
+                <RippleButton className={`${styles.scbutton}`} suggestion={(selectedId==null)?"select a performer":undefined} disabled={selectedId == null} onClick={savePerformer}><img src="/svg/yes.svg" alt="save" /></RippleButton>
+                <RippleButton className={`${styles.scbutton}`} onClick={onClose}><img src="/svg/cancel.svg" alt="Cancel" /></RippleButton>
+            </div>
             
-            <RippleButton className={`${styles.scbutton}`} disabled={selectedId == null} onClick={savePerformer}><img src="/svg/yes.svg" alt="save" /></RippleButton>
-            <RippleButton className={`${styles.scbutton}`} onClick={onClose}><img src="/svg/cancel.svg" alt="Cancel" /></RippleButton>
         </div>
 
     );

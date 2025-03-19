@@ -214,43 +214,43 @@ const GetFile = () => {
     }
 
     return (
-        <div>
-            <div className={styles.videoContainer}>
-                
-                <video crossOrigin="anonymous" ref={videoRef} controls className={styles.videoElement} >
-                    <source src="null" type="video/mp4"/>
-                </video>
-                <p className={styles.name}>{fileName?fileName:"name.."}</p>
-                <div className={styles.buttonsDiv}>
-                    <p>Performers: </p>
-                    {currentPerformer.map((performer)=>(
-                        <RippleButton className={styles.scbutton} key={performer.id}><p>{performer.name}</p></RippleButton>
-                    ))}
-                    {token.current != null && (
-                    <>
-                        {addPanel ? (
-                            <AddPerformerPanel onClose={() => setAddPanel(false)} onSave={savePerformer} showToast={showToast} />
-                        ) : (
-                            <RippleButton className={`${styles.scbutton}`} onClick={() => setAddPanel(true)}>
-                                <img src="/svg/add.svg" alt="Add" />
-                            </RippleButton>
-                        )}
-                    </>
-                    )}
-                </div>
-                {token.current !=null && 
-                    <div className={styles.buttonsDiv}>
-                         <p>Actions: </p>
-                        <RippleButton className={styles.scbutton} onClick={handleTakeScreenshot}>Set As Thumbnail</RippleButton>
-                        <RippleButton className={styles.scbutton} onClick={deleteVideo}>Delete Video</RippleButton>
-                        <RippleButton className={styles.scbutton}>Edit Name</RippleButton>
-                    </div> 
-                }
-                
-            </div>
-            {toasts.length > 0 && (<ToastMessage toasts={toasts} onClose={removeToast} />)}
+        
+        <div className={styles.videoContainer}>
             
+            <video crossOrigin="anonymous" ref={videoRef} controls className={styles.videoElement} >
+                <source src="null" type="video/mp4"/>
+            </video>
+            <p className={styles.name}>{fileName?fileName:"name.."}</p>
+            <div className={styles.buttonsDiv}>
+                <p>Performers: </p>
+                {currentPerformer.map((performer)=>(
+                    <RippleButton className={styles.scbutton} key={performer.id}><p>{performer.name}</p></RippleButton>
+                ))}
+                {token.current != null && (
+                <>
+                    {addPanel ? (
+                        <AddPerformerPanel onClose={() => setAddPanel(false)} onSave={savePerformer} showToast={showToast} />
+                    ) : (
+                        <RippleButton className={`${styles.scbutton}`} onClick={() => setAddPanel(true)}>
+                            <img src="/svg/add.svg" alt="Add" />
+                        </RippleButton>
+                    )}
+                </>
+                )}
+            </div>
+            {token.current !=null && 
+                <div className={styles.buttonsDiv}>
+                        <p>Actions: </p>
+                    <RippleButton className={styles.scbutton} onClick={handleTakeScreenshot}>Set As Thumbnail</RippleButton>
+                    <RippleButton className={styles.scbutton} onClick={deleteVideo}>Delete Video</RippleButton>
+                    <RippleButton className={styles.scbutton}>Edit Name</RippleButton>
+                </div> 
+            }
+            {toasts.length > 0 && (<ToastMessage toasts={toasts} onClose={removeToast} />)}
         </div>
+            
+            
+        
     );
 
 }
