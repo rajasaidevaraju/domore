@@ -40,6 +40,16 @@ export default function Pagination({meta:{page, limit, total}, performerId}:Pagi
         nextUrl.searchParams.append("page", (page+1).toString());
     }
 
+    const handlePageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        const selectedPage = e.target.value;
+        let url = new URL(base);
+        url.searchParams.append("page", selectedPage);
+        if(performerId!=null){
+            url.searchParams.append("performerId",performerId.toString())
+        }
+        window.location.href = url.toString();
+    };
+
 
     return(
         <div className={styles.button_container}>
@@ -49,7 +59,7 @@ export default function Pagination({meta:{page, limit, total}, performerId}:Pagi
             <select
                 className={styles.dropdown_select}
                 value={page}
-                onChange={(e) => window.location.href = `/files?page=${e.target.value}`}
+                onChange={handlePageChange}
             >
                 {pageOptions.map(option => (
                     <option key={option} value={option}>
