@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import styles  from "./../GetFile.module.css";
 import RippleButton from "@/app/types/RippleButton";
 import { FilterRequests } from "@/app/service/FilterRequests";
@@ -15,6 +15,7 @@ function AddPerformerPanel({onClose,onSave,showToast}:AddPerformerPanelProps) {
     const [performers,setPerformers]=useState<Item[]|null>(null);
     const [filteredPerformers, setFilteredPerformers] = useState<Item[]>([]);
     const [selectedId, setSelectedId] = useState<number | null>(null);
+    const inputRef = useRef<HTMLInputElement>(null);
 
     const fetchPerformers = async () => {
         try {
@@ -35,7 +36,14 @@ function AddPerformerPanel({onClose,onSave,showToast}:AddPerformerPanelProps) {
         }
     }
 
-    useEffect(()=>{fetchPerformers();},[]);
+    useEffect(()=>{
+        fetchPerformers();
+        let input=inputRef.current
+        if(input){
+            input.focus()
+        }
+
+    },[]);
     useEffect(() => {
         if(selectedId!=null){
             setFilteredPerformers([]);
@@ -65,7 +73,8 @@ function AddPerformerPanel({onClose,onSave,showToast}:AddPerformerPanelProps) {
                     value={name}
                     onChange={(e) => {setName(e.target.value);}}
                     className={styles.input}
-                    disabled={selectedId != null} />
+                    disabled={selectedId != null}
+                    ref={inputRef} />
                 {name.length>0 && filteredPerformers.length > 0 && (
                     <div className={styles.suggestions}>
                         {filteredPerformers.map((performer) => (

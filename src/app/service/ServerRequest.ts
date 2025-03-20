@@ -6,11 +6,14 @@ import { FileDataList } from "../types/FileDataList";
 import { ServerStats,Item } from './../types/Types'
 export const ServerRequest = {
   
-  async fetchFiles(page?:number): Promise<FileDataList> {
+  async fetchFiles(page?:number,performerId?:number): Promise<FileDataList> {
     
-    let url=`${API_BASE_URL}/server/files`
-    if(page!=undefined){
-      url=`${API_BASE_URL}/server/files?page=${page}`
+    let url = new URL(`${API_BASE_URL}/server/files`);
+    if (page !== undefined) {
+      url.searchParams.append("page", page.toString());
+    }
+    if (performerId !== undefined) {
+      url.searchParams.append("performerId", performerId.toString());
     }
     const response = await fetch(url,{method:"GET",redirect:"follow"});
     if (!response.ok) {
@@ -23,6 +26,8 @@ export const ServerRequest = {
     return await response.json();
     
   },
+
+
 
   async uploadThumbnail(fileId: string, imageData: string,token:string):Promise<void> {
 

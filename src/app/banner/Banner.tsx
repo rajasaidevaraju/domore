@@ -40,7 +40,11 @@ const Banner = () => {
     },[])
 
     function toggleActionItems(){
-            setMenuOpen((prev) => !prev);
+        setMenuOpen((prev) => !prev);
+    }
+
+    function closeMenu(){
+        setMenuOpen(false)
     }
 
     return (
@@ -59,7 +63,7 @@ const Banner = () => {
                 </RippleButton>
                 {isMobile && menuOpen && 
                     <div className={styles.dropdownContent}>
-                        <ActionItems isMobile={isMobile} />
+                        <ActionItems isMobile={isMobile} closeMenu={closeMenu} />
                     </div>
                 }
             </div>

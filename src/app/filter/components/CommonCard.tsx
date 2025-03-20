@@ -5,6 +5,7 @@ import styles from "./filter.module.css";
 import AddPanel from "./AddPanel";
 import {Item} from "@/app/types/Types";
 import Loading from "@/app/loading";
+import RippleButtonLink from "@/app/types/RippleButtonLink";
 
 // Generic types for items like Performer or Category
 interface CardProps<T> {
@@ -126,24 +127,23 @@ const Card = <T extends Item>({
       ) : null}
       <div className={styles.cardList}>
         {items.map((item) => (
-          <div
-            key={item.id}
-            className={`${styles.card} ${selectedItems.has(item.id) ? styles.selected : ""}`}
-            onClick={()=>handleSelect(item.id)}
-          >
-            {isSelecting && (
-              <label className={styles.checkboxLabel}>
-                <input
-                  id={`checkbox-${item.id}`}
-                  type="checkbox"
-                  checked={selectedItems.has(item.id)}
-                  onChange={()=>{}}
-                  className={styles.checkbox}
-                />
-              </label>
-            )}
-            <p className={styles.text}>{item.name}</p>
-          </div>
+          
+          isSelecting ? (
+            <div key={item.id}
+              className={`${styles.card} ${selectedItems.has(item.id) ? styles.selected : ""}`}
+              onClick={()=>handleSelect(item.id)}>
+              
+                <label className={styles.checkboxLabel}>
+                  <input id={`checkbox-${item.id}`} type="checkbox" checked={selectedItems.has(item.id)} onChange={()=>{}} className={styles.checkbox}/>
+                </label>
+            
+              <p className={styles.text}>{item.name}</p>
+            </div>
+        ):(
+          <RippleButtonLink key={item.id} className={styles.card} href={`/files?performerId=${item.id}`}> {item.name}</RippleButtonLink>
+        )
+
+
         ))}
       </div>
       

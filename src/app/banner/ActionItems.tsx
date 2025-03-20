@@ -9,9 +9,10 @@ import { useRouter } from 'next/navigation';
 import { ServerRequest } from '../service/ServerRequest';
 interface ActionItemsProps{
     isMobile:Boolean
+    closeMenu?:()=>void
 }
 
-function ActionItems({isMobile}:ActionItemsProps){
+function ActionItems({isMobile,closeMenu}:ActionItemsProps){
     const [showChangePanel, setChangePanel] = useState(false);
     const [isAnimating, setIsAnimating] = useState(false);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -31,21 +32,22 @@ function ActionItems({isMobile}:ActionItemsProps){
 
     const handleLogout = async () => {
         let token = localStorage.getItem('token');
-        let success = false;
         if (!!token) {
             try {
                 await ServerRequest.logoutUser(token);
-                localStorage.removeItem('token');
-                success = true;
                 
             } catch (error) {
-                console.error('Logout failed:', error);
+                console.log('Logout failed:', error);
             }
+            finally{
+                closeMenu?.();
+                localStorage.removeItem('token');
+                checkLoginStatus()
+                router.push('/');
+            }
+           
         }
-        checkLoginStatus();
-        if (success) {
-            router.push('/');
-        }
+        
     };
 
 
@@ -58,6 +60,7 @@ function ActionItems({isMobile}:ActionItemsProps){
         setIsAnimating(false);
         setTimeout(() => {
             setChangePanel(false);
+            closeMenu?.();
         }, 300);
     };
 
@@ -67,11 +70,11 @@ function ActionItems({isMobile}:ActionItemsProps){
     return(
         <>
             <div className={style}>
-                <PressableLink href="/filter" className={buttonStyle}>
+                <PressableLink href="/filter" className={buttonStyle} onClick={closeMenu}>
                     <img src="/svg/filter.svg" alt="Filter" className={styles.icon} />
                     <span className={styles.iconText}>Filter</span>
                 </PressableLink>
-                <PressableLink href="/management" className={buttonStyle}>
+                <PressableLink href="/management" className={buttonStyle} onClick={closeMenu}>
                     <img src="/svg/management.svg" alt="Management" className={styles.icon} />
                     <span className={styles.iconText}>Management</span>
                 </PressableLink>
@@ -81,7 +84,7 @@ function ActionItems({isMobile}:ActionItemsProps){
                         <span className={styles.iconText}>Logout</span>
                     </RippleButton>
                 ) : (
-                    <PressableLink href="/login" className={buttonStyle}>
+                    <PressableLink href="/login" className={buttonStyle} onClick={closeMenu}>
                         <img src="/svg/login.svg" alt="Login" className={styles.icon} />
                         <span className={styles.iconText}>Login</span>
                     </PressableLink>

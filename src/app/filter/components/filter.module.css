@@ -27,8 +27,9 @@
   .card {
     position: relative;
     background-color: rgba(var( --main-color));
-    padding: 10px;
-    border-radius: 8px;
+    padding: 5px 10px;
+    border-radius: 5px;
+    width: fit-content;
   }
   
   .buttons {
@@ -199,7 +200,7 @@
     }
   
     .card{
-      padding: 5px;    
+      padding: 5px 10px;  
     }
   
     .header h1 {

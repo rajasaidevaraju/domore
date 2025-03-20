@@ -17,14 +17,34 @@ function AltHome(){
     const [files, setFiles] = useState<FileData[]>([]);
     const [error, setError] = useState<string | null>(null);
     const [meta,setMeta]=useState<Meta>({page: 1,limit: 1,total: 1})
+    const [performerId, setPerformerId] = useState<number | null>(null);
+
     const totalPages = Math.ceil(meta.total / meta.limit);
     useEffect(() => {
        let pageNo = getPageNumber(searchParams.get("page"))
+       let performerIdStr = searchParams.get("performerId")
+       
        async function fetchFiles() {
         try {
-            const filesDataList = await ServerRequest.fetchFiles(pageNo);
+            var filesDataList:FileDataList 
+            let newPerformerId = null;
+
+            if(performerIdStr==null){
+              filesDataList= await ServerRequest.fetchFiles(pageNo);
+            }else{
+              if(!isNaN(Number(performerIdStr))){
+                newPerformerId=Number(performerIdStr)
+                filesDataList= await ServerRequest.fetchFiles(pageNo,newPerformerId);
+
+              }else{
+                setError('Invalid performerId')
+                return;
+              }
+            }
+           
             setFiles(filesDataList.data);
             setMeta(filesDataList.meta)
+            setPerformerId(newPerformerId);
             sessionStorage.setItem('lastPage', pathname);            
         } catch (error) {
             if (error instanceof Error) {
@@ -59,7 +79,7 @@ function AltHome(){
       </div>
       }
       {totalPages>1 && !error && (
-         <Pagination {...meta}></Pagination>
+         <Pagination meta={meta} performerId={performerId}></Pagination>
       )}
     </main>
   );
@@ -73,6 +93,8 @@ function getPageNumber(page:string | null):number{
     }
     return 1;
 }
+
+
 
 export default function AltHomePage(){
 

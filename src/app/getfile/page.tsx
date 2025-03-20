@@ -12,6 +12,7 @@ import { ToastData,MessageType, EntityType,Item } from "@/app/types/Types";
 import RippleButton from "@/app/types/RippleButton";
 import AddPerformerPanel from "./components/AddPanel";
 import { FilterRequests } from "../service/FilterRequests";
+import RippleButtonLink from "../types/RippleButtonLink";
 const IS_DEPLOYMENT_STATIC = process.env.NEXT_PUBLIC_IS_DEPLOYMENT_STATIC === "true";
 const API_BASE_URL = IS_DEPLOYMENT_STATIC ? "" : process.env.NEXT_PUBLIC_SERVER_ADDRESS ?? "";
 
@@ -32,9 +33,6 @@ const GetFile = () => {
     const videoVolume="videoVolume"
     const videoMuted="videoMuted"
     const videoPlaybackSpeed="videoPlaybackSpeed"
-
-    let currentPerformer=[{id:20,name:"Test 1"},{id:21,name:"Test 2"}]
-    currentPerformer = currentPerformer.concat(performers ?? [])
     
     const [toasts, setToasts] = useState<ToastData[]>([]);
 
@@ -223,9 +221,17 @@ const GetFile = () => {
             <p className={styles.name}>{fileName?fileName:"name.."}</p>
             <div className={styles.buttonsDiv}>
                 <p>Performers: </p>
-                {currentPerformer.map((performer)=>(
-                    <RippleButton className={styles.scbutton} key={performer.id}><p>{performer.name}</p></RippleButton>
-                ))}
+                {performers === undefined||performers.length<1 ? (<p>No Performers</p>) : (
+                    performers.map((performer) => (
+                        <RippleButtonLink 
+                            href={`/files?performerId=${performer.id}`} 
+                            className={styles.scbutton} 
+                            key={performer.id}
+                        >
+                            <p>{performer.name}</p>
+                        </RippleButtonLink>
+                    ))
+                )}
                 {token.current != null && (
                 <>
                     {addPanel ? (

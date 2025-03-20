@@ -85,10 +85,11 @@
 .scbutton{
     border-radius: 5px;
     justify-content: center;
+    align-items: center;
     display: flex;
-    padding: 7px;
+    padding: 10px;
+    width: fit-content;
     height: 34px;
-    font-size: small;
     background-color: rgb(var(--main-color-faint));
     text-decoration: none;
     color: inherit;
