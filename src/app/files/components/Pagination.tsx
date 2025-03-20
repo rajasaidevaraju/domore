@@ -8,9 +8,11 @@ interface PaginationProps{
     performerId:number|null
 }
 
-export default function Pagination({meta, performerId}:PaginationProps){
+export default function Pagination({meta:{page, limit, total}, performerId}:PaginationProps){
 
-    const { page, limit, total } = meta;
+    
+    
+
 
     // Calculate total pages
     const totalPages = Math.ceil(total / limit);
@@ -27,13 +29,13 @@ export default function Pagination({meta, performerId}:PaginationProps){
         base.searchParams.append("performerId",performerId.toString())
     }
 
-    let prevUrl=isFirstPage?new URL("#"):new URL(base);
+    let prevUrl=isFirstPage?new URL("#",window.location.origin):new URL(base);
 
     if(!isFirstPage){
         prevUrl.searchParams.append("page", (page-1).toString());
     }
 
-    let nextUrl=isLastPage?new URL("#"):new URL(base);
+    let nextUrl=isLastPage?new URL("#",window.location.origin):new URL(base);
     if(!isLastPage){
         nextUrl.searchParams.append("page", (page+1).toString());
     }

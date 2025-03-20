@@ -56,7 +56,7 @@ export default function Home() {
      </div>
      }
      {totalPages>1 && !error && (
-       <Pagination {...meta}></Pagination>
+       <Pagination meta={meta} performerId={null}></Pagination>
      )}
    </main>
  );

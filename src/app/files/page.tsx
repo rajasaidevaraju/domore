@@ -41,7 +41,7 @@ function AltHome(){
                 return;
               }
             }
-           
+            
             setFiles(filesDataList.data);
             setMeta(filesDataList.meta)
             setPerformerId(newPerformerId);
@@ -79,7 +79,7 @@ function AltHome(){
       </div>
       }
       {totalPages>1 && !error && (
-         <Pagination meta={meta} performerId={performerId}></Pagination>
+         <Pagination meta={meta} performerId={performerId}/>
       )}
     </main>
   );
