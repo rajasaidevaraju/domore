@@ -42,7 +42,7 @@ export default function Pagination({meta:{page, limit, total}, performerId}:Pagi
 
     const handlePageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         const selectedPage = e.target.value;
-        let url = new URL(base);
+        let url = new URL(base,window.location.origin);
         url.searchParams.append("page", selectedPage);
         if(performerId!=null){
             url.searchParams.append("performerId",performerId.toString())
