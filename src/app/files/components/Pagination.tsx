@@ -8,9 +8,11 @@ interface PaginationProps{
     performerId:number|null
 }
 
-export default function Pagination({meta, performerId}:PaginationProps){
+export default function Pagination({meta:{page, limit, total}, performerId}:PaginationProps){
 
-    const { page, limit, total } = meta;
+    
+    
+
 
     // Calculate total pages
     const totalPages = Math.ceil(total / limit);
@@ -27,16 +29,26 @@ export default function Pagination({meta, performerId}:PaginationProps){
         base.searchParams.append("performerId",performerId.toString())
     }
 
-    let prevUrl=isFirstPage?new URL("#"):new URL(base);
+    let prevUrl=isFirstPage?new URL("#",window.location.origin):new URL(base);
 
     if(!isFirstPage){
         prevUrl.searchParams.append("page", (page-1).toString());
     }
 
-    let nextUrl=isLastPage?new URL("#"):new URL(base);
+    let nextUrl=isLastPage?new URL("#",window.location.origin):new URL(base);
     if(!isLastPage){
         nextUrl.searchParams.append("page", (page+1).toString());
     }
+
+    const handlePageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        const selectedPage = e.target.value;
+        let url = new URL(base,window.location.origin);
+        url.searchParams.append("page", selectedPage);
+        if(performerId!=null){
+            url.searchParams.append("performerId",performerId.toString())
+        }
+        window.location.href = url.toString();
+    };
 
 
     return(
@@ -47,7 +59,7 @@ export default function Pagination({meta, performerId}:PaginationProps){
             <select
                 className={styles.dropdown_select}
                 value={page}
-                onChange={(e) => window.location.href = `/files?page=${e.target.value}`}
+                onChange={handlePageChange}
             >
                 {pageOptions.map(option => (
                     <option key={option} value={option}>

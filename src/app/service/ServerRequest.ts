@@ -1,5 +1,5 @@
 const IS_DEPLOYMENT_STATIC = process.env.NEXT_PUBLIC_IS_DEPLOYMENT_STATIC === "true";
-const API_BASE_URL = IS_DEPLOYMENT_STATIC ? "" : process.env.NEXT_PUBLIC_SERVER_ADDRESS ?? "";
+const API_BASE_URL = IS_DEPLOYMENT_STATIC ? "" : process.env.NEXT_PUBLIC_SERVER_ADDRESS ?? undefined;
 
 
 import { FileDataList } from "../types/FileDataList";
@@ -8,7 +8,9 @@ export const ServerRequest = {
   
   async fetchFiles(page?:number,performerId?:number): Promise<FileDataList> {
     
-    let url = new URL(`${API_BASE_URL}/server/files`);
+    let baseURL=API_BASE_URL || window.location.origin
+
+    let url = new URL("/server/files",baseURL);
     if (page !== undefined) {
       url.searchParams.append("page", page.toString());
     }

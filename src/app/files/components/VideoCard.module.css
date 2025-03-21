@@ -32,6 +32,14 @@
   text-decoration: none !important;
 }
 
+
+@media (prefers-color-scheme: dark) {
+  .thumbnail {
+    opacity: 0.85;
+  }
+}
+
+
 .placeholderDiv{
   height: 150px;
   width: 270px;
