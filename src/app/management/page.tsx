@@ -36,8 +36,12 @@ const Management=()=>{
 
     return (
         <div className={styles.managementpanel}>
-            {isLoggedIn && <UploadCard/>}
-            <Operations showToast={showToast}/>
+            {isLoggedIn && 
+            <>
+                <UploadCard/>
+                <Operations showToast={showToast}/>
+            </>
+            }
             <Stats/>
             {toasts.length > 0 && <ToastMessage toasts={toasts} onClose={removeToast} />}
         </div>

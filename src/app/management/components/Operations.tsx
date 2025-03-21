@@ -54,13 +54,13 @@ const Operations: React.FC<OperationsProps> = ({showToast}:OperationsProps) => {
         </div>
        
         <div className={styles.itemContainer}>
-            <div className={styles.operationItem}>
+            <div className={`${styles.operationItem} ${styles.borderBottom}`}>
                 <RippleButton suggestion={scanningToolTip} className={`${styles.commonButton} ${styles.minWidth}`} onClick={handleScan} disabled={isScanning}>
                     Scan
                 </RippleButton>
                 <p className={styles.explanation}>This will scan the file system and add new files to the database.</p>
             </div>
-            <div className={styles.operationItem}>
+            <div className={`${styles.operationItem} ${styles.borderBottom}`}>
                 <RippleButton  className={`${styles.commonButton} ${styles.minWidth}`}  onClick={handleCleanup}>
                     Cleanup
                 </RippleButton>

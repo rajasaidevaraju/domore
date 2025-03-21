@@ -13,12 +13,12 @@
   gap:10px;
   display: flex;
   flex-direction: column;
-  margin: 10px;
   border: 1px solid rgb(var(--main-color));
-  border-radius: 8px;
+  border-radius: 5px;
   width: fit-content;
   min-width: 650px;
 }
+
 
 .trackerContainer{
   display: flex;
@@ -28,9 +28,21 @@
 
 .itemContainer{
   display: flex;
-  gap: 10px;
   flex-direction: column;
-  align-items: flex-start;
+}
+
+.operationItem{
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap:10px;
+  padding: 10px 0px;
+ }
+
+ 
+.borderBottom{
+  border-bottom: 2px solid rgb(var(--main-color-active));
+  width: 100%;
 }
 
 .header {
@@ -69,16 +81,6 @@
 .minWidth{
   min-width: 100px;
 }
-
-
-.operationItem{
- display: flex;
- align-items: center;
- justify-content: center;
- gap:10px
-}
-
-
 
 .commonButton:disabled {
   cursor: not-allowed;
