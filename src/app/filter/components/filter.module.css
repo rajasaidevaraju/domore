@@ -29,7 +29,7 @@
     background-color: rgba(var( --main-color));
     padding: 5px 10px;
     border-radius: 5px;
-    width: fit-content;
+    width: fit-content !important;
   }
   
   .buttons {
