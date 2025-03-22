@@ -23,10 +23,9 @@ Before running the application, make sure to configure the necessary environment
   - This ensures that all API requests from the frontend are correctly routed to the backend server.  
 
 - **`NEXT_PUBLIC_IS_DEPLOYMENT_STATIC`**  
-  This flag determines whether the frontend is deployed as a **static site** or a **server-dependent app**.  
-  - **Set to `false`** if the application depends on a backend server for API requests.  
+  This flag determines whether the frontend is deployed as a **static site** or a **next server-dependent app**.  
+  - **Set to `false`** if the application runs on next server. Also remove `"postbuild": "node scripts/postbuild-static.js"` from package.json and `output: 'export'` from next.config.js
   - **Set to `true`** if `output: 'export'` is configured in `next.config.js`, meaning the app is built as a fully **static site**
-
 
 ## Development
 
