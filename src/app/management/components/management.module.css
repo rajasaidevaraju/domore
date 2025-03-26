@@ -15,8 +15,9 @@
   flex-direction: column;
   border: 1px solid rgb(var(--main-color));
   border-radius: 5px;
-  width: fit-content;
-  min-width: 650px;
+  flex-grow: 1;
+  min-width: 80%;
+  max-width: 80%;
 }
 
 
@@ -188,8 +189,9 @@
 @media (max-width: 768px) {
   .cardContainer {
     padding: 10px;
-    width:auto;
-    min-width: 90%;
+    width:inherit;
+    min-width: 100%;
+    max-width: 100%;
   }
 
   .card{
