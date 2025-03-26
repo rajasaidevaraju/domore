@@ -90,7 +90,7 @@ const Operations: React.FC<OperationsProps> = ({showToast}:OperationsProps) => {
                 <p className={styles.explanation}>This will remove any db entries not found in the file system.</p>
             </div>
             <div className={styles.operationItem}>
-                <RippleButton suggestion={repairToolTip} className={`${styles.commonButton} ${styles.minWidth}`} onClick={handleReset}>
+                <RippleButton suggestion={repairToolTip} className={`${styles.commonButton} ${styles.minWidth}`} onClick={handleReset} disabled={isRepair}>
                     Repair
                 </RippleButton>
                 <p className={styles.explanation}>Broken file paths will be searched and updated.</p>
