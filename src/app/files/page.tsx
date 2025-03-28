@@ -45,7 +45,8 @@ function AltHome(){
             setFiles(filesDataList.data);
             setMeta(filesDataList.meta)
             setPerformerId(newPerformerId);
-            sessionStorage.setItem('lastPage', pathname);            
+            sessionStorage.setItem('lastPage', pathname);
+            window.scrollTo(0, 0);            
         } catch (error) {
             if (error instanceof Error) {
               setError(error.message)
