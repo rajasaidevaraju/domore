@@ -51,10 +51,7 @@ const UploadCard=()=>{
             
             if(noDuplicates.length>0){
                 setUploadVisible(true)
-                for(const file of noDuplicates){
-                    await new Promise((resolve) => setTimeout(resolve, 100));
-                    setFiles((prevItems)=>{return[...prevItems, file]});
-                }
+                setFiles((prevItems) => [...prevItems, ...noDuplicates]);
             }
             if (fileInputRef.current) {
                 fileInputRef.current.value = "";
