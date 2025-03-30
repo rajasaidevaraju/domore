@@ -3,13 +3,14 @@ import { useEffect, useState, useRef, ChangeEvent } from "react";
 import styles from "./management.module.css";
 import ProgressTracker from "./ProgressTracker";
 import RippleButton from "@/app/types/RippleButton";
+
 const UploadCard=()=>{
 
     const [files, setFiles]=useState<File[]>([]);
     const [uploadingFiles, setUploadingFiles] = useState<Set<string>>(new Set());
     const [uploadVisible, setUploadVisible] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
-    const token=useRef<string | null>(null)
+
     let suggestion=uploadVisible?undefined:"Choose files first"
     const initiateUpload=async()=>{
         if (files.length > 0) {
@@ -22,10 +23,6 @@ const UploadCard=()=>{
           }
 
     }
-
-    useEffect(() => {
-        token.current = localStorage.getItem('token');  
-    }, []);
 
     const removeFile=(fileToRemove:File)=>{
         let newArray=files.filter((file)=>file.name!==fileToRemove.name)
@@ -97,7 +94,6 @@ const UploadCard=()=>{
                     <ProgressTracker 
                         key={item.name} 
                         file={item}
-                        token={token.current} 
                         startUpload={uploadingFiles.has(item.name)} 
                         removeFile={removeFile}
                     />

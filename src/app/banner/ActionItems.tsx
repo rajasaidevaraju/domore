@@ -7,6 +7,7 @@ import RippleButton from "@/app/types/RippleButton";
 import ChangePanel from './ChangePanel'
 import { useRouter } from 'next/navigation';
 import { ServerRequest } from '../service/ServerRequest';
+import { useAuthStore } from '@/app/store/auth';
 interface ActionItemsProps{
     isMobile:Boolean
     closeMenu?:()=>void
@@ -15,37 +16,22 @@ interface ActionItemsProps{
 function ActionItems({isMobile,closeMenu}:ActionItemsProps){
     const [showChangePanel, setChangePanel] = useState(false);
     const [isAnimating, setIsAnimating] = useState(false);
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const { isLoggedIn, username,token,clearAuth } = useAuthStore();
     const router = useRouter();
 
-    const checkLoginStatus = () => {
-        setIsLoggedIn(!!localStorage.getItem('token'));
-    };
-    useEffect(() => {
-
-        checkLoginStatus();
-        const storageListener = () => checkLoginStatus();
-        window.addEventListener('storage', storageListener);
-
-        return () => window.removeEventListener('storage', storageListener);
-    }, []);
-
+    
     const handleLogout = async () => {
-        let token = localStorage.getItem('token');
         if (!!token) {
             try {
-                await ServerRequest.logoutUser(token);
-                
+                await ServerRequest.logoutUser(token);  
             } catch (error) {
                 console.log('Logout failed:', error);
             }
             finally{
                 closeMenu?.();
-                localStorage.removeItem('token');
-                checkLoginStatus()
+                clearAuth();         
                 router.push('/');
             }
-           
         }
         
     };

@@ -6,7 +6,7 @@ import AddPanel from "./AddPanel";
 import {Item} from "@/app/types/Types";
 import Loading from "@/app/loading";
 import RippleButtonLink from "@/app/types/RippleButtonLink";
-
+import { useAuthStore } from '@/app/store/auth';
 // Generic types for items like Performer or Category
 interface CardProps<T> {
   items: T[];
@@ -14,7 +14,6 @@ interface CardProps<T> {
   onDelete: (selectedIds: Set<number>) => void;
   onEdit?: () => void;
   label: string;
-  isLoggedIn: boolean;
   loading: boolean;
 }
 
@@ -24,14 +23,13 @@ const Card = <T extends Item>({
   onDelete,
   onEdit,
   label,
-  isLoggedIn,
   loading
 }: CardProps<T>) => {
   const [isSelecting, setIsSelecting] = useState(false);
   const [selectedItems, setSelectedItems] = useState<Set<number>>(new Set());
   const [showAddPanel, setShowAddPanel] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
-
+  const {isLoggedIn} = useAuthStore();
   const openPanel = () => {
     setShowAddPanel(true);
     setIsAnimating(true);

@@ -1,7 +1,7 @@
-const IS_DEPLOYMENT_STATIC = process.env.NEXT_PUBLIC_IS_DEPLOYMENT_STATIC === "true";
-const API_BASE_URL = IS_DEPLOYMENT_STATIC ? "" : process.env.NEXT_PUBLIC_SERVER_ADDRESS ?? "";
-import { EntityType, Item, ApiResponse } from '../types/Types'
+import {ApiResponse } from '../types/Types'
+import {ServerUrlProvider} from '../service/UrlProvider'
 
+const API_BASE_URL = ServerUrlProvider();
 
 export const OperationRequests = {
     async fetchScan(token:string):Promise<ApiResponse>{

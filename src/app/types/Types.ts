@@ -53,7 +53,6 @@ export interface ToastData {
 }
 
 export interface CardProps {
-  isLoggedIn: boolean;
   showToast:(toastDetails: ToastMessageDetails) => void
 }
 

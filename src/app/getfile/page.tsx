@@ -4,7 +4,6 @@ import React,{useEffect, useState,useRef} from "react"
 import {useSearchParams,useRouter} from 'next/navigation'
 import { Suspense } from 'react'
 import styles from './GetFile.module.css';
-import html2canvas from "html2canvas";
 import {ServerRequest} from './../service/ServerRequest'
 import ToastMessage from '../types/ToastMessages'
 import Loading from './../loading'
@@ -13,8 +12,8 @@ import RippleButton from "@/app/types/RippleButton";
 import AddPerformerPanel from "./components/AddPanel";
 import { FilterRequests } from "../service/FilterRequests";
 import RippleButtonLink from "../types/RippleButtonLink";
-const IS_DEPLOYMENT_STATIC = process.env.NEXT_PUBLIC_IS_DEPLOYMENT_STATIC === "true";
-const API_BASE_URL = IS_DEPLOYMENT_STATIC ? "" : process.env.NEXT_PUBLIC_SERVER_ADDRESS ?? "";
+import { useAuthStore } from '@/app/store/auth';
+import {ServerUrlProvider} from '@/app/service/UrlProvider'
 
 
 const GetFile = () => {
@@ -25,7 +24,7 @@ const GetFile = () => {
     const [addPanel,setAddPanel]=useState<boolean>(false)
 
     const videoRef = useRef<HTMLVideoElement>(null);
-    const token=useRef<string | null>(null)
+    const {token}=useAuthStore();
     const router = useRouter();
 
     const rateChnage="ratechange"
@@ -68,12 +67,10 @@ const GetFile = () => {
         try {
             
             setAddPanel(false)
-            let token=localStorage.getItem('token')
-
+            
             if(token==null){
                 throw new Error("Unauthorized access. Please Login")
             }
-
             if(typeof fileId !== 'string' || isNaN(Number(fileId))){
                 throw new Error("Invalid File ID")
             }else{
@@ -120,7 +117,7 @@ const GetFile = () => {
 
 
     useEffect(() => {
-        token.current=localStorage.getItem('token')
+        const API_BASE_URL =ServerUrlProvider()
         const currentFileId = searchParams.get('fileId')
         const controller = new AbortController();
         const {signal} = controller;
@@ -157,18 +154,18 @@ const GetFile = () => {
     }, [searchParams]);
     
     const handleTakeScreenshot = async () => {
-        let currToken=token.current
-        if(currToken!=null){
+        if(token!=null){
             const videoElement = videoRef.current;
             if (!videoElement || typeof fileId !== 'string'){
                 showToast("Invalid File ID",MessageType.WARNING)
                 return;
             }
             try {
+                const html2canvas = (await import("html2canvas")).default;
                 const canvas = await html2canvas(videoElement,{allowTaint: true});
                 const imageData = canvas.toDataURL("image/jpeg", 0.3);
                 // Send the screenshot to the server
-                await ServerRequest.uploadThumbnail(fileId,imageData,currToken);
+                await ServerRequest.uploadThumbnail(fileId,imageData,token);
                 showToast("Screenshot set as Thumbnail",MessageType.SUCCESS)
                 
             } catch (error: Error | any) {
@@ -183,15 +180,14 @@ const GetFile = () => {
     };
 
     const deleteVideo = async()=>{
-        let currToken=token.current
         if (typeof fileId !== 'string'){
             showToast("Invalid File ID ",MessageType.WARNING)
             return;
         }
-        if(currToken!=null){
+        if(token!=null){
             try {
                 if (confirm("Do you want to delete the file!")) {
-                    await ServerRequest.deleteVideo(fileId,currToken)
+                    await ServerRequest.deleteVideo(fileId,token)
                     const lastPage = sessionStorage.getItem('lastPage');
                     if (lastPage) {
                         router.push(lastPage);
@@ -232,7 +228,7 @@ const GetFile = () => {
                         </RippleButtonLink>
                     ))
                 )}
-                {token.current != null && (
+                {token != null && (
                 <>
                     {addPanel ? (
                         <AddPerformerPanel onClose={() => setAddPanel(false)} onSave={savePerformer} showToast={showToast} />
@@ -244,7 +240,7 @@ const GetFile = () => {
                 </>
                 )}
             </div>
-            {token.current !=null && 
+            {token !=null && 
                 <div className={styles.buttonsDiv}>
                         <p>Actions: </p>
                     <RippleButton className={styles.scbutton} onClick={handleTakeScreenshot}>Set As Thumbnail</RippleButton>

@@ -2,23 +2,22 @@ import { useEffect, useState, useRef } from "react";
 import { ServerRequest } from "@/app/service/ServerRequest";
 import { formatSize } from "@/app/service/formatSize";
 import styles from "./management.module.css";
-
+import { useAuthStore } from '@/app/store/auth';
 
 interface ProgressTrackerProps {
     file: File;
     startUpload:boolean
     removeFile:(file:File)=>void
-    token:string|null
   }
 
-const ProgressTracker: React.FC<ProgressTrackerProps>  = ({file,startUpload,removeFile,token}) => {
+const ProgressTracker: React.FC<ProgressTrackerProps>  = ({file,startUpload,removeFile}) => {
   const [progress, setProgress] = useState<number>(0);
   const [speed, setSpeed] = useState<number>(0); 
   const xhr = useRef<XMLHttpRequest | null>(null);
   const uploadStarted = useRef(false);
   const [error, setError] = useState<string | null>(null);
   const [aborted,setAborted] = useState(false)
-
+  const {isLoggedIn,token} = useAuthStore();
 
   const handleFileUpload = async () => {
     if(token==null){

@@ -1,6 +1,8 @@
-const IS_DEPLOYMENT_STATIC = process.env.NEXT_PUBLIC_IS_DEPLOYMENT_STATIC === "true";
-const API_BASE_URL = IS_DEPLOYMENT_STATIC ? "" : process.env.NEXT_PUBLIC_SERVER_ADDRESS ?? "";
+import {ServerUrlProvider} from './UrlProvider'
 import { EntityType, Item, ApiResponse } from './../types/Types'
+
+const API_BASE_URL = ServerUrlProvider();
+
 
 export const FilterRequests = {
     async fetchItems(type: EntityType): Promise<Item[]> {

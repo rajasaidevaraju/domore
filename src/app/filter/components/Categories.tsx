@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import Card from "./CommonCard";
 import { Category,CardProps } from "@/app/types/Types";
 
-const CategoriesCard: React.FC<CardProps> = ({ isLoggedIn })=>{
+const CategoriesCard: React.FC<CardProps> = ({ })=>{
   const [categories, setCategories] = useState<Category[]>([
     { id: 1, name: "category1" },
     { id: 2, name: "category2" },
@@ -27,7 +27,6 @@ const CategoriesCard: React.FC<CardProps> = ({ isLoggedIn })=>{
       onAdd={handleAddCategories}
       onDelete={handleDeleteCategories}
       label="Categories"
-      isLoggedIn={isLoggedIn}
       loading={false}
     />
   );

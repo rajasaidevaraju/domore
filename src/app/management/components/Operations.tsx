@@ -3,6 +3,7 @@ import styles from "./management.module.css";
 import RippleButton from '@/app/types/RippleButton';
 import { OperationRequests } from '@/app/service/OperationRequests';
 import { MessageType } from '@/app/types/Types';
+import { useAuthStore } from '@/app/store/auth';
 
 interface OperationsProps {
     showToast: (message: string, type: MessageType) => void;
@@ -12,13 +13,13 @@ const Operations: React.FC<OperationsProps> = ({showToast}:OperationsProps) => {
 
     const [isScanning, setIsScanning] = useState(false);
     const [isRepair,setIsRepair]=useState(false);
+    const {isLoggedIn,token} = useAuthStore();
 
     let scanningToolTip= isScanning?"Scanning in progress":undefined;
     let repairToolTip=isRepair?"Repair in progress":undefined;
     const handleScan = async () => {
         setIsScanning(true);
         try{
-            let token=localStorage.getItem('token');
             if(token===null){
                 showToast("Unauthorized access", MessageType.DANGER);
             }else{
@@ -48,7 +49,6 @@ const Operations: React.FC<OperationsProps> = ({showToast}:OperationsProps) => {
        
         setIsRepair(true);
         try{
-            let token=localStorage.getItem('token');
             if(token===null){
                 showToast("Unauthorized access", MessageType.DANGER);
             }else{

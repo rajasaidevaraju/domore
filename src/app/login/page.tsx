@@ -6,6 +6,7 @@ import { ToastData, MessageType } from "@/app/types/Types";
 import ToastMessage from "@/app/types/ToastMessages";
 import RippleButton from '../types/RippleButton';
 import {ServerRequest} from '@/app/service/ServerRequest';
+import { useAuthStore } from '@/app/store/auth';
 import { useRouter } from 'next/navigation';
 import EyeIcon from './eyeIcon';
 
@@ -17,7 +18,9 @@ const Login: React.FC = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [loginError, setLoginError] = useState('');
     const [toasts, setToasts] = useState<ToastData[]>([]);
+    const {token,setAuth} =useAuthStore();
     const router = useRouter();
+
 
     const showToast = (message: string, type: MessageType) => {
         const id = Date.now();
@@ -108,7 +111,7 @@ const Login: React.FC = () => {
                     setLoginError(error);
                 }
                 if(token!=null){
-                    localStorage.setItem('token',token);
+                    setAuth(true,username,token);
                     showToast('Login successful', MessageType.SUCCESS);
                     router.push('/');
 
