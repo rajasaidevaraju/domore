@@ -46,7 +46,11 @@
   border-radius: 5px;
   padding: 7px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: background-color 0.3s ease; 
+}
+
+.active{
+  background-color: rgb(var(--main-color-hover));
 }
 
 .actionItemMobile{

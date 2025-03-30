@@ -34,7 +34,7 @@ export default function Home() {
 
     fetchFiles();
 }, []);
-  console.log(meta)
+
   return (
     <main className={styles.mainContainer}>
      

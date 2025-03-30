@@ -45,7 +45,8 @@ function AltHome(){
             setFiles(filesDataList.data);
             setMeta(filesDataList.meta)
             setPerformerId(newPerformerId);
-            sessionStorage.setItem('lastPage', pathname);
+            let fullPath= pathname+`?page=${pageNo}`
+            sessionStorage.setItem('lastPage', fullPath);
             window.scrollTo(0, 0);            
         } catch (error) {
             if (error instanceof Error) {

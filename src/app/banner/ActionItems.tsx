@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react';
 import PressableLink from "@/app/types/PressableLink";
 import RippleButton from "@/app/types/RippleButton";
 import ChangePanel from './ChangePanel'
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { ServerRequest } from '../service/ServerRequest';
 import { useAuthStore } from '@/app/store/auth';
 interface ActionItemsProps{
@@ -17,6 +17,13 @@ function ActionItems({isMobile,closeMenu}:ActionItemsProps){
     const [showChangePanel, setChangePanel] = useState(false);
     const [isAnimating, setIsAnimating] = useState(false);
     const { isLoggedIn, username,token,clearAuth } = useAuthStore();
+    const pathname = usePathname();
+
+    const isManagementActive = pathname === '/management';
+    const isFilterActive = pathname === '/filter';
+    const isLoginActive = pathname === '/login';
+    
+
     const router = useRouter();
 
     
@@ -50,17 +57,25 @@ function ActionItems({isMobile,closeMenu}:ActionItemsProps){
         }, 300);
     };
 
+    
 
     let style=`${styles['actionItems']} ${isMobile? styles['actionItemsMenu']:""}`
     let buttonStyle=`${styles['actionItem']} ${isMobile? styles['actionItemMobile']:""}`
+
+    let filterStyle=`${buttonStyle} ${!isMobile &&isFilterActive? styles['active']:"" }`
+    let managementStyle=`${buttonStyle} ${!isMobile &&isManagementActive? styles['active']:"" }`
+    let loginStyle=`${buttonStyle} ${!isMobile &&isLoginActive? styles['active']:"" }`
+    
+    console.log(`isLoginActive: ${isLoginActive}`)
+    
     return(
         <>
             <div className={style}>
-                <PressableLink href="/filter" className={buttonStyle} onClick={closeMenu}>
+                <PressableLink href="/filter" className={filterStyle} onClick={closeMenu}>
                     <img src="/svg/filter.svg" alt="Filter" className={styles.icon} />
                     <span className={styles.iconText}>Filter</span>
                 </PressableLink>
-                <PressableLink href="/management" className={buttonStyle} onClick={closeMenu}>
+                <PressableLink href="/management" className={managementStyle} onClick={closeMenu}>
                     <img src="/svg/management.svg" alt="Management" className={styles.icon} />
                     <span className={styles.iconText}>Management</span>
                 </PressableLink>
@@ -70,7 +85,7 @@ function ActionItems({isMobile,closeMenu}:ActionItemsProps){
                         <span className={styles.iconText}>Logout</span>
                     </RippleButton>
                 ) : (
-                    <PressableLink href="/login" className={buttonStyle} onClick={closeMenu}>
+                    <PressableLink href="/login" className={loginStyle} onClick={closeMenu}>
                         <img src="/svg/login.svg" alt="Login" className={styles.icon} />
                         <span className={styles.iconText}>Login</span>
                     </PressableLink>

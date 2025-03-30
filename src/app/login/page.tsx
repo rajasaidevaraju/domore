@@ -113,7 +113,13 @@ const Login: React.FC = () => {
                 if(token!=null){
                     setAuth(true,username,token);
                     showToast('Login successful', MessageType.SUCCESS);
-                    router.push('/');
+                    const lastPage = sessionStorage.getItem('lastPage');
+                    if (lastPage) {
+                        router.push(lastPage);
+                        sessionStorage.removeItem('lastPage');
+                    }else{
+                        router.push("/")
+                    }
 
                 }
             } catch (error) {

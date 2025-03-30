@@ -191,7 +191,6 @@ const GetFile = () => {
                     const lastPage = sessionStorage.getItem('lastPage');
                     if (lastPage) {
                         router.push(lastPage);
-                        sessionStorage.removeItem('lastPage');
                     }else{
                         router.push("/")
                     }
