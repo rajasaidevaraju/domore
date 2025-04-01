@@ -48,7 +48,7 @@ const Banner = () => {
     }
 
     return (
-      <div className={styles.banner}>
+      <nav className={styles.banner}>
         <PressableLink href="/" className={styles.actionItem}>
             <img src="/svg/home.svg" alt="Filter" className={styles.icon} />
             <span className={styles.icon_text}>Home</span>
@@ -68,7 +68,7 @@ const Banner = () => {
                 }
             </div>
         }
-    </div>
+    </nav>
   );
 };
 
