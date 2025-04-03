@@ -65,9 +65,7 @@ function ActionItems({isMobile,closeMenu}:ActionItemsProps){
     let filterStyle=`${buttonStyle} ${!isMobile &&isFilterActive? styles['active']:"" }`
     let managementStyle=`${buttonStyle} ${!isMobile &&isManagementActive? styles['active']:"" }`
     let loginStyle=`${buttonStyle} ${!isMobile &&isLoginActive? styles['active']:"" }`
-    
-    console.log(`isLoginActive: ${isLoginActive}`)
-    
+
     return(
         <>
             <div className={style}>

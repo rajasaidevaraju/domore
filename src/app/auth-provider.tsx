@@ -26,7 +26,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         };
 
         verifyToken();
-    }, []);
+    }, [token]);
 
     if (loading) return <Loading/>;
 

@@ -288,8 +288,8 @@ export const ServerRequest = {
         return invalid
       }
       let data = await response.json();
-      if (typeof data === 'object' && data !== null && data.userName !== undefined && data.token !== undefined) {
-        return {username:data.userName,token:data.token,isTokenValid:true}
+      if (typeof data === 'object' && data !== null && data.username !== undefined && data.token !== undefined) {
+        return {username:data.username,token:data.token,isTokenValid:true}
       }
       return invalid
     } catch (error: any) {
