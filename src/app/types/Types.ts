@@ -4,6 +4,9 @@ export interface Item {
   name: string;
 }
 
+export interface ItemWithCount extends Item {
+  count:number;
+}
   
 // Define the structure of a Performer
 export interface Performer extends Item {

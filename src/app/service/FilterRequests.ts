@@ -1,11 +1,11 @@
 import {ServerUrlProvider} from './UrlProvider'
-import { EntityType, Item, ApiResponse } from './../types/Types'
+import { EntityType, ItemWithCount, ApiResponse } from './../types/Types'
 
 const API_BASE_URL = ServerUrlProvider();
 
 
 export const FilterRequests = {
-    async fetchItems(type: EntityType): Promise<Item[]> {
+    async fetchItems(type: EntityType): Promise<ItemWithCount[]> {
 
         //add s to type
         let updatedType=type+"s"

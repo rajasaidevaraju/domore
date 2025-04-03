@@ -2,13 +2,13 @@
 
 import React, { useState } from "react";
 import Card from "./CommonCard";
-import { Category,CardProps } from "@/app/types/Types";
+import { ItemWithCount,CardProps } from "@/app/types/Types";
 
 const CategoriesCard: React.FC<CardProps> = ({ })=>{
-  const [categories, setCategories] = useState<Category[]>([
-    { id: 1, name: "category1" },
-    { id: 2, name: "category2" },
-    { id: 3, name: "category3" },
+  const [categories, setCategories] = useState<ItemWithCount[]>([
+    { id: 1, name: "category1",count:0 },
+    { id: 2, name: "category2",count:0 },
+    { id: 3, name: "category3",count:0 },
   ]);
 
   const handleAddCategories = (names: string[]) => {

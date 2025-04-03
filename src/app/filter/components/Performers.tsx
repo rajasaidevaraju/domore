@@ -1,14 +1,14 @@
 'use client';
 
 import React, { useEffect, useState } from "react";
-import { Item,CardProps,EntityType, MessageType } from "../../types/Types";
+import { ItemWithCount,CardProps,EntityType, MessageType } from "../../types/Types";
 import {FilterRequests}  from "@/app/service/FilterRequests";
 import Card from "./CommonCard";
 import { useAuthStore } from '@/app/store/auth';
 
 
 const PerformersCard: React.FC<CardProps> = ({showToast }) => {
-  const [performers, setPerformers] = useState<Item[]>([]);
+  const [performers, setPerformers] = useState<ItemWithCount[]>([]);
   const [loading, setLoading] = useState(false);
   const {token} = useAuthStore();
   

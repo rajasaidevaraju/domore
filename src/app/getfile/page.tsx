@@ -11,7 +11,7 @@ import { ToastData,MessageType, EntityType,Item } from "@/app/types/Types";
 import RippleButton from "@/app/types/RippleButton";
 import AddPerformerPanel from "./components/AddPanel";
 import { FilterRequests } from "../service/FilterRequests";
-import RippleButtonLink from "../types/RippleButtonLink";
+import PressableLink from "../types/PressableLink";
 import { useAuthStore } from '@/app/store/auth';
 import {ServerUrlProvider} from '@/app/service/UrlProvider'
 
@@ -218,13 +218,13 @@ const GetFile = () => {
                 <p>Performers: </p>
                 {performers === undefined||performers.length<1 ? (<p>No Performers</p>) : (
                     performers.map((performer) => (
-                        <RippleButtonLink 
+                        <PressableLink 
                             href={`/files?performerId=${performer.id}`} 
                             className={styles.scbutton} 
                             key={performer.id}
                         >
                             <p>{performer.name}</p>
-                        </RippleButtonLink>
+                        </PressableLink>
                     ))
                 )}
                 {token != null && (

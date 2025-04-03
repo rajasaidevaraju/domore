@@ -3,9 +3,9 @@
 import React, { useState , useEffect} from "react";
 import styles from "./filter.module.css";
 import AddPanel from "./AddPanel";
-import {Item} from "@/app/types/Types";
+import {ItemWithCount} from "@/app/types/Types";
 import Loading from "@/app/loading";
-import RippleButtonLink from "@/app/types/RippleButtonLink";
+import PressableLink from "@/app/types/PressableLink";
 import { useAuthStore } from '@/app/store/auth';
 // Generic types for items like Performer or Category
 interface CardProps<T> {
@@ -17,7 +17,7 @@ interface CardProps<T> {
   loading: boolean;
 }
 
-const Card = <T extends Item>({
+const Card = <T extends ItemWithCount>({
   items,
   onAdd,
   onDelete,
@@ -138,7 +138,7 @@ const Card = <T extends Item>({
               <p className={styles.text}>{item.name}</p>
             </div>
         ):(
-          <RippleButtonLink key={item.id} className={styles.card} href={`/files?performerId=${item.id}`}> {item.name}</RippleButtonLink>
+          <PressableLink key={item.id} className={styles.card} href={`/files?performerId=${item.id}`}> {item.name +" | "+item.count}</PressableLink>
         )
 
 
