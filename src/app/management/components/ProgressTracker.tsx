@@ -54,7 +54,7 @@ const stopUpload=()=>{
   setAborted(true)
     setTimeout(() => {
       removeFile(file)
-    }, 1000);
+    }, 300);
 
 }
 

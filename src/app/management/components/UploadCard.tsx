@@ -30,6 +30,12 @@ const UploadCard=()=>{
             setUploadVisible(false)
         }
         setFiles(newArray)
+
+        setUploadingFiles(prev => {
+            const newSet = new Set(prev);
+            newSet.delete(fileToRemove.name);
+            return newSet;
+        });
     }
     const addFile=async(event:ChangeEvent<HTMLInputElement>)=>{
         
