@@ -64,7 +64,8 @@ function ActionItems({isMobile,closeMenu}:ActionItemsProps){
 
     let filterStyle=`${buttonStyle} ${!isMobile &&isFilterActive? styles['active']:"" }`
     let managementStyle=`${buttonStyle} ${!isMobile &&isManagementActive? styles['active']:"" }`
-    let loginStyle=`${buttonStyle} ${!isMobile &&isLoginActive? styles['active']:"" }`
+    let loginStyle=`${buttonStyle} ${!isMobile &&isLoginActive? styles['active']:"" } ${isLoggedIn && styles['hidden']}`
+    let logoutStyle=`${buttonStyle} ${!isLoggedIn && styles['hidden']}`
 
     return(
         <>
@@ -78,15 +79,15 @@ function ActionItems({isMobile,closeMenu}:ActionItemsProps){
                     <span className={styles.iconText}>Management</span>
                 </PressableLink>
                 {isLoggedIn ? (
-                    <RippleButton className={buttonStyle} onClick={handleLogout}>
-                        <img src="/svg/logout.svg" alt="Logout" className={styles.icon} />
-                        <span className={styles.iconText}>Logout</span>
-                    </RippleButton>
+                <RippleButton className={logoutStyle} onClick={handleLogout}>
+                    <img src="/svg/logout.svg" alt="Logout" className={styles.icon} />
+                    <span className={styles.iconText}>Logout</span>
+                </RippleButton>                
                 ) : (
-                    <PressableLink href="/login" className={loginStyle} onClick={closeMenu}>
-                        <img src="/svg/login.svg" alt="Login" className={styles.icon} />
-                        <span className={styles.iconText}>Login</span>
-                    </PressableLink>
+                <PressableLink href="/login" className={loginStyle} onClick={closeMenu}>
+                    <img src="/svg/login.svg" alt="Login" className={styles.icon} />
+                    <span className={styles.iconText}>Login</span>
+                </PressableLink>
                 )}
                 <RippleButton className={buttonStyle} onClick={openPanel}>
                 <img src="/svg/switch.svg" alt="Change Server" className={styles.icon} />
