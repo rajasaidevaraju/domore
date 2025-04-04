@@ -4,6 +4,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import Video from '../../types/Video';
 import styles from './VideoCard.module.css';
 import { ServerRequest } from '../../service/ServerRequest';
+import Link from 'next/link'
 
 interface VideoCardProps {
   video: Video;
@@ -29,7 +30,7 @@ const VideoCard: React.FC<VideoCardProps> = ({ video }) => {
 
 
   return (
-    <a href={`/getfile?fileId=${video.fileId}`} >
+    <Link href={`/getfile?fileId=${video.fileId}`} >
         <div
           className={styles.videoCard}
           title={cleanedString}
@@ -43,7 +44,7 @@ const VideoCard: React.FC<VideoCardProps> = ({ video }) => {
           )}
           <h2 className={styles.cardText}>{cleanedString}</h2>
         </div>
-      </a>
+      </Link>
   );
 };
 
