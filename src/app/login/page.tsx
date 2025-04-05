@@ -1,11 +1,12 @@
 'use client'
 
-import React, { useState } from 'react';
+import React, { use, useState } from 'react';
 import styles from './Login.module.css';
+import {validateUsername,validatePassword} from '@/app/service/validate'
 import { ToastData, MessageType } from "@/app/types/Types";
 import ToastMessage from "@/app/types/ToastMessages";
 import RippleButton from '../types/RippleButton';
-import {ServerRequest} from '@/app/service/ServerRequest';
+import {UserRequests} from '@/app/service/UserRequests';
 import { useAuthStore } from '@/app/store/auth';
 import { useRouter } from 'next/navigation';
 import EyeIcon from './eyeIcon';
@@ -32,68 +33,30 @@ const Login: React.FC = () => {
         setToasts((prev) => prev.filter((toast) => toast.id !== id));
     };
 
-    const containsHtmlTags = (input: string) => {
-        const regex = /<[^>]*>?/gm;
-        return regex.test(input);
-    };
-
-    const checkUsernameCharacters = (username: string) => {
-
-        if(username.length==0){
-            setUsernameError('Username cannot be empty.');
-            return false;
-        }
-        if (containsHtmlTags(username)) {
-            setUsernameError('HTML tags are not permitted in the username.');
-            return false;
-        } else if (!/^[a-zA-Z]+$/.test(username)) {
-            setUsernameError('Username should only contain alphabets.');
-            return false;
-        } else {
+    const checkUsernameCharacters = (username: string,includesLength:boolean=false) => {
+        
+        let error= validateUsername(username,includesLength)
+        if(error==null){
             setUsernameError('');
             return true;
+        }else{
+            setUsernameError(error);
+            return false;
         }
     };
 
-    const checkPasswordCharacters = (password: string) => {
-        if(password.length==0){
-            setPasswordError('Password cannot be empty.');
-            return false;
-        }
-        if (containsHtmlTags(password)) {
-            setPasswordError('HTML tags are not permitted in the password.');
-            return false;
-        } else {
+    const checkPasswordCharacters = (password: string,includesLength:boolean=false) => {
+       
+        let error=validatePassword(password,includesLength)
+        if(error==null){
             setPasswordError('');
             return true;
+        }else{
+            setPasswordError(error);
+            return false;
         }
     };
 
-    const checkUsernameLength = (username: string) => {
-        if (username.length > 10) {
-            setUsernameError('Username should not exceed 10 characters.');
-            return false;
-        } else if (username.length < 4) {
-            setUsernameError('Username should be at least 4 characters long.');
-            return false;
-        } else {
-            setUsernameError('');
-            return true;
-        }
-    };
-
-    const checkPasswordLength = (password: string) => {
-        if (password.length > 10) {
-            setPasswordError('Password should not exceed 10 characters.');
-            return false;
-        } else if (password.length < 6) {
-            setPasswordError('Password should be at least 6 characters long.');
-            return false;
-        } else {
-            setPasswordError('');
-            return true;
-        }
-    };
 
     const handleLogin = async () => {
 
@@ -101,12 +64,12 @@ const Login: React.FC = () => {
         setPasswordError('');
         setLoginError('');
 
-        const isUsernameValid = checkUsernameCharacters(username) && checkUsernameLength(username);
-        const isPasswordValid = checkPasswordCharacters(password) && checkPasswordLength(password);
+        const isUsernameValid = checkUsernameCharacters(username,true)
+        const isPasswordValid = checkPasswordCharacters(password,true)
         
         if (isUsernameValid && isPasswordValid) {
             try {
-                let {token,error}=await ServerRequest.loginUser(username, password);
+                let {token,error}=await UserRequests.loginUser(username, password);
                 if(error!=null){
                     setLoginError(error);
                 }

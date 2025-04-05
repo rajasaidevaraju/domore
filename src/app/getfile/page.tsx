@@ -10,6 +10,7 @@ import Loading from './../loading'
 import { ToastData,MessageType, EntityType,Item } from "@/app/types/Types";
 import RippleButton from "@/app/types/RippleButton";
 import AddPerformerPanel from "./components/AddPanel";
+import EditNamePanel from "./components/EditNamePanel";
 import { FilterRequests } from "../service/FilterRequests";
 import PressableLink from "../types/PressableLink";
 import { useAuthStore } from '@/app/store/auth';
@@ -22,9 +23,9 @@ const GetFile = () => {
     const [fileName,setFileName]= useState<string>();
     const [performers,setPerformers]=useState<Item[]>()
     const [addPanel,setAddPanel]=useState<boolean>(false)
-
+    const [isEditingName, setIsEditingName] = useState<boolean>(false);
     const videoRef = useRef<HTMLVideoElement>(null);
-    const {token}=useAuthStore();
+    const {token,isLoggedIn}=useAuthStore();
     const router = useRouter();
 
     const rateChnage="ratechange"
@@ -80,11 +81,7 @@ const GetFile = () => {
                     requestFileDetails(fileId)
                     showToast(response.message,MessageType.SUCCESS)
                 }
-
-
             }
-            
-
         } catch (error) {
             let message=`Failed to add performer to file ${fileId}`
             if(error instanceof Error){
@@ -206,6 +203,37 @@ const GetFile = () => {
         
     }
 
+    const handleEditNameClick = () => {
+        setIsEditingName(true);
+    };
+
+    const handleNameCancel = () => {
+        setIsEditingName(false);
+    };
+
+    const handleNameSave = async(newName: string) => {
+        setIsEditingName(false);
+        try{
+            if(typeof fileId !== 'string'){
+                throw new Error("Invalid File ID")
+            }
+            if(token==null){
+                throw new Error("Unauthorized access. Please Login")
+            }
+           
+            let response= await ServerRequest.updateFileName(fileId,newName,token);
+            requestFileDetails(fileId)
+            showToast(response.message,MessageType.SUCCESS)
+        }catch(error){
+
+            if(error instanceof Error){
+                showToast(error.message,MessageType.DANGER)
+            }
+        }
+    };
+
+
+
     return (
         
         <div className={styles.videoContainer}>
@@ -213,30 +241,26 @@ const GetFile = () => {
             <video crossOrigin="anonymous" ref={videoRef} controls className={styles.videoElement} >
                 <source src="null" type="video/mp4"/>
             </video>
-            <p className={styles.name}>{fileName?fileName:"name.."}</p>
+            <div className={styles.buttonsDiv}>
+            {isEditingName && fileName &&isLoggedIn ? (
+                    <EditNamePanel name={fileName} onClose={handleNameCancel} onSave={handleNameSave} />
+                ) : (
+                    <p className={styles.name}>{fileName ? fileName : "Loading name..."}</p>
+                )}
+                
+            </div>
+           
             <div className={styles.buttonsDiv}>
                 <p>Performers: </p>
                 {performers === undefined||performers.length<1 ? (<p>No Performers</p>) : (
                     performers.map((performer) => (
-                        <PressableLink 
-                            href={`/files?performerId=${performer.id}`} 
-                            className={styles.scbutton} 
-                            key={performer.id}
-                        >
-                            <p>{performer.name}</p>
-                        </PressableLink>
+                        <PressableLink href={`/files?performerId=${performer.id}`} className={styles.scbutton} key={performer.id}><p>{performer.name}</p></PressableLink>
                     ))
                 )}
-                {token != null && (
-                <>
-                    {addPanel ? (
-                        <AddPerformerPanel onClose={() => setAddPanel(false)} onSave={savePerformer} showToast={showToast} />
-                    ) : (
-                        <RippleButton className={`${styles.scbutton}`} onClick={() => setAddPanel(true)}>
-                            <img src="/svg/add.svg" alt="Add" />
-                        </RippleButton>
-                    )}
-                </>
+                {isLoggedIn && addPanel? (
+                    <AddPerformerPanel onClose={() => setAddPanel(false)} onSave={savePerformer} showToast={showToast} />
+                ):(
+                    <RippleButton className={`${styles.scbutton}`} onClick={() => setAddPanel(true)}><img src="/svg/add.svg" alt="Add" /><p>&nbsp;Add</p></RippleButton>
                 )}
             </div>
             {token !=null && 
@@ -244,7 +268,7 @@ const GetFile = () => {
                         <p>Actions: </p>
                     <RippleButton className={styles.scbutton} onClick={handleTakeScreenshot}>Set As Thumbnail</RippleButton>
                     <RippleButton className={styles.scbutton} onClick={deleteVideo}>Delete Video</RippleButton>
-                    <RippleButton className={styles.scbutton}>Edit Name</RippleButton>
+                    <RippleButton className={styles.scbutton} disabled={isEditingName} suggestion={isEditingName?"Editing in progress":undefined}  onClick={handleEditNameClick}><img src="/svg/edit.svg" alt="Edit" /><p>&nbsp;Edit Name</p></RippleButton>
                 </div> 
             }
             {toasts.length > 0 && (<ToastMessage toasts={toasts} onClose={removeToast} />)}

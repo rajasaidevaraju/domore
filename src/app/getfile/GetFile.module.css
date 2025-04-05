@@ -2,16 +2,16 @@
 .videoContainer {
     display: flex;
     flex-direction: column;
-    height: 80vh;
+    min-height: 80vh;
     gap:10px;
     padding: 20px;
 }
 
 .videoElement {
-    height: 80%;
+    max-height: 50vh;
+    min-width: 500px;
     background: rgb(var(--main-color));
     width: fit-content;
-    min-width: 500px;
     border-radius: 5px;
 }
 .input{
@@ -32,10 +32,25 @@
 .buttonsDiv{
     position: relative;
     display: flex;
+    min-height: 34px;
     flex-direction: row;
     flex-wrap: wrap;
     gap:10px;
     align-items: center;
+}
+
+.namePanelDiv{
+    display: flex;
+    gap: 10px;
+}
+
+.inputContainer {
+    display: flex;
+    flex-direction: column;
+}
+  
+.errorMessageContainer {
+    min-height: 25px;
 }
 
 .suggestions {
@@ -66,6 +81,14 @@
 .suggestions:empty {
     display: none;
 }
+
+.errorMessage {
+    color: red;
+    font-size: 0.8rem;
+    margin-top: 5px;
+    width: 100%;
+    word-wrap: break-word;
+  }
 
 
 @media (max-width: 768px) {

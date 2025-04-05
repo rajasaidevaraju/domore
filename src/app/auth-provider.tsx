@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useAuthStore } from "@/app/store/auth";
-import {ServerRequest} from "@/app/service/ServerRequest";
+import {UserRequests} from "@/app/service/UserRequests";
 
 import Loading from "./loading";
 
@@ -15,7 +15,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                 setLoading(false);
                 return;
             }
-            const res = await ServerRequest.verifyToken(token);
+            const res = await UserRequests.verifyToken(token);
             if(res.isTokenValid){
                 setAuth(true,res.username,res.token);
             }else{

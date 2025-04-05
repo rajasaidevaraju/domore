@@ -90,8 +90,8 @@ function AddPerformerPanel({onClose,onSave,showToast}:AddPerformerPanelProps) {
                 )}
             </div>
             <div style={{display:"flex", flexDirection:"row", gap:"10px"}}>
-                <RippleButton className={`${styles.scbutton}`} suggestion={(selectedId==null)?"select a performer":undefined} disabled={selectedId == null} onClick={savePerformer}><img src="/svg/yes.svg" alt="save" /></RippleButton>
-                <RippleButton className={`${styles.scbutton}`} onClick={onClose}><img src="/svg/cancel.svg" alt="Cancel" /></RippleButton>
+                <RippleButton className={`${styles.scbutton}`} suggestion={(selectedId==null)?"select a performer":undefined} disabled={selectedId == null} onClick={savePerformer}><img src="/svg/yes.svg" alt="save" /><p>&nbsp;Save</p></RippleButton>
+                <RippleButton className={`${styles.scbutton}`} onClick={onClose}><img src="/svg/cancel.svg" alt="Cancel" /><p>&nbsp;Cancel</p></RippleButton>
             </div>
             
         </div>

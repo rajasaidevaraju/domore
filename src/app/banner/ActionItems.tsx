@@ -6,7 +6,7 @@ import PressableLink from "@/app/types/PressableLink";
 import RippleButton from "@/app/types/RippleButton";
 import ChangePanel from './ChangePanel'
 import { usePathname, useRouter } from 'next/navigation';
-import { ServerRequest } from '../service/ServerRequest';
+import { UserRequests } from '../service/UserRequests';
 import { useAuthStore } from '@/app/store/auth';
 interface ActionItemsProps{
     isMobile:Boolean
@@ -30,7 +30,7 @@ function ActionItems({isMobile,closeMenu}:ActionItemsProps){
     const handleLogout = async () => {
         if (!!token) {
             try {
-                await ServerRequest.logoutUser(token);  
+                await UserRequests.logoutUser(token);  
             } catch (error) {
                 console.log('Logout failed:', error);
             }
