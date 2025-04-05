@@ -257,13 +257,17 @@ const GetFile = () => {
                         <PressableLink href={`/files?performerId=${performer.id}`} className={styles.scbutton} key={performer.id}><p>{performer.name}</p></PressableLink>
                     ))
                 )}
-                {isLoggedIn && addPanel? (
+                {isLoggedIn && (
+                <>
+                    {addPanel ? (
                     <AddPerformerPanel onClose={() => setAddPanel(false)} onSave={savePerformer} showToast={showToast} />
-                ):(
+                    ) : (
                     <RippleButton className={`${styles.scbutton}`} onClick={() => setAddPanel(true)}><img src="/svg/add.svg" alt="Add" /><p>&nbsp;Add</p></RippleButton>
+                    )}
+                </>
                 )}
             </div>
-            {token !=null && 
+            {isLoggedIn && 
                 <div className={styles.buttonsDiv}>
                         <p>Actions: </p>
                     <RippleButton className={styles.scbutton} onClick={handleTakeScreenshot}>Set As Thumbnail</RippleButton>
