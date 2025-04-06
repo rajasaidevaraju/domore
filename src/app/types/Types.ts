@@ -68,3 +68,10 @@ export interface FileDetails {
   name: string;
   performers: Item[];
 }
+
+export interface HomeProps {
+  searchParams: {
+    page?: string;        
+    performerId?: string;
+  };
+}

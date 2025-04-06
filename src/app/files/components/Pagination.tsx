@@ -1,3 +1,4 @@
+'use client'
 
 import Link from 'next/link';
 import styles from './Pagination.module.css';
@@ -9,10 +10,6 @@ interface PaginationProps{
 }
 
 export default function Pagination({meta:{page, limit, total}, performerId}:PaginationProps){
-
-    
-    
-
 
     // Calculate total pages
     const totalPages = Math.ceil(total / limit);

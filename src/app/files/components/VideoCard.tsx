@@ -1,6 +1,5 @@
-'use client'
 
-import React, { useEffect, useRef, useState } from 'react';
+import React from 'react';
 import Video from '../../types/Video';
 import styles from './VideoCard.module.css';
 import { ServerRequest } from '../../service/ServerRequest';
@@ -9,26 +8,17 @@ import Link from 'next/link'
 interface VideoCardProps {
   video: Video;
 }
-
-const VideoCard: React.FC<VideoCardProps> = ({ video }) => {
-  const [imageData, setImageData] = useState<string | null>(null);
-  const requestMadeRef = useRef(false);
+export default async function VideoCard({ video }: VideoCardProps){
+  let imageData:string|null = null;
   const cleanedString=video.fileName.replace(/\.[a-zA-Z0-9]+$/, "")
-    if (!requestMadeRef.current && !imageData) {
-      try {
-        (async () => {
-          requestMadeRef.current = true;
-          const requestData = await ServerRequest.fetchThumbnail(video.fileId.toString());
-          if (requestData.exists) {
-            setImageData(requestData.imageData);
-          }
-        })();
-      } catch (error) {
+   try{
+        const requestData = await ServerRequest.fetchThumbnail(video.fileId.toString());
+        if (requestData.exists) {
+          imageData=requestData.imageData;
+        }
+      }catch (error) {
         console.error('Failed to fetch thumbnail for id' + video.fileId);
       }
-    }
-
-
   return (
     <Link href={`/file/${video.fileId}`} >
         <div
@@ -47,5 +37,3 @@ const VideoCard: React.FC<VideoCardProps> = ({ video }) => {
       </Link>
   );
 };
-
-export default VideoCard;
