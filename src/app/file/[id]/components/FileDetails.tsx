@@ -15,13 +15,14 @@ import { ServerRequest } from "@/app/service/ServerRequest";
 interface FileDetailsProps {
   initPerformers: Item[];
   fileId: string;
-  fileName: string;
+  initFileName: string;
 }
 
-export default function FileDetails({ initPerformers, fileId, fileName }: FileDetailsProps) {
+export default function FileDetails({ initPerformers, fileId, initFileName }: FileDetailsProps) {
   const { token, isLoggedIn } = useAuthStore();
   const [performers, setPerformers] = useState<Item[]>(initPerformers);
-  const [addPanel, setAddPanel] = useState(false);
+  const [fileName, setFileName] = useState(initFileName);
+  const [addPanel, setAddPanel] = useState(false);  
   const [isEditingName, setIsEditingName] = useState(false);
   const [toasts, setToasts] = useState<any[]>([]);
 
@@ -122,6 +123,7 @@ export default function FileDetails({ initPerformers, fileId, fileName }: FileDe
       let response = await ServerRequest.updateFileName(fileId, newName, token);
       const updatedFileDetails = await ServerRequest.fetchfileDetails(fileId);
       setPerformers(updatedFileDetails.performers);
+      setFileName(updatedFileDetails.name);
       showToast(response.message, MessageType.SUCCESS);
     } catch (error) {
       if (error instanceof Error) {

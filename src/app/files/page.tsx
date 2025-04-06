@@ -5,7 +5,6 @@ import styles from './Files.module.css';
 import { notFound } from 'next/navigation';
 import VideoCard from './components/VideoCard'
 import Pagination from './components/Pagination';
-import { HomeProps } from '@/app/types/Types';
 
 export default async function AltHomePage({searchParams}: {searchParams: Promise<{ [key: string]: string | undefined }>}) {
   const pagenoStr= (await searchParams).page;

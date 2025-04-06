@@ -40,7 +40,7 @@ export default async function FilePage({ params }: { params: pageParams}) {
     return (
       <div className={styles.videoContainer}>
         <VideoPlayer videoSrc={videoSrc} fileId={id} />
-        <FileDetails initPerformers={result.performers} fileId={id} fileName={result.name} />
+        <FileDetails initPerformers={result.performers} fileId={id} initFileName={result.name} />
       </div>
     );
   } catch (error) {
