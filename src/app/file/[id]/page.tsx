@@ -1,4 +1,5 @@
 import React from "react";
+import { notFound } from 'next/navigation';
 import VideoPlayer from "./components/VideoPlayer";
 import FileDetails from "./components/FileDetails";
 import { ServerRequest } from "../../service/ServerRequest";
@@ -39,14 +40,10 @@ export default async function FilePage({ params }: { params: pageParams}) {
     return (
       <div className={styles.videoContainer}>
         <VideoPlayer videoSrc={videoSrc} fileId={id} />
-        <FileDetails fileDetails={result} fileId={id} fileName={result.name} />
+        <FileDetails initPerformers={result.performers} fileId={id} fileName={result.name} />
       </div>
     );
   } catch (error) {
-    return (
-      <div>
-        <p>Error loading video: {error instanceof Error ? error.message : "An unknown error occured"}</p>
-      </div>
-    );
+    notFound();
   }
 }

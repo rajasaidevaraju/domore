@@ -13,14 +13,14 @@ import ToastMessage from "@/app/types/ToastMessages";
 import { ServerRequest } from "@/app/service/ServerRequest";
 
 interface FileDetailsProps {
-  fileDetails: FileDetailsType;
+  initPerformers: Item[];
   fileId: string;
   fileName: string;
 }
 
-export default function FileDetails({ fileDetails, fileId, fileName }: FileDetailsProps) {
+export default function FileDetails({ initPerformers, fileId, fileName }: FileDetailsProps) {
   const { token, isLoggedIn } = useAuthStore();
-  const [performers, setPerformers] = useState<Item[]>(fileDetails.performers);
+  const [performers, setPerformers] = useState<Item[]>(initPerformers);
   const [addPanel, setAddPanel] = useState(false);
   const [isEditingName, setIsEditingName] = useState(false);
   const [toasts, setToasts] = useState<any[]>([]);
@@ -41,7 +41,7 @@ export default function FileDetails({ fileDetails, fileId, fileName }: FileDetai
       if (token == null) {
         throw new Error("Unauthorized access. Please Login");
       }
-      if (typeof fileId !== "string" || isNaN(Number(fileId))) {
+      if (isNaN(Number(fileId))) {
         throw new Error("Invalid File ID");
       } else {
         showToast("Request sent to Server", MessageType.SUCCESS);
@@ -69,7 +69,7 @@ export default function FileDetails({ fileDetails, fileId, fileName }: FileDetai
   const handleTakeScreenshot = async () => {
     if (token != null) {
       const videoElement = document.querySelector("video");
-      if (!videoElement || typeof fileId !== "string") {
+      if (!videoElement) {
         showToast("Invalid File ID", MessageType.WARNING);
         return;
       }
@@ -89,10 +89,6 @@ export default function FileDetails({ fileDetails, fileId, fileName }: FileDetai
   };
 
   const deleteVideo = async () => {
-    if (typeof fileId !== "string") {
-      showToast("Invalid File ID ", MessageType.WARNING);
-      return;
-    }
     if (token != null) {
       try {
         if (confirm("Do you want to delete the file!")) {
@@ -119,9 +115,6 @@ export default function FileDetails({ fileDetails, fileId, fileName }: FileDetai
   const handleNameSave = async (newName: string) => {
     setIsEditingName(false);
     try {
-      if (typeof fileId !== "string") {
-        throw new Error("Invalid File ID");
-      }
       if (token == null) {
         throw new Error("Unauthorized access. Please Login");
       }
@@ -140,10 +133,10 @@ export default function FileDetails({ fileDetails, fileId, fileName }: FileDetai
   return (
     <>
       <div className={styles.buttonsDiv}>
-        {isEditingName && fileName && isLoggedIn ? (
+        {isEditingName && isLoggedIn ? (
           <EditNamePanel name={fileName} onClose={handleNameCancel} onSave={handleNameSave} />
         ) : (
-          <p className={styles.name}>{fileName ? fileName : "Loading name..."}</p>
+          <p className={styles.name}>{fileName}</p>
         )}
       </div>
 
