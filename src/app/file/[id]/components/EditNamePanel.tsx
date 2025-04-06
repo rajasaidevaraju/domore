@@ -1,8 +1,7 @@
 import {useState, useRef, ChangeEvent } from "react";
-import styles  from "./../GetFile.module.css";
+import styles  from "./../File.module.css";
 import RippleButton from "@/app/types/RippleButton";
 import { validateFileName } from "@/app/service/validate";
-import {MessageType } from "@/app/types/Types";
 
 interface EditNamePanelProps {
     name:string;

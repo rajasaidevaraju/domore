@@ -1,9 +1,9 @@
 import { useEffect, useState, useRef } from "react";
-import styles  from "./../GetFile.module.css";
+import styles  from "../File.module.css";
 import RippleButton from "@/app/types/RippleButton";
 import { FilterRequests } from "@/app/service/FilterRequests";
 import { EntityType, ItemWithCount, MessageType } from "@/app/types/Types";
-import { wrap } from "module";
+
 interface AddPerformerPanelProps {
     onClose: () => void;
     onSave: (performerId:number) => void;

@@ -30,7 +30,7 @@ const VideoCard: React.FC<VideoCardProps> = ({ video }) => {
 
 
   return (
-    <Link href={`/getfile?fileId=${video.fileId}`} >
+    <Link href={`/file/${video.fileId}`} >
         <div
           className={styles.videoCard}
           title={cleanedString}

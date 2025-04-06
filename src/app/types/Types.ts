@@ -62,3 +62,9 @@ export interface CardProps {
 export interface ApiResponse {
   message: string;
 }
+
+export interface FileDetails {
+  id: number;
+  name: string;
+  performers: Item[];
+}
