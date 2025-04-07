@@ -1,5 +1,6 @@
+export const dynamic = 'force-dynamic';
+
 import AltHomePage from '@/app/files/page';
-import { HomeProps } from '@/app/types/Types';
 
 const getParams = async (): Promise<{ [key: string]: string | undefined }> => {
   return { page: '1' };
