@@ -1,6 +1,6 @@
 import { ServerUrlProvider } from './UrlProvider';
 import { FileDataList } from "../types/FileDataList";
-import { ServerStats,Item, ApiResponse } from './../types/Types'
+import { ServerStats,Item, ApiResponse,StorageLocation } from '@/app/types/Types'
 
 const API_BASE_URL = ServerUrlProvider();
 
@@ -63,7 +63,7 @@ export const ServerRequest = {
     }
     return await response.json();
   },
-  async uploadFile(file: File|undefined, token:string, onProgress: (progress: number, speed: number) => void, passXMLObj:(xhr:XMLHttpRequest)=>void): Promise<string> {
+  async uploadFile(file: File|undefined, token:string, target:StorageLocation,onProgress: (progress: number, speed: number) => void, passXMLObj:(xhr:XMLHttpRequest)=>void): Promise<string> {
     return new Promise((resolve, reject) => {
       if (!file) {
         reject(new Error('No file provided'));
@@ -77,7 +77,7 @@ export const ServerRequest = {
       const xhr = new XMLHttpRequest();
       passXMLObj(xhr)
       xhr.responseType = 'json'
-      xhr.open('POST', `${API_BASE_URL}/server/file`, true);
+      xhr.open('POST', `${API_BASE_URL}/server/file?uploadTarget=${target}`, true);
       xhr.setRequestHeader('Authorization', `Bearer ${token}`);
 
       let lastTime = Date.now();

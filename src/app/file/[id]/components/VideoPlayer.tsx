@@ -38,9 +38,6 @@ export default function VideoPlayer({ videoSrc }: VideoPlayerProps) {
   useEffect(() => {
     const videoElement = videoRef.current;
     if (videoElement) {
-      videoElement.src = videoSrc;
-      videoElement.load();
-
       const playbackRate = parseFloat(localStorage.getItem(videoPlaybackSpeed) ?? "1");
       const storedVolume = parseFloat(localStorage.getItem(videoVolume) ?? "1");
       const storedMuted = localStorage.getItem(videoMuted) === "true";
@@ -60,11 +57,11 @@ export default function VideoPlayer({ videoSrc }: VideoPlayerProps) {
         videoElement.removeEventListener(volumeChange, handleVolumeChange);
       }
     };
-  }, [videoSrc]);
+  }, [videoRef]);
 
   return (
     <video crossOrigin="anonymous" ref={videoRef} controls className={styles.videoElement}>
-      <source src="null" type="video/mp4" />
+      <source src={videoSrc} type="video/mp4" />
     </video>
   );
 }

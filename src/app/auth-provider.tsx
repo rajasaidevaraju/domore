@@ -1,4 +1,4 @@
-"use client"; // Ensure this runs only on the client
+"use client";
 
 import { useEffect, useState } from "react";
 import { useAuthStore } from "@/app/store/auth";

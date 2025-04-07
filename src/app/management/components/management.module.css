@@ -61,6 +61,7 @@
  display: flex;
  gap:5px;
  margin: 0px 10px;
+ align-items: center;
 }
 
 
@@ -70,7 +71,7 @@
   border: none;
   width: fit-content;
   border-radius: 4px;
-  cursor: pointer;
+  height:32px;
   transition: background-color 0.3s ease; 
   display: flex;
   justify-content: center;
@@ -220,6 +221,7 @@
   .commonButton {
     padding: 4px 8px;
     font-size: 16px;
+    min-height: 25px;
   }
 
   .input {

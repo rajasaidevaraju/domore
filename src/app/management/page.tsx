@@ -11,10 +11,7 @@ import { useAuthStore } from '@/app/store/auth';
 
 const Management=()=>{
     const {isLoggedIn} = useAuthStore();
-
-    
     const [toasts, setToasts] = useState<ToastData[]>([]);
-    
     
     const showToast = (message: string, type: MessageType) => {
         const id = Date.now();

@@ -3,14 +3,17 @@ import { ServerRequest } from "@/app/service/ServerRequest";
 import { formatSize } from "@/app/service/formatSize";
 import styles from "./management.module.css";
 import { useAuthStore } from '@/app/store/auth';
+import { StorageLocation } from "@/app/types/Types";
+import { useStatsStore } from "@/app/store/statsStore";
 
 interface ProgressTrackerProps {
     file: File;
     startUpload:boolean
     removeFile:(file:File)=>void
+    selectedStorage:StorageLocation
   }
 
-const ProgressTracker: React.FC<ProgressTrackerProps>  = ({file,startUpload,removeFile}) => {
+const ProgressTracker: React.FC<ProgressTrackerProps>  = ({file,startUpload,removeFile,selectedStorage}) => {
   const [progress, setProgress] = useState<number>(0);
   const [speed, setSpeed] = useState<number>(0); 
   const xhr = useRef<XMLHttpRequest | null>(null);
@@ -18,6 +21,8 @@ const ProgressTracker: React.FC<ProgressTrackerProps>  = ({file,startUpload,remo
   const [error, setError] = useState<string | null>(null);
   const [aborted,setAborted] = useState(false)
   const {isLoggedIn,token} = useAuthStore();
+  //const {fetchStats} = useStatsStore();
+   //TODO(Update stats on upload complete)
 
   const handleFileUpload = async () => {
     if(token==null){
@@ -30,7 +35,7 @@ const ProgressTracker: React.FC<ProgressTrackerProps>  = ({file,startUpload,remo
         setProgress(0);
         setSpeed(0);
         try{
-            await ServerRequest.uploadFile(file,token,(progress,speed)=>{
+            await ServerRequest.uploadFile(file, token, selectedStorage, (progress,speed)=>{
                 setProgress(progress);
                 setSpeed(speed);
              },(xhrObj:XMLHttpRequest)=>{

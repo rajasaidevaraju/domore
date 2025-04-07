@@ -75,3 +75,8 @@ export interface HomeProps {
     performerId?: string;
   };
 }
+
+export enum StorageLocation {
+  Internal = 'internal',
+  External = 'external',
+}
