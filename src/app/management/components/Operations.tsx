@@ -13,6 +13,7 @@ const Operations: React.FC<OperationsProps> = ({showToast}:OperationsProps) => {
 
     const [isScanning, setIsScanning] = useState(false);
     const [isRepair,setIsRepair]=useState(false);
+    const [isCleanup, setIsCleanup] = useState(false);
     const {isLoggedIn,token} = useAuthStore();
 
     let scanningToolTip= isScanning?"Scanning in progress":undefined;
@@ -40,8 +41,26 @@ const Operations: React.FC<OperationsProps> = ({showToast}:OperationsProps) => {
         
     };
 
-    const handleCleanup = () => {
-        console.log("Cleaning up database...");
+    const handleCleanup = async () => {
+        setIsCleanup(true);
+        try{
+            if(token===null){
+                showToast("Unauthorized access", MessageType.DANGER);
+            }else{
+                let data= await OperationRequests.fetchCleanup(token);
+                showToast(data.message, MessageType.SUCCESS);
+            }
+       }catch(error){
+            if(error instanceof Error){
+                showToast(error.message, MessageType.DANGER);
+                
+            }else{
+                showToast('An error occurred on cleanup request.', MessageType.DANGER);
+                console.error('Error:', error);
+            }
+       }finally{
+            setIsCleanup(false);
+       }
        
     };
 
@@ -60,7 +79,7 @@ const Operations: React.FC<OperationsProps> = ({showToast}:OperationsProps) => {
                 showToast(error.message, MessageType.DANGER);
                 
             }else{
-                showToast('An error occurred on scan request.', MessageType.DANGER);
+                showToast('An error occurred on reset request.', MessageType.DANGER);
                 console.error('Error:', error);
             }
        }finally{
@@ -84,7 +103,7 @@ const Operations: React.FC<OperationsProps> = ({showToast}:OperationsProps) => {
                 <p className={styles.explanation}>This will scan the file system and add new files to the database.</p>
             </div>
             <div className={`${styles.operationItem} ${styles.borderBottom}`}>
-                <RippleButton suggestion={"implementaion pening"} className={`${styles.commonButton} ${styles.minWidth}`}  onClick={handleCleanup} disabled={true}>
+                <RippleButton suggestion={"implementaion pening"} className={`${styles.commonButton} ${styles.minWidth}`}  onClick={handleCleanup} disabled={isCleanup}>
                     Cleanup
                 </RippleButton>
                 <p className={styles.explanation}>This will remove any db entries not found in the file system.</p>
