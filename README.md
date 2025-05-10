@@ -31,16 +31,29 @@ This frontend **cannot function** without the **ServerApp** Android backend. Ens
 
 ## Environment Variables
 
-Create a `.env.local` file in the root of the project to configure the backend API address:
+Create a `.env.local` file in the root of the project to configure the backend API address.
 
-* **`NEXT_PUBLIC_SERVER_ADDRESS`** (Required)
-    * **Purpose:** Specifies the full URL (including protocol, IP address, and port) where the **ServerApp** backend API is accessible. The frontend sends all API requests to this address.
-    * **Format:** `http://<your-android-device-ip>:<port>` (Default backend port is `1280`).
-    * **Example:** If your ServerApp backend is running on `192.168.1.100` at port `1280`, set:
-        ```
-        NEXT_PUBLIC_SERVER_ADDRESS=[http://192.168.1.100:1280](http://192.168.1.100:1280)
-        ```
-    * **Finding the IP:** You can usually find the Android device's IP address in its Wi-Fi settings. The ServerApp Android app also displays the IP and port when the server is running.
+Required environment variables:
+
+| Variable | Purpose | Example |
+|----------|---------|---------|
+| `NEXT_PUBLIC_SERVER_ADDRESS` | Specifies the full URL (including protocol, IP address, and port) where the **ServerApp** backend API is accessible. The frontend sends all API requests to this address. | `http://192.168.2.90:1280` |
+| `NEXT_PUBLIC_SERVER_FROM_ENV` | Determines if the frontend should use the `NEXT_PUBLIC_SERVER_ADDRESS` from the environment variables (`true`) or dynamically detect the backend address based on the current window location (`false`). | `true` |
+
+### How it works
+
+- If `NEXT_PUBLIC_SERVER_FROM_ENV` is set to `true`, the frontend **always** uses `NEXT_PUBLIC_SERVER_ADDRESS` as the backend URL.
+- If `NEXT_PUBLIC_SERVER_FROM_ENV` is set to `false`, the frontend will attempt to **build the backend URL dynamically** using the current browser location (e.g., `http://<hostname>:1280`).
+- **Recommended:** Set `NEXT_PUBLIC_SERVER_FROM_ENV=true` and specify the exact `NEXT_PUBLIC_SERVER_ADDRESS` for reliable communication.
+
+### Example `.env.local`:
+
+```env
+NEXT_PUBLIC_SERVER_ADDRESS=http://192.168.2.90:1280
+NEXT_PUBLIC_SERVER_FROM_ENV=true
+```
+
+
 
 ## Running the Frontend
 
