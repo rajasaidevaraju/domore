@@ -1,13 +1,8 @@
 export const dynamic = 'force-dynamic';
 
+import { HomeSearchParams } from '@/app/types/Types';
 import AltHomePage from '@/app/files/page';
 
-const getParams = async (): Promise<{ [key: string]: string | undefined }> => {
-  return { page: '1' };
-};
-
-export default function Home() {
-  const params = getParams();  
-  
-  return <AltHomePage searchParams={params} />;
+export default function Home({searchParams}: {searchParams:HomeSearchParams}) {
+  return <AltHomePage searchParams={searchParams}/>;
 }

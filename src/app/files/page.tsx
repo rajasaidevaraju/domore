@@ -1,16 +1,20 @@
 // app/AltHomePage.tsx
 import { ServerRequest } from '../service/ServerRequest';
-import { FileDataList } from '../types/FileDataList';
+import { FileDataList} from '../types/FileDataList';
+import { HomeSearchParams } from '../types/Types';
 import styles from './Files.module.css';
 import { notFound } from 'next/navigation';
 import VideoCard from './components/VideoCard'
 import Pagination from './components/Pagination';
 
-export default async function AltHomePage({searchParams}: {searchParams: Promise<{ [key: string]: string | undefined }>}) {
-  const pagenoStr= (await searchParams).page;
-  const performerIdStr = (await searchParams).performerId;
+
+export default async function AltHomePage({searchParams}: {searchParams:HomeSearchParams}) {
+  const params= await searchParams;
+  const pagenoStr= params.page;
+  const performerIdStr = params.performerId;
+  console.log(params)
   let pageNo=1
-  if(!isNaN(Number(pagenoStr))){
+  if(pagenoStr!=null &&!isNaN(Number(pagenoStr))){
     pageNo=getPageNumber(pagenoStr);
   }
   let performerId: number | null = null;

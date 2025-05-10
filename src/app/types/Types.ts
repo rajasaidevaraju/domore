@@ -80,3 +80,5 @@ export enum StorageLocation {
   Internal = 'internal',
   External = 'external',
 }
+
+export type HomeSearchParams=Promise<{ page:string|undefined,performerId:string|undefined }>
