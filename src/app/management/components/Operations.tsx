@@ -18,6 +18,8 @@ const Operations: React.FC<OperationsProps> = ({showToast}:OperationsProps) => {
 
     let scanningToolTip= isScanning?"Scanning in progress":undefined;
     let repairToolTip=isRepair?"Repair in progress":undefined;
+    let cleanupToolTip=isCleanup?"Cleanup in progress":undefined;
+
     const handleScan = async () => {
         setIsScanning(true);
         try{
@@ -103,7 +105,7 @@ const Operations: React.FC<OperationsProps> = ({showToast}:OperationsProps) => {
                 <p className={styles.explanation}>This will scan the file system and add new files to the database.</p>
             </div>
             <div className={`${styles.operationItem} ${styles.borderBottom}`}>
-                <RippleButton suggestion={"implementaion pening"} className={`${styles.commonButton} ${styles.minWidth}`}  onClick={handleCleanup} disabled={isCleanup}>
+                <RippleButton suggestion={cleanupToolTip} className={`${styles.commonButton} ${styles.minWidth}`}  onClick={handleCleanup} disabled={isCleanup}>
                     Cleanup
                 </RippleButton>
                 <p className={styles.explanation}>This will remove any db entries not found in the file system.</p>
