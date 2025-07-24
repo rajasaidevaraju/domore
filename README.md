@@ -37,8 +37,10 @@ Required environment variables:
 
 | Variable | Purpose | Example |
 |----------|---------|---------|
-| `NEXT_PUBLIC_SERVER_ADDRESS` | Specifies the full URL (including protocol, IP address, and port) where the **ServerApp** backend API is accessible. The frontend sends all API requests to this address. | `http://192.168.2.90:1280` |
-| `NEXT_PUBLIC_SERVER_FROM_ENV` | Determines if the frontend should use the `NEXT_PUBLIC_SERVER_ADDRESS` from the environment variables (`true`) or dynamically detect the backend address based on the current window location (`false`). | `true` |
+| `NEXT_PUBLIC_SERVER_ADDRESS` | Specifies the full URL (including protocol, IP address, and port) where the **ServerApp** backend API is accessible. This is primarily used during server-side rendering. | `http://192.168.2.90:1280` |
+| `NEXT_PUBLIC_SERVER_FROM_ENV` | When set to `true`, the frontend will use `NEXT_PUBLIC_SERVER_ADDRESS` for server-side operations (SSR). For client-side requests, it enables the `/server` rewrite rule to proxy requests to `SERVER_ADDRESS`. If `false`, the client-side will default to `http://<hostname>:3000` for API calls. | `true` |
+| `SERVER_ADDRESS` | This variable is used by Next.js's `rewrites` configuration to proxy client-side requests made to `/server/:path*` to the actual backend server. **Crucially, this variable is used directly by the Next.js server, not exposed to the browser via `NEXT_PUBLIC_`.** | `http://192.168.2.90:1280` |
+
 
 ### How it works
 
@@ -51,36 +53,8 @@ Required environment variables:
 ```env
 NEXT_PUBLIC_SERVER_ADDRESS=http://192.168.2.90:1280
 NEXT_PUBLIC_SERVER_FROM_ENV=true
+SERVER_ADDRESS=http://192.168.2.90:1280
 ```
-
-
-
-## Running the Frontend
-
-### Development Mode
-
-1.  Ensure the **ServerApp** backend is running.
-2.  Set the correct `NEXT_PUBLIC_SERVER_ADDRESS` in your `.env.local` file.
-3.  Run the development server:
-    ```bash
-    npm run dev
-    ```
-4.  Open your browser to `http://localhost:3000` (or the specified port). The application will auto-reload upon code changes.
-
-### Production Mode
-
-1.  Ensure the **ServerApp** backend is running.
-2.  Set the correct `NEXT_PUBLIC_SERVER_ADDRESS` in your `.env.local` file (or configure it via your production environment's variable system).
-3.  Build the application:
-    ```bash
-    npm run build
-    ```
-    This creates an optimized production build in the `.next` directory (or your configured `distDir` if different from the default).
-4.  Start the production server:
-    ```bash
-    npm run start
-    ```
-5.  Access the application via its URL (e.g., `http://localhost:3000` or your deployment URL).
 
 ## Technology Stack
 

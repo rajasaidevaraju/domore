@@ -8,10 +8,12 @@ export function ServerUrlProvider(): string {
     }
 
     // Client-side (browser)
-    if (serverFromEnvFlag && serverAddress) {
+    /*if (serverFromEnvFlag && serverAddress) {
         return serverAddress;
     } else {
         const hostname = window.location.hostname;
         return `http://${hostname}:1280`;
-    }
+    }*/
+    const hostname = window.location.hostname;
+    return `http://${hostname}:3000`;
 }
