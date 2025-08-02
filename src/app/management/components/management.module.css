@@ -57,11 +57,21 @@
   font-size: 20px;
 }
 
+.itemContainer{
+  display: flex;
+  width: inherit;
+  justify-content: center;
+  flex-wrap: wrap;
+  flex-direction: row;
+  gap: .5rem;
+}
+
+
 .buttons {
  display: flex;
- gap:5px;
- margin: 0px 10px;
+ gap:.5rem;
  align-items: center;
+ flex-wrap: wrap
 }
 
 

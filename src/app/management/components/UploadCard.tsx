@@ -80,6 +80,8 @@ const UploadCard=()=>{
         <div className={styles.cardContainer}>
             <div className={styles.header}>
                 <h1>{"Upload File"}</h1>
+            </div>
+            <div className={styles.itemContainer}>
                 <div className={styles.buttons}>
                     {stats && (
                         <div>
@@ -98,6 +100,8 @@ const UploadCard=()=>{
                             <option value={StorageLocation.External}>External</option>
                         )}
                     </select>
+                </div>
+                <div className={styles.buttons}>
                     <button
                         className={`${styles.commonButton}`}
                         onClick={() => fileInputRef.current?.click()}

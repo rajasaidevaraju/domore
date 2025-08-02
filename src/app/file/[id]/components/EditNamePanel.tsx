@@ -37,21 +37,21 @@ function EditNamePanel({name,onClose,onSave}:EditNamePanelProps) {
     
     return (
         <div className={styles.namePanelDiv}>
-            <div className={styles.inputContainer}>
-                <input
-                    type="text"
-                    placeholder="Performer name"
-                    value={newName}
-                    onChange={setName}
-                    className={styles.input}
-                    ref={inputRef} />
-                 <div className={styles.errorMessageContainer}>
-                    {errorMessage && <p className={styles.errorMessage}>{errorMessage}</p>}
-                </div>
-            </div> 
-            <RippleButton className={`${styles.scbutton}`} onClick={saveNewName}><img src="/svg/yes.svg" alt="save" /><p>&nbsp;Save</p></RippleButton>
-            <RippleButton className={`${styles.scbutton}`} onClick={onClose}><img src="/svg/cancel.svg" alt="Cancel" /><p>&nbsp;Cancel</p></RippleButton>
-           
+            
+            <input
+                type="text"
+                placeholder="File name"
+                value={newName}
+                onChange={setName}
+                className={styles.input}
+                ref={inputRef} />
+            <div className={styles.buttonsDiv}>
+                <RippleButton className={`${styles.scbutton}`} onClick={saveNewName}><img src="/svg/yes.svg" alt="save" /><p>&nbsp;Save</p></RippleButton>
+                <RippleButton className={`${styles.scbutton}`} onClick={onClose}><img src="/svg/cancel.svg" alt="Cancel" /><p>&nbsp;Cancel</p></RippleButton>
+            </div>
+            <div className={styles.errorMessageContainer}>
+                {errorMessage && <p className={styles.errorMessage}>{errorMessage}</p>}
+            </div>
             
         </div>
 

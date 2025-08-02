@@ -41,13 +41,12 @@
 
 .namePanelDiv{
     display: flex;
-    gap: 10px;
+    gap: .5rem;
+    flex-wrap: wrap;
+    flex-direction: row;
+    align-items: center;
 }
 
-.inputContainer {
-    display: flex;
-    flex-direction: column;
-}
   
 .errorMessageContainer {
     min-height: 25px;
@@ -101,6 +100,10 @@
        height: fit-content;
        min-width:auto;
        max-height: 80%;
+    }
+
+    .input{
+        width: 100%;
     }
 }
 
