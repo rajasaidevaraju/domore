@@ -38,12 +38,12 @@
   justify-content: flex-start;
   gap:10px;
   padding: 10px 0px;
+  width: 100%;
  }
 
  
 .borderBottom{
   border-bottom: 2px solid rgb(var(--main-color-active));
-  width: 100%;
 }
 
 .header {
