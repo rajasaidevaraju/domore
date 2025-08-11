@@ -1,5 +1,6 @@
 'use client'
 
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import styles from './Pagination.module.css';
 import { Meta } from '../../types/FileDataList';
@@ -11,6 +12,7 @@ interface PaginationProps{
 
 export default function Pagination({meta:{page, limit, total}, performerId}:PaginationProps){
 
+    const router = useRouter();
     // Calculate total pages
     const totalPages = Math.ceil(total / limit);
 
@@ -44,7 +46,7 @@ export default function Pagination({meta:{page, limit, total}, performerId}:Pagi
         if(performerId!=null){
             url.searchParams.append("performerId",performerId.toString())
         }
-        window.location.href = url.toString();
+        router.push(url.pathname + url.search);
     };
 
 

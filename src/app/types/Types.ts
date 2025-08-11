@@ -82,3 +82,5 @@ export enum StorageLocation {
 }
 
 export type HomeSearchParams=Promise<{ page:string|undefined,performerId:string|undefined }>
+
+export const thumbnailCache = new Map<number, string>();
