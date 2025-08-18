@@ -1,6 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
+import { useNavStore } from "@/app/store/navigation";
+import { useRouter } from "next/navigation";
 import styles from "../File.module.css";
 import { useAuthStore } from "@/app/store/auth";
 import { FilterRequests } from "../../../service/FilterRequests";
@@ -19,6 +21,8 @@ interface FileDetailsProps {
 }
 
 export default function FileDetails({ initPerformers, fileId, initFileName }: FileDetailsProps) {
+  const router = useRouter();
+  const { page, performerId } = useNavStore();
   const { token, isLoggedIn } = useAuthStore();
   const [performers, setPerformers] = useState<Item[]>(initPerformers);
   const [fileName, setFileName] = useState(initFileName);
@@ -94,7 +98,11 @@ export default function FileDetails({ initPerformers, fileId, initFileName }: Fi
       try {
         if (confirm("Do you want to delete the file!")) {
           await ServerRequest.deleteVideo(fileId, token);
-          window.location.href = "/";
+          let redirectUrl = `/?page=${page}`;
+          if (performerId) {
+            redirectUrl += `&performerId=${performerId}`;
+          }
+          router.push(redirectUrl);
         }
       } catch (error: Error | any) {
         if (error instanceof Error) {

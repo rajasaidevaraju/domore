@@ -2,6 +2,7 @@
 import { ServerRequest } from '../service/ServerRequest';
 import { FileDataList} from '../types/FileDataList';
 import { HomeSearchParams } from '../types/Types';
+import NavContextBridge  from "@/app/files/components/NavContextBridge";
 import styles from './Files.module.css';
 import { notFound } from 'next/navigation';
 import VideoCard from './components/VideoCard'
@@ -12,7 +13,6 @@ export default async function AltHomePage({searchParams}: {searchParams:HomeSear
   const params= await searchParams;
   const pagenoStr= params.page;
   const performerIdStr = params.performerId;
-  console.log(params)
   let pageNo=1
   if(pagenoStr!=null &&!isNaN(Number(pagenoStr))){
     pageNo=getPageNumber(pagenoStr);
@@ -37,16 +37,16 @@ export default async function AltHomePage({searchParams}: {searchParams:HomeSear
     
     return (
       <main className={styles.mainContainer}>
+        <NavContextBridge page={pageNo} performerId={performerId} />
+        <div className={styles.videosContainer}>
+          {fileData.map((video) => (
+            <VideoCard key={video.fileId} video={video}/>
+          ))}
+        </div>
        
-       <div className={styles.videosContainer}>
-         {fileData.map((video) => (
-           <VideoCard key={video.fileId} video={video}/>
-         ))}
-       </div>
-       
-       {meta.total>1 &&(
-          <Pagination meta={meta} performerId={performerId}/>
-       )}
+        {meta.total>1 &&(
+            <Pagination meta={meta} performerId={performerId}/>
+        )}
      </main>
     );
   } catch (e) {
