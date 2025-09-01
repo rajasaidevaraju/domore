@@ -27,6 +27,8 @@
 .name{
     font-size: 1.2rem;
     font-weight: bold;
+    overflow-wrap: break-word;
+    max-width: 95vw;
 }
 
 .buttonsDiv{
