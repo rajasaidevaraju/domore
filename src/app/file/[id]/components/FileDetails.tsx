@@ -28,6 +28,7 @@ export default function FileDetails({ initPerformers, fileId, initFileName }: Fi
   const [fileName, setFileName] = useState(initFileName);
   const [addPanel, setAddPanel] = useState(false);  
   const [isEditingName, setIsEditingName] = useState(false);
+  const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
   const [toasts, setToasts] = useState<any[]>([]);
 
   const showToast = (message: string, type: MessageType) => {
@@ -93,17 +94,22 @@ export default function FileDetails({ initPerformers, fileId, initFileName }: Fi
     }
   };
 
-  const deleteVideo = async () => {
+  const handleDeleteClick = () => {
+    if (token != null) {
+      setShowDeleteConfirmation(true);
+    }
+  };
+
+const handleConfirmDelete = async () => {
+    setShowDeleteConfirmation(false);
     if (token != null) {
       try {
-        if (confirm("Do you want to delete the file!")) {
-          await ServerRequest.deleteVideo(fileId, token);
-          let redirectUrl = `/?page=${page}`;
-          if (performerId) {
-            redirectUrl += `&performerId=${performerId}`;
-          }
-          router.push(redirectUrl);
+        await ServerRequest.deleteVideo(fileId, token);
+        let redirectUrl = `/?page=${page}`;
+        if (performerId) {
+          redirectUrl += `&performerId=${performerId}`;
         }
+        router.push(redirectUrl);
       } catch (error: Error | any) {
         if (error instanceof Error) {
           showToast(error.message, MessageType.DANGER);
@@ -111,6 +117,10 @@ export default function FileDetails({ initPerformers, fileId, initFileName }: Fi
         console.error("Error while deleting video:", error);
       }
     }
+  };
+
+  const handleCancelDelete = () => {
+    setShowDeleteConfirmation(false);
   };
 
   const handleEditNameClick = () => {
@@ -180,18 +190,34 @@ export default function FileDetails({ initPerformers, fileId, initFileName }: Fi
           <RippleButton className={styles.scbutton} onClick={handleTakeScreenshot}>
             Set As Thumbnail
           </RippleButton>
-          <RippleButton className={styles.scbutton} onClick={deleteVideo}>
-            Delete Video
+          <RippleButton className={styles.scbutton} onClick={handleDeleteClick}>
+             <img src="/svg/delete.svg" alt="Delete" /><p>&nbsp;Delete Video</p>
           </RippleButton>
-          <RippleButton
-            className={styles.scbutton}
-            disabled={isEditingName}
-            suggestion={isEditingName ? "Editing in progress" : undefined}
-            onClick={handleEditNameClick}
-          >
-            <img src="/svg/edit.svg" alt="Edit" />
-            <p>&nbsp;Edit Name</p>
+          <RippleButton className={styles.scbutton} disabled={isEditingName} suggestion={isEditingName ? "Editing in progress" : undefined}
+          onClick={handleEditNameClick}>
+            <img src="/svg/edit.svg" alt="Edit" /><p>&nbsp;Edit Name</p>
           </RippleButton>
+        </div>
+      )}
+      {showDeleteConfirmation && (
+        <div className={styles.confirmationOverlay}>
+          <div className={styles.confirmationDialog}>
+            <div className={styles.confirmationHeader}>
+              <h2>Confirm Deletion</h2>
+            </div>
+            <div className={styles.confirmationBody}>
+              <p>Are you sure you want to permanently delete the file {fileName}?</p>
+              <p>This action cannot be undone.</p>
+            </div>
+            <div className={styles.confirmationActions}>
+              <RippleButton className={styles.scbutton} onClick={handleCancelDelete}>
+                <img src="/svg/cancel.svg" alt="Cancel" /><p>&nbsp;Cancel</p>
+              </RippleButton>
+              <RippleButton className={styles.scbutton} onClick={handleConfirmDelete}>
+                <img src="/svg/delete.svg" alt="Delete" /><p>&nbsp;Delete</p>
+              </RippleButton>
+            </div>
+          </div>
         </div>
       )}
       {toasts.length > 0 && <ToastMessage toasts={toasts} onClose={removeToast} />}
