@@ -22,7 +22,8 @@
 }
 
 .videoCard img {
-  width: 100%;                 
+  width: 100%;
+  position: relative;             
   aspect-ratio: 16 / 9;         
   object-fit: cover;           
   border-radius: 5px;
@@ -38,6 +39,19 @@
   text-decoration: none !important;
 }
 
+.sizeText{
+  position: absolute;
+  background-color: black;
+  color: white;
+  font-weight: normal;
+  padding: .05rem .25rem;
+  border-radius: .25rem;
+  border: .15rem solid rgb(var(--main-color));
+  opacity: 75%;
+  bottom: .5rem;
+  right: .5rem;
+}
+
 
 @media (prefers-color-scheme: dark) {
   .thumbnail {
@@ -47,17 +61,27 @@
 
 
 .placeholderDiv{
-  height: 150px;
+  height: 152px;
   width: 270px;
+  position: relative;
   background-color: rgb(var(--main-color));
   border-radius: 5px;
-  margin-bottom: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 14px; 
   font-weight: bold;
   text-align: center;
+}
+
+@media (max-width: 480px) {
+ .placeholderDiv {
+    width: 100%;
+    height: fit-content;
+  }
+  .placeholderDiv:not(:has(> img)) {
+    height: 152px;
+  }
 }
 
 .cardText{

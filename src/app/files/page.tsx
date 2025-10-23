@@ -39,8 +39,8 @@ export default async function AltHomePage({searchParams}: {searchParams:HomeSear
       <main className={styles.mainContainer}>
         <NavContextBridge page={pageNo} performerId={performerId} />
         <div className={styles.videosContainer}>
-          {fileData.map((video) => (
-            <VideoCard key={video.fileId} video={video}/>
+          {fileData.map((file) => (
+            <VideoCard key={file.fileId} file={file}/>
           ))}
         </div>
        

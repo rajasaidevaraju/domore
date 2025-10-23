@@ -1,29 +1,31 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import Video from '../../types/Video';
+import React, { useState, useEffect,useMemo } from 'react';
 import {thumbnailCache} from '@/app/types/Types'
 import styles from './VideoCard.module.css';
 import { ServerRequest } from '../../service/ServerRequest';
 import Link from 'next/link';
 import Loading from '@/app/loading';
+import { FileData } from '@/app/types/FileDataList';
+import { formatSize } from '@/app/service/formatSize';
 
 interface VideoCardProps {
-  video: Video;
+  file: FileData;
 }
 
-export default function VideoCard({ video }: VideoCardProps) {
+export default function VideoCard({ file }: VideoCardProps) {
 
   const [imageData, setImageData] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const formattedSize=useMemo(() => formatSize(file.fileSize), [file.fileSize]);
 
-  const cleanedString = video.fileName.replace(/\.[a-zA-Z0-9]+$/, "");
+  const cleanedString = file.fileName.replace(/\.[a-zA-Z0-9]+$/, "");
 
   useEffect(() => {
 
-    if (thumbnailCache.has(video.fileId)) {
-      setImageData(thumbnailCache.get(video.fileId)!);
+    if (thumbnailCache.has(file.fileId)) {
+      setImageData(thumbnailCache.get(file.fileId)!);
       setIsLoading(false);
       return;
     }
@@ -32,9 +34,9 @@ export default function VideoCard({ video }: VideoCardProps) {
       setIsLoading(true);
       setError(null);
       try {
-        const requestData = await ServerRequest.fetchThumbnail(video.fileId.toString());
+        const requestData = await ServerRequest.fetchThumbnail(file.fileId.toString());
         if (requestData.exists) {
-          thumbnailCache.set(video.fileId, requestData.imageData);
+          thumbnailCache.set(file.fileId, requestData.imageData);
           setImageData(requestData.imageData);
         } else {
           setImageData(null); 
@@ -51,47 +53,57 @@ export default function VideoCard({ video }: VideoCardProps) {
 
    
 
-  }, [video.fileId]);
+  }, [file.fileId]);
 
 
 
   const renderThumbnail = () => {
     if (isLoading) {
-     
       return (
-         <div className={styles.placeholderDiv}>
-            <Loading noText={true}/>
-          </div>
+        <div className={styles.placeholderDiv}>
+          <p className={styles.sizeText}>{formattedSize}</p> 
+          <p>No Thumbnail</p>
+       </div>
       );
     }
     if (error) {
        return (
           <div className={styles.placeholderDiv}>
+            <p className={styles.sizeText}>{formattedSize}</p> 
             <p className='errorText'>Error</p>
           </div>
        );
     }
     if (imageData) {
       
-      return <img src={imageData} alt={`Thumbnail of ${cleanedString}`} className={styles.thumbnail} />;
+      return(
+        <div className={styles.placeholderDiv}>
+          <img src={imageData} alt={`Thumbnail of ${cleanedString}`} className={styles.thumbnail}/>
+          <p className={styles.sizeText}>{formattedSize}</p> 
+        </div>
+        
+      ) 
+      ;
     }
-   
-    return (
+    
+    /*return (
        <div className={styles.placeholderDiv}>
-         <p>No Thumbnail</p>
+          <p className={styles.sizeText}>{formattedSize}</p> 
+          <p>No Thumbnail</p>
        </div>
-    );
+    );*/
   };
 
   return (
 
-    <Link href={`/file/${video.fileId}`} className={styles.videoCardLink}>
+    <Link href={`/file/${file.fileId}`} className={styles.videoCardLink}>
       <div
         className={styles.videoCard}
         title={cleanedString}
       >
         {renderThumbnail()}
         <h2 className={styles.cardText}>{cleanedString}</h2>
+        {/*<h2 className={styles.cardText}>Title</h2>*/}
       </div>
     </Link>
   );

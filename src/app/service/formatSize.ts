@@ -1,6 +1,6 @@
 const oneKiloByte=1024
-const oneMegaByte=1024*1024
-const oneGigaByte=1024*1024*1024
+const oneMegaByte=1048576
+const oneGigaByte=1073741824
 
 export const formatSize = (size: number): string => {
   if (size < oneKiloByte) {
