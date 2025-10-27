@@ -1,91 +1,79 @@
+
 .videoCard {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content:center;
+  width: 100%;                    
+  max-width: 320px;               
   border: 1px solid rgb(var(--main-color));
   border-radius: 5px;
-  gap:5px;
-  padding: 12px;
-  text-align: center;
-  background-color: rgb(var(--background-rgb));
-  box-shadow: 0 2px 4px rgba(var(--foreground-rgb), 0.1);
-  width: 100%;
-  transition: background-color 0.3s ease;
-  cursor: default; 
+  background: rgb(var(--background-rgb));
+  box-shadow: 0 2px 4px rgba(var(--foreground-rgb), .1);
+  transition: background-color .3s ease;
+  overflow: hidden;              
 }
-
 
 .videoCard:hover {
+  background: rgba(var(--foreground-rgb), .1);
   cursor: pointer;
-  background-color: rgba(var(--foreground-rgb), 0.1);
-}
-
-.videoCard img {
-  width: 100%;
-  position: relative;             
-  aspect-ratio: 16 / 9;         
-  object-fit: cover;           
-  border-radius: 5px;
-  display: block;  
-}
-
-.videoCard h2 {
-  width: 100%;                
-  max-width: 100%; 
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  text-decoration: none !important;
-}
-
-.sizeText{
-  position: absolute;
-  background-color: black;
-  color: white;
-  font-weight: normal;
-  padding: .05rem .25rem;
-  border-radius: .25rem;
-  border: .15rem solid rgb(var(--main-color));
-  opacity: 75%;
-  bottom: .5rem;
-  right: .5rem;
 }
 
 
-@media (prefers-color-scheme: dark) {
-  .thumbnail {
-    opacity: 0.85;
-  }
-}
-
-
-.placeholderDiv{
-  height: 152px;
-  width: 270px;
+.thumbnailBox {
   position: relative;
-  background-color: rgb(var(--main-color));
-  border-radius: 5px;
+  width: 100%;
+  padding-bottom: 56.25%;         
+  background: rgb(var(--main-color));
+  border-radius: 5px 5px 0 0;     
+  overflow: hidden;               
+}
+
+.thumbnailBox img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;              
+  display: block;
+}
+
+
+.thumbnailBox::before {
+  content: 'No Thumbnail';
+  position: absolute;
+  inset: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 14px; 
   font-weight: bold;
-  text-align: center;
+  font-size: 14px;
+  color: #fff;
 }
 
-@media (max-width: 480px) {
- .placeholderDiv {
-    width: 100%;
-    height: fit-content;
-  }
-  .placeholderDiv:not(:has(> img)) {
-    height: 152px;
-  }
+
+.thumbnailBox img[src] ~ *::before { display: none; }
+
+.sizeText {
+  position: absolute;
+  bottom: .5rem;
+  right: .5rem;
+  background: rgba(0,0,0,.75);
+  color: #fff;
+  font-weight: 500;
+  font-size: .75rem;
+  padding: .1rem .3rem;
+  border-radius: .25rem;
+  border: 2px solid rgb(var(--main-color));
+  z-index: 1;
 }
 
-.cardText{
+.videoCard h2 {
+  margin: 0.5rem 0 0;
+  padding: 0 0.5rem;
+  font-size: 1rem;
+  line-height: 1.3;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+

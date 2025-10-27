@@ -1,6 +1,7 @@
 .button_container{
     display: flex;
     margin: 10px;
+    gap:10px;
     align-items: center;
 }
 
@@ -17,12 +18,11 @@
 .button{
     background-color: rgb(var(--main-color));
     border-radius: 5px;
-    width: 30px;
+    width: 40px;
     height: 30px;
     justify-content: center;
     display: flex;
-    padding: 3px;
-    margin: 5px;
+    padding: 0.25rem .5rem;
     text-decoration: none;
     color: inherit;
     transition: background-color 0.3s ease;
@@ -43,32 +43,12 @@
 }
 
 
-.dropdown_select {
-    margin: 5px;
-    padding: 3px;
+.pageSelect {
+    width: 100%;
+    text-align: center;
+    padding: 0.25rem .5rem;
     background-color: rgb(var(--main-color));
     border-radius: 5px;
-    padding: 5px 15px;
-    font-size: 14px;
-    color: inherit;
-    cursor: pointer;
-    border: none;
-    outline: none;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
     appearance: none;
-    width: 100px;
-    text-align: center;
-    transition: background-color 0.3s ease, transform 0.1s ease;
-}
-
-/* Remove dropdown arrow and style it */
-.dropdown_select::-ms-expand {
-    display: none;
-}
-
-.dropdown_select:hover {
-    background-color: rgba(var(--main-color-hover));
-}
-
-.dropdown_select:active {
-    background-color: rgba(var(--main-color-active));
 }

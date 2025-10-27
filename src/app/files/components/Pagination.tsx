@@ -13,10 +13,8 @@ interface PaginationProps{
 export default function Pagination({meta:{page, limit, total}, performerId}:PaginationProps){
 
     const router = useRouter();
-    // Calculate total pages
     const totalPages = Math.ceil(total / limit);
 
-    // Check if we are on the first or last page
     const isFirstPage = page === 1;
     const isLastPage = page === totalPages;
 
@@ -56,10 +54,11 @@ export default function Pagination({meta:{page, limit, total}, performerId}:Pagi
                 <img src="/svg/left.svg" alt="left button"></img>
             </Link>
             <select
-                className={styles.dropdown_select}
+                className={styles.pageSelect}
                 value={page}
                 onChange={handlePageChange}
             >
+                <option value="" disabled>Select Page</option>
                 {pageOptions.map(option => (
                     <option key={option} value={option}>
                         Page {option}
