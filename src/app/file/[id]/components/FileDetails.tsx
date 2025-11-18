@@ -30,9 +30,10 @@ export default function FileDetails({ initPerformers, fileId, initFileName }: Fi
   const [isEditingName, setIsEditingName] = useState(false);
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
   const [toasts, setToasts] = useState<any[]>([]);
+  const [insertThumbnailLoading,setInsertThumbnailLoading]=useState(false)
+
 
   const showToast = (message: string, type: MessageType) => {
-    const id = Date.now();
     const newMessage = { id: Date.now(), message, type };
     setToasts((prev) => [...prev, newMessage]);
   };
@@ -80,6 +81,7 @@ export default function FileDetails({ initPerformers, fileId, initFileName }: Fi
         return;
       }
       try {
+        setInsertThumbnailLoading(true);
         const html2canvas = (await import("html2canvas")).default;
         const canvas = await html2canvas(videoElement, { allowTaint: true });
         const imageData = canvas.toDataURL("image/jpeg", 0.3);
@@ -90,6 +92,9 @@ export default function FileDetails({ initPerformers, fileId, initFileName }: Fi
           showToast(error.message, MessageType.DANGER);
         }
         console.error("Error taking screenshot:", error);
+      }
+      finally{
+        setInsertThumbnailLoading(false);
       }
     }
   };
@@ -187,8 +192,8 @@ const handleConfirmDelete = async () => {
       {isLoggedIn && (
         <div className={styles.buttonsDiv}>
           <p>Actions: </p>
-          <RippleButton className={styles.scbutton} onClick={handleTakeScreenshot}>
-            Set As Thumbnail
+          <RippleButton className={styles.scbutton} onClick={handleTakeScreenshot} disabled={insertThumbnailLoading}>
+            {insertThumbnailLoading?"uploading Thumbnail":"Set As Thumbnail"}
           </RippleButton>
           <RippleButton className={styles.scbutton} onClick={handleDeleteClick}>
              <img src="/svg/delete.svg" alt="Delete" /><p>&nbsp;Delete Video</p>
