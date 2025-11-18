@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   distDir: 'build',
-  allowedDevOrigins: ['192.168.2.90'],
+  allowedDevOrigins: ['192.168.1.12'],
   async rewrites() {
     return [
       {

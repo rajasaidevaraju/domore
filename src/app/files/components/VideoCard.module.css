@@ -63,11 +63,10 @@
   padding: .1rem .3rem;
   border-radius: .25rem;
   border: 2px solid rgb(var(--main-color));
-  z-index: 1;
 }
 
 .videoCard h2 {
-  margin: 0.5rem 0 0;
+  margin: 0.5rem 0 0.5rem;
   padding: 0 0.5rem;
   font-size: 1rem;
   line-height: 1.3;

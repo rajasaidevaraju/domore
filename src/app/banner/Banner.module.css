@@ -18,6 +18,8 @@
 .actionItemsMenu{
   flex-direction: column;
   gap:10px;
+  z-index: 10;
+  position: relative;
 }
 
 .dropdown{

@@ -53,20 +53,22 @@ const Banner = () => {
             <img src="/svg/home.svg" alt="Filter" className={styles.icon} />
             <span className={styles.icon_text}>Home</span>
         </PressableLink>
-        {isMobile!=null && !isMobile && <ActionItems isMobile={isMobile}/>}
         
-        {isMobile!=null && isMobile &&
+        {isMobile ? (
             <div className={styles.dropdown} ref={dropdownRef}>
                 <RippleButton className={styles.actionItem} onClick={toggleActionItems}>
                     <img src="/svg/menu.svg" alt="Menu" className={styles.icon} />
                     <span className={styles.iconText}>Menu</span>
                 </RippleButton>
-                {isMobile && menuOpen && 
+                {menuOpen && 
                     <div className={styles.dropdownContent}>
                         <ActionItems isMobile={isMobile} closeMenu={closeMenu} />
                     </div>
                 }
             </div>
+            ):(
+                <ActionItems isMobile={false}/>
+            )     
         }
     </nav>
   );

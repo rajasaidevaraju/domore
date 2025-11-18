@@ -20,7 +20,7 @@ export default function VideoCard({ file }: VideoCardProps) {
   const cleanedString = file.fileName.replace(/\.[a-zA-Z0-9]+$/, "");
 
   useEffect(() => {
-
+   
     if (thumbnailCache.has(file.fileId)) {
       setImageData(thumbnailCache.get(file.fileId)!);
       return;
@@ -42,13 +42,11 @@ export default function VideoCard({ file }: VideoCardProps) {
 
     fetchThumb();
 
-   
-
   }, [file.fileId]);
 
   return (
-<div className={styles.videoCard} title={cleanedString}>
-      <Link href={`/file/${file.fileId}`} className={styles.cardLink}>
+    <div className={styles.videoCard} title={cleanedString}>
+      <Link href={`/file/${file.fileId}`}>
         <div className={styles.thumbnailBox}>
           {imageData ? (
             <img
