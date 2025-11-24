@@ -7,11 +7,21 @@
     padding: 20px;
 }
 
-.videoElement {
-    max-height: 50vh;
-    min-width: 500px;
+.videoDiv{
+    display: flex;
+    flex-direction: column;
+    width:fit-content;
+    gap:5px;
+}
+
+.speedSelect{
+    padding: 7px;
+    border-radius: 5px;
+    text-align: center;
+}
+.videoElement { 
+    height: 50vh;
     background: rgb(var(--main-color));
-    width: fit-content;
     border-radius: 5px;
 }
 .input{

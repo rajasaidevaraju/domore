@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useState,useEffect } from "react";
 import styles from "../File.module.css";
 
 interface VideoPlayerProps {
@@ -8,9 +8,11 @@ interface VideoPlayerProps {
   fileId: string;
 }
 
-export default function VideoPlayer({ videoSrc }: VideoPlayerProps) {
+export default function VideoPlayer({ videoSrc}: VideoPlayerProps) {
 
   const videoRef = useRef<HTMLVideoElement>(null);
+  const [speed, setSpeed] = useState(1);
+
   const rateChnage = "ratechange";
   const volumeChange = "volumechange";
   const videoVolume = "videoVolume";
@@ -19,8 +21,9 @@ export default function VideoPlayer({ videoSrc }: VideoPlayerProps) {
 
   const handleRateChange = () => {
     if (videoRef.current) {
-      const speed = videoRef.current.playbackRate;
-      localStorage.setItem(videoPlaybackSpeed, speed.toString());
+      const newSpeed = videoRef.current.playbackRate;
+      localStorage.setItem(videoPlaybackSpeed, newSpeed.toString());
+      setSpeed(newSpeed);
     }
   };
 
@@ -34,6 +37,15 @@ export default function VideoPlayer({ videoSrc }: VideoPlayerProps) {
       }
     }
   };
+
+  const changeSpeed = (value: number) => {
+    if (videoRef.current) {
+      videoRef.current.playbackRate = value;
+      setSpeed(value);
+      localStorage.setItem(videoPlaybackSpeed, value.toString());
+    }
+  };
+
 
   useEffect(() => {
     const videoElement = videoRef.current;
@@ -60,8 +72,26 @@ export default function VideoPlayer({ videoSrc }: VideoPlayerProps) {
   }, [videoRef]);
 
   return (
-    <video crossOrigin="anonymous" ref={videoRef} controls className={styles.videoElement}>
-      <source src={videoSrc} type="video/mp4" />
-    </video>
+    <div className={styles.videoDiv}>
+      <video crossOrigin="anonymous" ref={videoRef} controls className={styles.videoElement}>
+        <source src={videoSrc} type="video/mp4" />
+      </video>
+      <div>
+        <label>Speed: </label>
+        <select
+          value={speed}
+          onChange={(e) => changeSpeed(parseFloat(e.target.value))}
+          className={styles.speedSelect}
+        >
+          <option value={0.7}>0.70</option>
+          <option value={0.8}>0.80</option>
+          <option value={0.9}>0.90</option>
+          <option value={1}>1</option>
+          <option value={1.2}>1.20</option>
+        </select>
+      </div>
+    </div>
+
+    
   );
 }

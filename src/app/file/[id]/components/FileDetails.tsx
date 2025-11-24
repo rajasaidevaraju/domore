@@ -18,9 +18,10 @@ interface FileDetailsProps {
   initPerformers: Item[];
   fileId: string;
   initFileName: string;
+  downloadLink:string;
 }
 
-export default function FileDetails({ initPerformers, fileId, initFileName }: FileDetailsProps) {
+export default function FileDetails({initPerformers, fileId, initFileName,downloadLink }: FileDetailsProps) {
   const router = useRouter();
   const { page, performerId } = useNavStore();
   const { token, isLoggedIn } = useAuthStore();
@@ -105,7 +106,8 @@ export default function FileDetails({ initPerformers, fileId, initFileName }: Fi
     }
   };
 
-const handleConfirmDelete = async () => {
+
+  const handleConfirmDelete = async () => {
     setShowDeleteConfirmation(false);
     if (token != null) {
       try {
@@ -155,6 +157,16 @@ const handleConfirmDelete = async () => {
     }
   };
 
+  const handleDownload = () => {
+    const link = document.createElement('a');
+    link.href = downloadLink;
+    link.download = fileName;
+    link.style.display = 'none';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
     <>
       <div className={styles.buttonsDiv}>
@@ -164,6 +176,10 @@ const handleConfirmDelete = async () => {
           <p className={styles.name}>{fileName}</p>
         )}
       </div>
+
+    <RippleButton className={styles.scbutton} onClick={handleDownload}>
+      Download Video
+    </RippleButton>
 
       <div className={styles.buttonsDiv}>
         <p>Performers: </p>

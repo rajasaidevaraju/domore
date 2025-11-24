@@ -36,11 +36,12 @@ export default async function FilePage({ params }: { params: pageParams}) {
   try {
     const result: FileDetailsType = await ServerRequest.fetchfileDetails(id);
     const videoSrc = `${API_BASE_URL}/server/file?fileId=${id}`;
-
+    const downloadLink=videoSrc+"&download=true";
+    
     return (
       <div className={styles.videoContainer}>
-        <VideoPlayer videoSrc={videoSrc} fileId={id} />
-        <FileDetails initPerformers={result.performers} fileId={id} initFileName={result.name} />
+        <VideoPlayer videoSrc={videoSrc} fileId={id}/>
+        <FileDetails downloadLink={downloadLink} initPerformers={result.performers} fileId={id} initFileName={result.name} />
       </div>
     );
   } catch (error) {
