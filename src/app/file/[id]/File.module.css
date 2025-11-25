@@ -27,7 +27,7 @@
     gap:5px;
 }
 .speedSelect{
-    padding: 7px;
+    padding: 7px 5px;
     border-radius: 5px;
     text-align: center;
     background-color: rgb(var(--main-color));
@@ -120,9 +120,8 @@
     justify-content: center;
     align-items: center;
     display: flex;
-    padding: 10px;
-    width: fit-content;
-    height: 34px;
+    padding: 5px 10px;
+    width: fit-content !important;
     background-color: rgb(var(--main-color));
     text-decoration: none;
     color: inherit;
