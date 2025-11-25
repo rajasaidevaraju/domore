@@ -26,6 +26,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
+        <link rel="icon" href="/icon.svg" type="image/svg+xml" />
         <link rel="preload" href="/svg/filter.svg" as="image" type="image/svg+xml" />
         <link rel="preload" href="/svg/management.svg" as="image" type="image/svg+xml" />
         <link rel="preload" href="/svg/login.svg" as="image" type="image/svg+xml" />

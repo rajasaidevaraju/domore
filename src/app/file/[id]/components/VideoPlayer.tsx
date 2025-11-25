@@ -2,6 +2,7 @@
 
 import React, { useRef, useState,useEffect } from "react";
 import styles from "../File.module.css";
+import RippleButton from "@/app/types/RippleButton";
 
 interface VideoPlayerProps {
   videoSrc: string;
@@ -46,6 +47,18 @@ export default function VideoPlayer({ videoSrc}: VideoPlayerProps) {
     }
   };
 
+  const skipPrev = () => {
+    if (videoRef.current) {
+      videoRef.current.currentTime = Math.max(videoRef.current.currentTime - 10, 0);
+    }
+  };
+
+const skipNext = () => {
+  if (videoRef.current) {
+    videoRef.current.currentTime = Math.min(videoRef.current.currentTime + 10,videoRef.current.duration || videoRef.current.currentTime + 10);
+  }
+};
+
 
   useEffect(() => {
     const videoElement = videoRef.current;
@@ -76,19 +89,27 @@ export default function VideoPlayer({ videoSrc}: VideoPlayerProps) {
       <video crossOrigin="anonymous" ref={videoRef} controls className={styles.videoElement}>
         <source src={videoSrc} type="video/mp4" />
       </video>
-      <div>
-        <label>Speed: </label>
-        <select
-          value={speed}
-          onChange={(e) => changeSpeed(parseFloat(e.target.value))}
-          className={styles.speedSelect}
-        >
-          <option value={0.7}>0.70</option>
-          <option value={0.8}>0.80</option>
-          <option value={0.9}>0.90</option>
-          <option value={1}>1</option>
-          <option value={1.2}>1.20</option>
-        </select>
+      <div className={styles.controlDiv}>
+        <RippleButton className={styles.scbutton} onClick={skipPrev}>
+          Skip Prev
+        </RippleButton>
+        <div className={styles.speedDiv}>
+          <label>Speed: </label>
+          <select
+            value={speed}
+            onChange={(e) => changeSpeed(parseFloat(e.target.value))}
+            className={styles.speedSelect}
+          >
+            <option value={0.7}>0.70</option>
+            <option value={0.8}>0.80</option>
+            <option value={0.9}>0.90</option>
+            <option value={1}>1</option>
+            <option value={1.2}>1.20</option>
+          </select>
+        </div>
+        <RippleButton className={styles.scbutton} onClick={skipNext}>
+          Skip Next
+        </RippleButton>
       </div>
     </div>
 
