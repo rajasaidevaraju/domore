@@ -1,43 +1,46 @@
 // app/AltHomePage.tsx
 import { ServerRequest } from '../service/ServerRequest';
-import { FileDataList} from '../types/FileDataList';
+import { Suspense } from "react";
 import { HomeSearchParams } from '../types/Types';
 import NavContextBridge  from "@/app/files/components/NavContextBridge";
 import styles from './Files.module.css';
 import { notFound } from 'next/navigation';
 import VideoCard from './components/VideoCard'
 import Pagination from './components/Pagination';
+import SortDropdown from './components/SortDropdown';
 
 
 export default async function AltHomePage({searchParams}: {searchParams:HomeSearchParams}) {
   const params= await searchParams;
   const pagenoStr= params.page;
   const performerIdStr = params.performerId;
+  const sortByStr = params.sortBy;
   let pageNo=1
   if(pagenoStr!=null &&!isNaN(Number(pagenoStr))){
     pageNo=getPageNumber(pagenoStr);
   }
   let performerId: number | null = null;
-  let filesDataList: FileDataList;
 
   try {
-    if (performerIdStr !== undefined) {
+    if (performerIdStr) {
       const parsed = Number(performerIdStr);
       if (!isNaN(parsed)) {
         performerId = parsed;
-        filesDataList = await ServerRequest.fetchFiles(pageNo, performerId);
       } else {
         return notFound();
       }
-    } else {
-      filesDataList = await ServerRequest.fetchFiles(pageNo);
     }
+    const filesDataList = await ServerRequest.fetchFiles(pageNo, performerId ?? undefined, sortByStr);
     let fileData=filesDataList.data;
     let meta=filesDataList.meta;
     
     return (
       <main className={styles.mainContainer}>
-        <NavContextBridge page={pageNo} performerId={performerId} />
+        <div className={styles.controlDiv}>
+          <SortDropdown selected={sortByStr ?? "latest"} />
+        </div>
+        
+        <NavContextBridge page={pageNo} performerId={performerId} sortBy={sortByStr}/>
         <div className={styles.videosContainer}>
           {fileData.map((file) => (
             <VideoCard key={file.fileId} file={file}/>
@@ -45,7 +48,7 @@ export default async function AltHomePage({searchParams}: {searchParams:HomeSear
         </div>
        
         {meta.total>1 &&(
-            <Pagination meta={meta} performerId={performerId}/>
+            <Pagination meta={meta} performerId={performerId} sortBy={sortByStr}/>
         )}
      </main>
     );

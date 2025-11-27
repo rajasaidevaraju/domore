@@ -6,14 +6,15 @@ import { useNavStore } from "@/app/store/navigation";
 interface Props {
   page: number;
   performerId: number | null;
+  sortBy:string|undefined
 }
 
-export default function NavContextBridge({ page, performerId }: Props) {
+export default function NavContextBridge({ page, performerId, sortBy }: Props) {
   const setNavContext = useNavStore((state) => state.setNavContext);
 
   useEffect(() => {
-    setNavContext(page, performerId);
-  }, [page, performerId, setNavContext]);
+    setNavContext(page, performerId, sortBy);
+  }, [page, performerId, sortBy, setNavContext]);
 
   return null;
 }

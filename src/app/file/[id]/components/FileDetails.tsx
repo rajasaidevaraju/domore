@@ -23,7 +23,7 @@ interface FileDetailsProps {
 
 export default function FileDetails({initPerformers, fileId, initFileName,downloadLink }: FileDetailsProps) {
   const router = useRouter();
-  const { page, performerId } = useNavStore();
+  const { page,  performerId, sortBy } = useNavStore();
   const { token, isLoggedIn } = useAuthStore();
   const [performers, setPerformers] = useState<Item[]>(initPerformers);
   const [fileName, setFileName] = useState(initFileName);
@@ -115,6 +115,9 @@ export default function FileDetails({initPerformers, fileId, initFileName,downlo
         let redirectUrl = `/?page=${page}`;
         if (performerId) {
           redirectUrl += `&performerId=${performerId}`;
+        }
+        if(sortBy){
+          redirectUrl+=`&sortBy=${sortBy}`
         }
         router.push(redirectUrl);
       } catch (error: Error | any) {

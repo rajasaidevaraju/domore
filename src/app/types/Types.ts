@@ -81,6 +81,6 @@ export enum StorageLocation {
   External = 'external',
 }
 
-export type HomeSearchParams=Promise<{ page:string|undefined,performerId:string|undefined }>
+export type HomeSearchParams=Promise<{ page:string|undefined,performerId:string|undefined,sortBy:string|undefined }>
 
 export const thumbnailCache = new Map<number, string>();

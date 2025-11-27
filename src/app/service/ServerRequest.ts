@@ -6,16 +6,19 @@ const API_BASE_URL = ServerUrlProvider();
 
 export const ServerRequest = {
   
-  async fetchFiles(page?:number,performerId?:number): Promise<FileDataList> {
+  async fetchFiles( page?:number, performerId?:number, sortBy?: string ): Promise<FileDataList> {
     
     let baseURL=API_BASE_URL || window.location.origin
 
     let url = new URL("/server/files",baseURL);
-    if (page !== undefined) {
+    if (page) {
       url.searchParams.append("page", page.toString());
     }
-    if (performerId !== undefined) {
+    if (performerId) {
       url.searchParams.append("performerId", performerId.toString());
+    }
+    if(sortBy){
+      url.searchParams.append("sortBy",sortBy);
     }
     const response = await fetch(url,{method:"GET",redirect:"follow"});
     if (!response.ok) {

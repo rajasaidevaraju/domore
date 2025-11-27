@@ -8,9 +8,10 @@ import { Meta } from '../../types/FileDataList';
 interface PaginationProps{
     meta:Meta,
     performerId:number|null
+    sortBy:string|undefined
 }
 
-export default function Pagination({meta:{page, limit, total}, performerId}:PaginationProps){
+export default function Pagination({meta:{page, limit, total}, performerId,sortBy}:PaginationProps){
 
     const router = useRouter();
     const totalPages = Math.ceil(total / limit);
@@ -25,6 +26,11 @@ export default function Pagination({meta:{page, limit, total}, performerId}:Pagi
     if(performerId!=null){
         base.searchParams.append("performerId",performerId.toString())
     }
+
+    if(sortBy){
+        base.searchParams.append("sortBy",sortBy)
+    }
+
 
     let prevUrl=isFirstPage?new URL("#",window.location.origin):new URL(base);
 
