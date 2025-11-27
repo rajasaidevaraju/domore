@@ -5,9 +5,9 @@ import { HomeSearchParams } from '../types/Types';
 import NavContextBridge  from "@/app/files/components/NavContextBridge";
 import styles from './Files.module.css';
 import { notFound } from 'next/navigation';
-import VideoCard from './components/VideoCard'
-import Pagination from './components/Pagination';
+import VideoList from './components/VideoList';
 import SortDropdown from './components/SortDropdown';
+import Loading from '../loading';
 
 
 export default async function AltHomePage({searchParams}: {searchParams:HomeSearchParams}) {
@@ -21,7 +21,6 @@ export default async function AltHomePage({searchParams}: {searchParams:HomeSear
   }
   let performerId: number | null = null;
 
-  try {
     if (performerIdStr) {
       const parsed = Number(performerIdStr);
       if (!isNaN(parsed)) {
@@ -30,9 +29,7 @@ export default async function AltHomePage({searchParams}: {searchParams:HomeSear
         return notFound();
       }
     }
-    const filesDataList = await ServerRequest.fetchFiles(pageNo, performerId ?? undefined, sortByStr);
-    let fileData=filesDataList.data;
-    let meta=filesDataList.meta;
+
     
     return (
       <main className={styles.mainContainer}>
@@ -41,27 +38,12 @@ export default async function AltHomePage({searchParams}: {searchParams:HomeSear
         </div>
         
         <NavContextBridge page={pageNo} performerId={performerId} sortBy={sortByStr}/>
-        <div className={styles.videosContainer}>
-          {fileData.map((file) => (
-            <VideoCard key={file.fileId} file={file}/>
-          ))}
-        </div>
-       
-        {meta.total>1 &&(
-            <Pagination meta={meta} performerId={performerId} sortBy={sortByStr}/>
-        )}
+         <Suspense fallback={<Loading  />}>
+          <VideoList page={pageNo} performerId={performerId} sortBy={sortByStr} />
+        </Suspense>
      </main>
     );
-  } catch (e) {
-    const errorMessage = e instanceof Error ? e.message : 'Error fetching files';
-    return (
-    <main className={styles.mainContainer}>
-      <div className={styles.innerContainer}>
-        <p className="errorText">{errorMessage}</p>
-      </div>
-    </main>
-  );
-  }
+
 }
 
 function getPageNumber(page: string | undefined): number {
