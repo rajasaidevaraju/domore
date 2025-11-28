@@ -47,8 +47,11 @@ export default function Pagination({meta:{page, limit, total}, performerId,sortB
         const selectedPage = e.target.value;
         let url = new URL("/files",window.location.origin);
         url.searchParams.append("page", selectedPage);
-        if(performerId!=null){
+        if(performerId){
             url.searchParams.append("performerId",performerId.toString())
+        }
+        if(sortBy){
+            url.searchParams.append("sortBy",sortBy)
         }
         router.push(url.pathname + url.search);
     };
