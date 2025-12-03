@@ -27,7 +27,6 @@ export default async function VideoList({page, performerId, sortBy}: VideoListPr
                 }
                         
                 <div className={styles.videosContainer}>
-                    <VideoCard key={fileData[0].fileId} file={fileData[0]}></VideoCard>
                     {fileData.map((file) => (
                         <VideoCard key={file.fileId} file={file} />
                     ))}
