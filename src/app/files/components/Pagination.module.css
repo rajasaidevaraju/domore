@@ -1,8 +1,11 @@
 .button_container{
     display: flex;
-    margin: 10px;
     gap:10px;
     align-items: center;
+    justify-content: center;
+    width: 100%;
+    margin-top: auto;
+    padding: 10px 0px; 
 }
 
 .disabled{
@@ -44,7 +47,6 @@
 
 
 .pageSelect {
-    width: 100%;
     text-align: center;
     padding: 0.25rem .5rem;
     background-color: rgb(var(--main-color));

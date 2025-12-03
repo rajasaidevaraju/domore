@@ -2,7 +2,7 @@ import { ServerRequest } from "@/app/service/ServerRequest";
 import VideoCard from "./VideoCard";
 import Pagination from "./Pagination";
 import styles from "@/app/files/Files.module.css";
-import { FileDataList } from "@/app/types/FileDataList";
+import SortDropdown from './SortDropdown';
 
 interface VideoListProps{
     page: number;
@@ -10,7 +10,7 @@ interface VideoListProps{
     sortBy?: string;
 }
 
-export default async function VideoList({page,performerId,sortBy,}: VideoListProps) {
+export default async function VideoList({page, performerId, sortBy}: VideoListProps) {
     
     try{
 
@@ -20,7 +20,14 @@ export default async function VideoList({page,performerId,sortBy,}: VideoListPro
 
         return (
             <>
+                {filesDataList.data.length>0 && 
+                    <div className={styles.controlDiv}>
+                        <SortDropdown selected={sortBy ?? "latest"} />
+                    </div>
+                }
+                        
                 <div className={styles.videosContainer}>
+                    <VideoCard key={fileData[0].fileId} file={fileData[0]}></VideoCard>
                     {fileData.map((file) => (
                         <VideoCard key={file.fileId} file={file} />
                     ))}

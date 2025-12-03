@@ -1,12 +1,9 @@
-// app/AltHomePage.tsx
-import { ServerRequest } from '../service/ServerRequest';
 import { Suspense } from "react";
 import { HomeSearchParams } from '../types/Types';
 import NavContextBridge  from "@/app/files/components/NavContextBridge";
 import styles from './Files.module.css';
 import { notFound } from 'next/navigation';
 import VideoList from './components/VideoList';
-import SortDropdown from './components/SortDropdown';
 import Loading from '../loading';
 
 
@@ -33,10 +30,6 @@ export default async function AltHomePage({searchParams}: {searchParams:HomeSear
     
     return (
       <main className={styles.mainContainer}>
-        <div className={styles.controlDiv}>
-          <SortDropdown selected={sortByStr ?? "latest"} />
-        </div>
-        
         <NavContextBridge page={pageNo} performerId={performerId} sortBy={sortByStr}/>
          <Suspense fallback={<Loading  />}>
           <VideoList page={pageNo} performerId={performerId} sortBy={sortByStr} />
