@@ -1,7 +1,7 @@
 'use client'
 
 import styles from './Banner.module.css'
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import PressableLink from "@/app/types/PressableLink";
 import RippleButton from "@/app/types/RippleButton";
 import ChangePanel from './ChangePanel'
@@ -16,7 +16,7 @@ interface ActionItemsProps{
 function ActionItems({isMobile,closeMenu}:ActionItemsProps){
     const [showChangePanel, setChangePanel] = useState(false);
     const [isAnimating, setIsAnimating] = useState(false);
-    const { isLoggedIn, username,token,clearAuth } = useAuthStore();
+    const { isLoggedIn,token,clearAuth } = useAuthStore();
     const pathname = usePathname();
 
     const isManagementActive = pathname === '/management';

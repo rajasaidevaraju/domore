@@ -4,7 +4,6 @@ import { formatSize } from "@/app/service/formatSize";
 import styles from "./management.module.css";
 import { useAuthStore } from '@/app/store/auth';
 import { StorageLocation } from "@/app/types/Types";
-import { useStatsStore } from "@/app/store/statsStore";
 
 interface ProgressTrackerProps {
     file: File;
@@ -75,6 +74,7 @@ useEffect(()=>{
       xhr.current.abort()
     }
   }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
 },[startUpload])
 
 

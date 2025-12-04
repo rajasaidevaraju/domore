@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useAuthStore } from "@/app/store/auth";
 import {UserRequests} from "@/app/service/UserRequests";
 
@@ -26,6 +26,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         };
 
         verifyToken();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [token]);
 
     if (authLoading) return <Loading text="Checking Login Status ..."/>;

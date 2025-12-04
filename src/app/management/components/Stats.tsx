@@ -1,9 +1,7 @@
 'use client'
 
 import styles from "./management.module.css";
-import { useState,useEffect } from 'react'
-import {ServerRequest} from './../../service/ServerRequest'
-import { ServerStats } from '@/app/types/Types'
+import { useEffect } from 'react'
 import { formatSize } from '@/app/service/formatSize'
 import { useStatsStore } from '@/app/store/statsStore';
 import Loading from '@/app/loading'
@@ -20,6 +18,7 @@ export default function Stats(){
         return () => {
           controller.abort();
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
     
     if (isLoading && !stats) {

@@ -42,7 +42,7 @@ function AddPerformerPanel({onClose,onSave,showToast}:AddPerformerPanelProps) {
         if(input){
             input.focus()
         }
-
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     },[]);
     useEffect(() => {
         if(selectedId!=null){

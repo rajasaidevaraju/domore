@@ -1,6 +1,4 @@
 import { ServerUrlProvider } from './UrlProvider';
-import { FileDataList } from "../types/FileDataList";
-import { ServerStats,Item } from '../types/Types'
 
 const API_BASE_URL = ServerUrlProvider();
 
