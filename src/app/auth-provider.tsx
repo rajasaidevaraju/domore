@@ -7,14 +7,14 @@ import {UserRequests} from "@/app/service/UserRequests";
 import Loading from "./loading";
 
 const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-    const {setAuth, clearAuth, token } = useAuthStore();
-    const [loading, setLoading] = useState(true);
+    const {setAuth, clearAuth, token, authLoading, setAuthLoading } = useAuthStore();
     useEffect(() => {
         const verifyToken = async () => {
             if (!token) {
-                setLoading(false);
+                setAuthLoading(false);
                 return;
             }
+            setAuthLoading(true);
             const res = await UserRequests.verifyToken(token);
             if(res.isTokenValid){
                 setAuth(true,res.username,res.token);
@@ -22,13 +22,13 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                 clearAuth();
             }
             
-            setLoading(false);
+            setAuthLoading(false);
         };
 
         verifyToken();
     }, [token]);
 
-    if (loading) return <Loading/>;
+    if (authLoading) return <Loading text="Checking Login Status ..."/>;
 
     return <>{children}</>;
 };

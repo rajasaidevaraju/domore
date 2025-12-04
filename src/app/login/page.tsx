@@ -1,6 +1,6 @@
 'use client'
 
-import React, { use, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styles from './Login.module.css';
 import {validateUsername,validatePassword} from '@/app/service/validate'
 import { ToastData, MessageType } from "@/app/types/Types";
@@ -10,6 +10,7 @@ import {UserRequests} from '@/app/service/UserRequests';
 import { useAuthStore } from '@/app/store/auth';
 import { useRouter } from 'next/navigation';
 import EyeIcon from './eyeIcon';
+import Loading from '../loading';
 
 const Login: React.FC = () => {
     const [username, setUsername] = useState('');
@@ -19,8 +20,17 @@ const Login: React.FC = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [loginError, setLoginError] = useState('');
     const [toasts, setToasts] = useState<ToastData[]>([]);
-    const {token,setAuth} =useAuthStore();
+    const {token,setAuth,isLoggedIn,authLoading} =useAuthStore();
     const router = useRouter();
+
+    useEffect(() => {
+        if (!authLoading && isLoggedIn && token) {
+            router.replace("/");
+        }
+    }, [authLoading, isLoggedIn, token, router]);
+
+    if (authLoading) return <Loading text="Checking login status..." />;
+
 
 
     const showToast = (message: string, type: MessageType) => {
