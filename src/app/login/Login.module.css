@@ -2,10 +2,15 @@
     background-color: rgba(var(--background-rgb));
     box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
     border: 1px solid rgb(var(--main-color));;
-    padding: 20px;
+    padding: 30px 10px;
+    margin: 10px;
     border-radius: 8px;
-    width: 100%;
+    width: 95%;
     max-width: 400px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap:1rem;
 }
 .mainContainer{
     display: flex;
@@ -13,11 +18,9 @@
     align-items: center;
     justify-content: center;
     height: 80%;
-    margin: 20px;
 }
 .title {
     font-size: 24px;
-    margin-bottom: 20px;
     text-align: center;
 }
 
@@ -25,7 +28,7 @@
     display: flex;
     flex-direction: column;
     gap:10px;
-    margin: 20px 0;
+    width: 95%;
 }
 
 .passwordContainer {
@@ -60,8 +63,8 @@
 
 
 .button {
-    width: 100%;
-    padding: 10px;
+    width: 150px;
+    padding: 5px;
     border: none;
     border-radius: 4px;
     background-color: rgb(var(--main-color));
@@ -71,10 +74,10 @@
 }
 
 
-
-@media (max-width: 768px) {
+@media (max-width: 768px), (max-device-width: 768px)  {
     .container {
         padding: 15px;
+        max-width: calc(100% - 20px);
     }
 
     .title {
@@ -87,6 +90,6 @@
 
     .button {
         padding: 8px;
-        font-size: 14px;
+        font-size: 1rem;
     }
 }

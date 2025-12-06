@@ -21,6 +21,7 @@ const Login: React.FC = () => {
     const [loginError, setLoginError] = useState('');
     const [toasts, setToasts] = useState<ToastData[]>([]);
     const {token,setAuth,isLoggedIn,authLoading} =useAuthStore();
+    const [loading, setLoading]=useState(false);
     const router = useRouter();
 
     useEffect(() => {
@@ -28,9 +29,6 @@ const Login: React.FC = () => {
             router.replace("/");
         }
     }, [authLoading, isLoggedIn, token, router]);
-
-    if (authLoading) return <Loading text="Checking login status..." />;
-
 
 
     const showToast = (message: string, type: MessageType) => {
@@ -79,21 +77,13 @@ const Login: React.FC = () => {
         
         if (isUsernameValid && isPasswordValid) {
             try {
+                setLoading(true);
                 let {token,error}=await UserRequests.loginUser(username, password);
                 if(error!=null){
                     setLoginError(error);
                 }
                 if(token!=null){
                     setAuth(true,username,token);
-                    showToast('Login successful', MessageType.SUCCESS);
-                    const lastPage = sessionStorage.getItem('lastPage');
-                    if (lastPage) {
-                        router.push(lastPage);
-                        sessionStorage.removeItem('lastPage');
-                    }else{
-                        router.push("/")
-                    }
-
                 }
             } catch (error) {
                 if (error instanceof Error) {
@@ -101,48 +91,51 @@ const Login: React.FC = () => {
                 }
                 console.error('Login error:', error);
             }
+            finally{
+                setLoading(false);
+            }
         }
     };
 
     return (
         <div className={styles.mainContainer}>
-        <div className={styles.container}>
-            <h2 className={styles.title}>Login</h2>
-            <p className="errorText">{loginError}</p>
-            <div className={styles.inputGroup}>
-            <div>
-                <label className={styles.label}>Username:</label>
-                <input
-                    type="text"
-                    placeholder='Enter username'
-                    value={username}
-                    onChange={(e) => {
-                        setUsername(e.target.value);
-                        checkUsernameCharacters(e.target.value);
-                    }}
-                    className={styles.input}
-                />
-                <p className="errorText">{usernameError}</p>
-            </div>
-            <div>
-                <label className={styles.label}>Password:</label>
-                <div className={styles.passwordContainer}>
-                    <input type={showPassword ? "text" : "password"} value={password}
-                        placeholder='Enter password'
+            <div className={styles.container}>
+                <h2 className={styles.title}>Login</h2>
+                <p className="errorText">{loginError}</p>
+                <div className={styles.inputGroup}>
+                <div>
+                    <label className={styles.label}>Username:</label>
+                    <input
+                        type="text"
+                        placeholder='Enter username'
+                        value={username}
                         onChange={(e) => {
-                            setPassword(e.target.value);
-                            checkPasswordCharacters(e.target.value);
+                            setUsername(e.target.value);
+                            checkUsernameCharacters(e.target.value);
                         }}
-                        className={`${styles.input} ${styles.passwordInput}`}
+                        className={styles.input}
                     />
-                    <EyeIcon showPassword={showPassword} setShowPassword={setShowPassword} />
+                    <p className="errorText">{usernameError}</p>
                 </div>
-                <p className="errorText">{passwordError}</p>
+                <div>
+                    <label className={styles.label}>Password:</label>
+                    <div className={styles.passwordContainer}>
+                        <input type={showPassword ? "text" : "password"} value={password}
+                            placeholder='Enter password'
+                            onChange={(e) => {
+                                setPassword(e.target.value);
+                                checkPasswordCharacters(e.target.value);
+                            }}
+                            className={`${styles.input} ${styles.passwordInput}`}
+                        />
+                        <EyeIcon showPassword={showPassword} setShowPassword={setShowPassword} />
+                    </div>
+                    <p className="errorText">{passwordError}</p>
+                </div>
+                </div>
+                <RippleButton onClick={handleLogin} className={styles.button} disabled={loading}>Log in</RippleButton>
+                {toasts.length > 0 && <ToastMessage toasts={toasts} onClose={removeToast} />}
             </div>
-            </div>
-            <RippleButton onClick={handleLogin} className={styles.button}>Login</RippleButton>
-            {toasts.length > 0 && <ToastMessage toasts={toasts} onClose={removeToast} />}
-        </div>
         </div>
     );
 };

@@ -29,8 +29,6 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [token]);
 
-    if (authLoading) return <Loading text="Checking Login Status ..."/>;
-
     return <>{children}</>;
 };
 
