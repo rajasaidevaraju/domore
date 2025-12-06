@@ -5,11 +5,10 @@ import { useNavStore } from "@/app/store/navigation";
 import { useRouter } from "next/navigation";
 import styles from "../File.module.css";
 import { useAuthStore } from "@/app/store/auth";
-import { FilterRequests } from "../../../service/FilterRequests";
-import { EntityType, MessageType, Item, FileDetails as FileDetailsType } from "@/app/types/Types";
+import { MessageType, Item } from "@/app/types/Types";
 import RippleButton from "@/app/types/RippleButton";
 import PressableLink from "@/app/types/PressableLink";
-import AddPerformerPanel from "./AddPanel";
+import PerformerPanel from "./PerformerPanel"; 
 import EditNamePanel from "./EditNamePanel";
 import ToastMessage from "@/app/types/ToastMessages";
 import { ServerRequest } from "@/app/service/ServerRequest";
@@ -18,21 +17,20 @@ interface FileDetailsProps {
   initPerformers: Item[];
   fileId: string;
   initFileName: string;
-  downloadLink:string;
+  downloadLink: string;
 }
 
-export default function FileDetails({initPerformers, fileId, initFileName,downloadLink }: FileDetailsProps) {
+export default function FileDetails({ initPerformers, fileId, initFileName, downloadLink }: FileDetailsProps) {
   const router = useRouter();
-  const { page,  performerId, sortBy } = useNavStore();
+  const { page, performerId, sortBy } = useNavStore();
   const { token, isLoggedIn } = useAuthStore();
   const [performers, setPerformers] = useState<Item[]>(initPerformers);
   const [fileName, setFileName] = useState(initFileName);
-  const [addPanel, setAddPanel] = useState(false);  
+  const [addPanel, setAddPanel] = useState(false);
   const [isEditingName, setIsEditingName] = useState(false);
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
   const [toasts, setToasts] = useState<any[]>([]);
-  const [insertThumbnailLoading,setInsertThumbnailLoading]=useState(false)
-
+  const [insertThumbnailLoading, setInsertThumbnailLoading] = useState(false);
 
   const showToast = (message: string, type: MessageType) => {
     const newMessage = { id: Date.now(), message, type };
@@ -43,35 +41,9 @@ export default function FileDetails({initPerformers, fileId, initFileName,downlo
     setToasts((prev) => prev.filter((toast) => toast.id !== id));
   };
 
-  const savePerformer = async (performerId: number) => {
-    try {
-      setAddPanel(false);
-      if (token == null) {
-        throw new Error("Unauthorized access. Please Login");
-      }
-      if (isNaN(Number(fileId))) {
-        throw new Error("Invalid File ID");
-      } else {
-        showToast("Request sent to Server", MessageType.SUCCESS);
-        let response = await FilterRequests.addItemToFile(
-          Number(fileId),
-          performerId,
-          EntityType.Performer,
-          token
-        );
-        if (response.message) {
-          const updatedFileDetails = await ServerRequest.fetchfileDetails(fileId);
-          setPerformers(updatedFileDetails.performers);
-          showToast(response.message, MessageType.SUCCESS);
-        }
-      }
-    } catch (error) {
-      let message = `Failed to add performer to file ${fileId}`;
-      if (error instanceof Error) {
-        message = error.message;
-      }
-      showToast(message, MessageType.DANGER);
-    }
+  const handlePanelClose = (updatedPerformers: Item[]) => {
+    setPerformers(updatedPerformers);
+    setAddPanel(false);
   };
 
   const handleTakeScreenshot = async () => {
@@ -93,8 +65,7 @@ export default function FileDetails({initPerformers, fileId, initFileName,downlo
           showToast(error.message, MessageType.DANGER);
         }
         console.error("Error taking screenshot:", error);
-      }
-      finally{
+      } finally {
         setInsertThumbnailLoading(false);
       }
     }
@@ -106,7 +77,6 @@ export default function FileDetails({initPerformers, fileId, initFileName,downlo
     }
   };
 
-
   const handleConfirmDelete = async () => {
     setShowDeleteConfirmation(false);
     if (token != null) {
@@ -116,8 +86,8 @@ export default function FileDetails({initPerformers, fileId, initFileName,downlo
         if (performerId) {
           redirectUrl += `&performerId=${performerId}`;
         }
-        if(sortBy){
-          redirectUrl+=`&sortBy=${sortBy}`
+        if (sortBy) {
+          redirectUrl += `&sortBy=${sortBy}`;
         }
         router.push(redirectUrl);
       } catch (error: Error | any) {
@@ -161,10 +131,10 @@ export default function FileDetails({initPerformers, fileId, initFileName,downlo
   };
 
   const handleDownload = () => {
-    const link = document.createElement('a');
+    const link = document.createElement("a");
     link.href = downloadLink;
     link.download = fileName;
-    link.style.display = 'none';
+    link.style.display = "none";
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -180,9 +150,9 @@ export default function FileDetails({initPerformers, fileId, initFileName,downlo
         )}
       </div>
 
-    <RippleButton className={styles.scbutton} onClick={handleDownload}>
-      Download Video
-    </RippleButton>
+      <RippleButton className={styles.scbutton} onClick={handleDownload}>
+        Download Video
+      </RippleButton>
 
       <div className={styles.buttonsDiv}>
         <p>Performers: </p>
@@ -195,43 +165,61 @@ export default function FileDetails({initPerformers, fileId, initFileName,downlo
             </PressableLink>
           ))
         )}
-        {isLoggedIn && addPanel && (<AddPerformerPanel onClose={() => setAddPanel(false)} onSave={savePerformer} showToast={showToast} />)}
       </div>
+      
+      {isLoggedIn && addPanel && (
+        <PerformerPanel 
+          fileId={fileId}
+          token={token}
+          currentPerformers={performers}
+          onClose={handlePanelClose} 
+          showToast={showToast} 
+        />
+      )}
+
       {isLoggedIn && (
         <div className={styles.buttonsDiv}>
           <p>Actions: </p>
           <RippleButton className={styles.scbutton} onClick={handleTakeScreenshot} disabled={insertThumbnailLoading}>
-            {insertThumbnailLoading?"uploading Thumbnail":"Set As Thumbnail"}
+            {insertThumbnailLoading ? "uploading Thumbnail" : "Set As Thumbnail"}
           </RippleButton>
           <RippleButton className={styles.scbutton} onClick={handleDeleteClick}>
-             <img src="/svg/delete.svg" alt="Delete" /><p>&nbsp;Delete Video</p>
+            <img src="/svg/delete.svg" alt="Delete" />
+            <p>&nbsp;Delete Video</p>
           </RippleButton>
-          <RippleButton className={styles.scbutton} disabled={isEditingName} suggestion={isEditingName ? "Editing in progress" : undefined}
-          onClick={handleEditNameClick}>
-            <img src="/svg/edit.svg" alt="Edit" /><p>&nbsp;Edit Name</p>
+          <RippleButton
+            className={styles.scbutton}
+            disabled={isEditingName}
+            suggestion={isEditingName ? "Editing in progress" : undefined}
+            onClick={handleEditNameClick}
+          >
+            <img src="/svg/edit.svg" alt="Edit" />
+            <p>&nbsp;Edit Name</p>
           </RippleButton>
           <RippleButton className={`${styles.scbutton}`} onClick={() => setAddPanel(true)}>
             <img src="/svg/add.svg" alt="Add" />
-            <p>&nbsp;Add Performers</p>
+            <p>&nbsp;Manage Performers</p>
           </RippleButton>
         </div>
       )}
       {showDeleteConfirmation && (
-        <div className={styles.confirmationOverlay}>
-          <div className={styles.confirmationDialog}>
-            <div className={styles.confirmationHeader}>
+        <div className={styles.overlay}>
+          <div className={styles.dialog}>
+            <div className={styles.header}>
               <h2>Confirm Deletion</h2>
             </div>
-            <div className={styles.confirmationBody}>
+            <div className={styles.body}>
               <p>Are you sure you want to permanently delete the file {fileName}?</p>
               <p>This action cannot be undone.</p>
             </div>
-            <div className={styles.confirmationActions}>
+            <div className={styles.actions}>
               <RippleButton className={styles.scbutton} onClick={handleCancelDelete}>
-                <img src="/svg/cancel.svg" alt="Cancel" /><p>&nbsp;Cancel</p>
+                <img src="/svg/cancel.svg" alt="Cancel" />
+                <p>&nbsp;Cancel</p>
               </RippleButton>
               <RippleButton className={styles.scbutton} onClick={handleConfirmDelete}>
-                <img src="/svg/delete.svg" alt="Delete" /><p>&nbsp;Delete</p>
+                <img src="/svg/delete.svg" alt="Delete" />
+                <p>&nbsp;Delete</p>
               </RippleButton>
             </div>
           </div>

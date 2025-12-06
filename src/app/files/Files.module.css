@@ -39,6 +39,7 @@
   border-radius: 5px;
   width: 100px;
   cursor: pointer;
+  background-color: rgb(var(--main-color));
 }
 
 @media (max-width: 480px) {

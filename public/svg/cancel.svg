@@ -2,6 +2,7 @@
     <style>
         @media (prefers-color-scheme: dark) {
             path { stroke: #ffffff; }
+            circle { stroke: #ffffff; }
         }
     </style>
     <g id="SVGRepo_bgCarrier" stroke-width="0"></g>

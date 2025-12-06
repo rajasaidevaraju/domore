@@ -40,10 +40,65 @@
     border-radius: 5px;
 }
 .input{
-    height: 34px;
+    height: 2rem;
     border-radius: 5px;
     padding: 5px;
 }
+
+.searchContainer {
+  position: relative;
+  margin-bottom: 20px;
+}
+
+
+.suggestionText {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.assignedList {
+  max-height: 300px;
+  overflow-y: auto;
+  border-top: 1px solid rgb(var(--main-color-active));
+  padding-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap:10px;
+}
+
+.noAssign {
+  opacity: 0.6;
+  font-style: italic;
+}
+
+.assignedWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.assignedItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: rgb(var(--main-color-faint));
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid rgb(var(--main-color));
+}
+
+.removeBtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.icon {
+  width: 20px;
+  height: 20px;
+}
+
 
 .name{
     font-size: 1.2rem;
@@ -133,7 +188,7 @@
   pointer-events: none; 
 }
 
-.confirmationOverlay {
+.overlay {
     position: fixed;
     top: 0;
     left: 0;
@@ -147,7 +202,7 @@
 }
 
 
-.confirmationDialog {
+.dialog {
     background-color: rgba(var(--background-rgb));
     box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
@@ -159,7 +214,7 @@
     transition: transform 0.2s ease-out;
 }
 
-.confirmationHeader h2 {
+.header h2 {
     margin-top: 0;
     margin-bottom: 15px;
     font-size: 1.5rem;
@@ -167,12 +222,12 @@
     padding-bottom: 10px;
 }
 
-.confirmationBody p {
+.body p {
     margin-bottom: 15px;
     line-height: 1.4;
 }
 
-.confirmationActions {
+.actions {
     display: flex;
     justify-content: flex-end;
     gap: 10px;
