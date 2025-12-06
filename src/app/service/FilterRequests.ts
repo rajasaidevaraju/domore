@@ -1,14 +1,27 @@
 import {ServerUrlProvider} from './UrlProvider'
-import { EntityType, ItemWithCount, ApiResponse } from './../types/Types'
+import { EntityType, ItemWithCount, ApiResponse, Item } from './../types/Types'
 
 const API_BASE_URL = ServerUrlProvider();
 
 
 export const FilterRequests = {
-    async fetchItems(type: EntityType): Promise<ItemWithCount[]> {
+    async fetchItems(type: EntityType): Promise<Item[]> {
 
         //add s to type
         let updatedType=type+"s"
+
+        const response = await fetch(`${API_BASE_URL}/server/${updatedType}`, { method: "GET" });
+        
+        if (!response.ok) {
+            const error = await response.json().catch(() => null);
+            throw new Error(error?.message || "Failed to fetch items");
+        }
+        return await response.json();
+    },
+        async fetchItemsWithCount(type: EntityType): Promise<ItemWithCount[]> {
+
+        //add s to type
+        let updatedType=type+"sWithCount"
 
         const response = await fetch(`${API_BASE_URL}/server/${updatedType}`, { method: "GET" });
         
@@ -102,7 +115,22 @@ export const FilterRequests = {
         }
         if (!response.ok) {
             const error = await response.json().catch(() => null);
-            throw new Error(error?.message || "Failed to add performer to file");
+            throw new Error(error?.message || `Failed to add ${type} to file`);
+        }
+        return await response.json();
+    },
+    async removeItemFromFile(fileId: number, itemId: number, type: EntityType,token: string): Promise<ApiResponse> {
+        const response = await fetch(`${API_BASE_URL}/server/file/${fileId}/${type}/${itemId}`, {
+            method: "DELETE",
+            headers: {'Authorization': `Bearer ${token}`},
+            credentials: "include",
+        });
+        if (response.status === 401) {
+            throw new Error("Unauthorized access");
+        }
+        if (!response.ok) {
+            const error = await response.json().catch(() => null);
+            throw new Error(error?.message || `Failed remove ${type} from file`);
         }
         return await response.json();
     }

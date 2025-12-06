@@ -2,7 +2,7 @@ import { useEffect, useState, useRef } from "react";
 import styles  from "../File.module.css";
 import RippleButton from "@/app/types/RippleButton";
 import { FilterRequests } from "@/app/service/FilterRequests";
-import { EntityType, ItemWithCount, MessageType } from "@/app/types/Types";
+import { EntityType, Item, ItemWithCount, MessageType } from "@/app/types/Types";
 
 interface AddPerformerPanelProps {
     onClose: () => void;
@@ -12,8 +12,8 @@ interface AddPerformerPanelProps {
 
 function AddPerformerPanel({onClose,onSave,showToast}:AddPerformerPanelProps) {
     const [name,setName]=useState<string>("");
-    const [performers,setPerformers]=useState<ItemWithCount[]|null>(null);
-    const [filteredPerformers, setFilteredPerformers] = useState<ItemWithCount[]>([]);
+    const [performers,setPerformers]=useState<Item[]|null>(null);
+    const [filteredPerformers, setFilteredPerformers] = useState<Item[]>([]);
     const [selectedId, setSelectedId] = useState<number | null>(null);
     const inputRef = useRef<HTMLInputElement>(null);
 

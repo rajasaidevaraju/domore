@@ -47,7 +47,7 @@ const PerformersCard: React.FC<CardProps> = ({showToast }) => {
   const fetchPerformers = async () => {
     try {
       setLoading(true);
-      const data = await FilterRequests.fetchItems(EntityType.Performer);
+      const data = await FilterRequests.fetchItemsWithCount(EntityType.Performer);
       setPerformers(data);
     } catch (err) {
       let message="Failed to fetch performers"

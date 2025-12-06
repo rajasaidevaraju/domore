@@ -195,18 +195,7 @@ export default function FileDetails({initPerformers, fileId, initFileName,downlo
             </PressableLink>
           ))
         )}
-        {isLoggedIn && (
-          <>
-            {addPanel ? (
-              <AddPerformerPanel onClose={() => setAddPanel(false)} onSave={savePerformer} showToast={showToast} />
-            ) : (
-              <RippleButton className={`${styles.scbutton}`} onClick={() => setAddPanel(true)}>
-                <img src="/svg/add.svg" alt="Add" />
-                <p>&nbsp;Add</p>
-              </RippleButton>
-            )}
-          </>
-        )}
+        {isLoggedIn && addPanel && (<AddPerformerPanel onClose={() => setAddPanel(false)} onSave={savePerformer} showToast={showToast} />)}
       </div>
       {isLoggedIn && (
         <div className={styles.buttonsDiv}>
@@ -220,6 +209,10 @@ export default function FileDetails({initPerformers, fileId, initFileName,downlo
           <RippleButton className={styles.scbutton} disabled={isEditingName} suggestion={isEditingName ? "Editing in progress" : undefined}
           onClick={handleEditNameClick}>
             <img src="/svg/edit.svg" alt="Edit" /><p>&nbsp;Edit Name</p>
+          </RippleButton>
+          <RippleButton className={`${styles.scbutton}`} onClick={() => setAddPanel(true)}>
+            <img src="/svg/add.svg" alt="Add" />
+            <p>&nbsp;Add Performers</p>
           </RippleButton>
         </div>
       )}

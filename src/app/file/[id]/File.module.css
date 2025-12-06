@@ -27,8 +27,9 @@
     gap:5px;
 }
 .speedSelect{
-    padding: 7px 5px;
+    padding: 3px 5px;
     border-radius: 5px;
+    font-size: small;
     text-align: center;
     background-color: rgb(var(--main-color));
     cursor: pointer;
@@ -120,12 +121,20 @@
     justify-content: center;
     align-items: center;
     display: flex;
-    padding: 5px 10px;
+    padding: 3px 5px;
+    font-size: small;
     width: fit-content !important;
     background-color: rgb(var(--main-color));
     text-decoration: none;
     color: inherit;
     transition: background-color 0.3s ease;
+}
+
+.scbutton img{
+  width: 1rem;      
+  height: 1rem;      
+  object-fit: contain;
+  pointer-events: none; 
 }
 
 .confirmationOverlay {
