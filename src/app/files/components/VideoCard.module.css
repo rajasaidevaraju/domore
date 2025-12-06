@@ -52,17 +52,34 @@
 
 .thumbnailBox img[src] ~ *::before { display: none; }
 
-.sizeText {
+.sizeText,
+.durationText {
   position: absolute;
-  bottom: .5rem;
-  right: .5rem;
-  background: rgba(0,0,0,.75);
+  bottom: 0.5rem;
+  background: rgba(0, 0, 0, 0.65);
   color: #fff;
   font-weight: 500;
-  font-size: .75rem;
-  padding: .1rem .3rem;
-  border-radius: .25rem;
+  font-size: 0.75rem;
+  padding: 0.1rem 0.3rem;
+  border-radius: 0.25rem;
   border: 2px solid rgb(var(--main-color));
+  backdrop-filter: blur(4px);          
+  white-space: nowrap;
+  pointer-events: none; 
+  z-index: 10;
+}
+
+.sizeText {
+  left: 0.5rem;
+}
+
+.durationText {
+  right: 0.5rem;
+}
+
+.sizeText,
+.durationText {
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
 }
 
 .videoCard h2 {

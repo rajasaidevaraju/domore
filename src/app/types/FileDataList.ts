@@ -3,6 +3,7 @@ interface FileData {
     fileId: number;
     fileName: string;
     fileSize:number;
+    durationMs:number;
 }
   
 interface Meta {

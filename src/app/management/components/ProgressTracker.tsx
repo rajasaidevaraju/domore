@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import { ServerRequest } from "@/app/service/ServerRequest";
-import { formatSize } from "@/app/service/formatSize";
+import { formatSize } from "@/app/service/format";
 import styles from "./management.module.css";
 import { useAuthStore } from '@/app/store/auth';
 import { StorageLocation } from "@/app/types/Types";

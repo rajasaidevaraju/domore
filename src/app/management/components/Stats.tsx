@@ -2,7 +2,7 @@
 
 import styles from "./management.module.css";
 import { useEffect } from 'react'
-import { formatSize } from '@/app/service/formatSize'
+import { formatSize } from '@/app/service/format'
 import { useStatsStore } from '@/app/store/statsStore';
 import Loading from '@/app/loading'
 

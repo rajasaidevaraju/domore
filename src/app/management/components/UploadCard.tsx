@@ -5,7 +5,7 @@ import styles from "./management.module.css";
 import ProgressTracker from "./ProgressTracker";
 import RippleButton from "@/app/types/RippleButton";
 import { useStatsStore } from "@/app/store/statsStore";
-import { formatSize } from "@/app/service/formatSize";
+import { formatSize } from "@/app/service/format";
 
 const UploadCard=()=>{
 

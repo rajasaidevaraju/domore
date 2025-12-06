@@ -5,7 +5,7 @@ import {thumbnailCache} from '@/app/types/Types'
 import styles from './VideoCard.module.css';
 import { ServerRequest } from '../../service/ServerRequest';
 import { FileData } from '@/app/types/FileDataList';
-import { formatSize } from '@/app/service/formatSize';
+import { formatSize, formatDuration } from '@/app/service/format';
 import Link from 'next/link';
 
 interface VideoCardProps {
@@ -16,10 +16,11 @@ export default function VideoCard({ file }: VideoCardProps) {
 
   const [imageData, setImageData] = useState<string | null>(null);
   const formattedSize=useMemo(() => formatSize(file.fileSize), [file.fileSize]);
+  const formattedDuration=useMemo(() => formatDuration(file.durationMs), [file.durationMs]);
 
   const cleanedString = file.fileName.replace(/\.[a-zA-Z0-9]+$/, "");
 
-  useEffect(() => {
+useEffect(() => {
    
     if (thumbnailCache.has(file.fileId)) {
       setImageData(thumbnailCache.get(file.fileId)!);
@@ -56,6 +57,7 @@ export default function VideoCard({ file }: VideoCardProps) {
             />
           ) : null}
           <p className={styles.sizeText}>{formattedSize}</p>
+          <p className={styles.durationText}>{formattedDuration}</p>
         </div>
 
         <h2 className={styles.cardTitle}>{cleanedString}</h2>
