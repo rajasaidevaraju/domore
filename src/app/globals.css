@@ -21,13 +21,12 @@
 @media (prefers-color-scheme: dark) {
   :root {
     --foreground-rgb: 210, 210, 210;
-    --background-rgb: 30, 30, 30;
-    --main-color-faint: 40, 40, 40;  
-    --main-color: 48, 48, 48;
+    --background-rgb: 20, 20, 20;
+    --main-color-faint: 50, 50, 50;  
+    --main-color: 50, 50, 50;
     --main-color-hover: 78, 78, 78;
     --main-color-active: 88, 88, 88;
   }
-  
 }
 
 body {

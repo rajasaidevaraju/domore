@@ -1,20 +1,17 @@
 "use client"
 
-import React,{useState,useEffect} from "react";
+import React,{useState} from "react";
 import UploadCard from "./components/UploadCard";
 import Stats from "./components/Stats";
 import Operations from "./components/Operations";
 import { ToastData,MessageType } from "../types/Types";
 import ToastMessage from "@/app/types/ToastMessages";
 import styles from "./components/management.module.css";
-const Management=()=>{
+import { useAuthStore } from '@/app/store/auth';
 
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
-    const checkLoginStatus = () => {
-        setIsLoggedIn(!!localStorage.getItem('token'));
-    };
+const Management=()=>{
+    const {isLoggedIn} = useAuthStore();
     const [toasts, setToasts] = useState<ToastData[]>([]);
-    
     
     const showToast = (message: string, type: MessageType) => {
         const id = Date.now();
@@ -25,14 +22,6 @@ const Management=()=>{
     const removeToast = (id: number) => {
         setToasts((prev) => prev.filter((toast) => toast.id !== id));
     };
-
-    useEffect(() => {
-        checkLoginStatus();
-        const storageListener = () => checkLoginStatus();
-        window.addEventListener('storage', storageListener);
-
-        return () => window.removeEventListener('storage', storageListener);
-    }, []);
 
     return (
         <div className={styles.managementpanel}>

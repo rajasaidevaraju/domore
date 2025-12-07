@@ -4,6 +4,9 @@ export interface Item {
   name: string;
 }
 
+export interface ItemWithCount extends Item {
+  count:number;
+}
   
 // Define the structure of a Performer
 export interface Performer extends Item {
@@ -53,10 +56,31 @@ export interface ToastData {
 }
 
 export interface CardProps {
-  isLoggedIn: boolean;
   showToast:(toastDetails: ToastMessageDetails) => void
 }
 
 export interface ApiResponse {
   message: string;
 }
+
+export interface FileDetails {
+  id: number;
+  name: string;
+  performers: Item[];
+}
+
+export interface HomeProps {
+  searchParams: {
+    page?: string;        
+    performerId?: string;
+  };
+}
+
+export enum StorageLocation {
+  Internal = 'internal',
+  External = 'external',
+}
+
+export type HomeSearchParams=Promise<{ page:string|undefined,performerId:string|undefined,sortBy:string|undefined }>
+
+export const thumbnailCache = new Map<number, string>();

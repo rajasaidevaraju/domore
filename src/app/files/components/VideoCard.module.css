@@ -1,61 +1,89 @@
+
 .videoCard {
+  display: flex;
+  flex-direction: column;
+  width: 100%;                    
+  max-width: 320px;               
   border: 1px solid rgb(var(--main-color));
   border-radius: 5px;
-  padding: 12px;
-  margin: 8px;
-  text-align: center;
-  background-color: rgb(var(--background-rgb));
-  box-shadow: 0 2px 4px rgba(var(--foreground-rgb), 0.1);
-  max-width: 300px;
-  width: 100%;
-  transition: background-color 0.3s ease;
-  overflow: hidden; 
-  cursor: default; 
+  background: rgb(var(--background-rgb));
+  box-shadow: 0 2px 4px rgba(var(--foreground-rgb), .1);
+  transition: background-color .3s ease;
+  overflow: hidden;              
 }
 
 .videoCard:hover {
+  background: rgba(var(--foreground-rgb), .1);
   cursor: pointer;
-  background-color: rgba(var(--foreground-rgb), 0.1);
-}
-
-.videoCard img {
-  height: 150px;
-  width: 270px;
-  object-fit: scale-down;
-  border-radius: 5px;
-  margin-bottom: 5px;
-}
-
-.videoCard h2 {
-  margin: 0;
-  font-size: 14px;
-  text-decoration: none !important;
 }
 
 
-@media (prefers-color-scheme: dark) {
-  .thumbnail {
-    opacity: 0.85;
-  }
+.thumbnailBox {
+  position: relative;
+  width: 100%;
+  padding-bottom: 56.25%;         
+  background: rgb(var(--main-color));
+  border-radius: 5px 5px 0 0;     
+  overflow: hidden;               
+}
+
+.thumbnailBox img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;              
+  display: block;
 }
 
 
-.placeholderDiv{
-  height: 150px;
-  width: 270px;
-  background-color: rgb(var(--main-color));
-  border-radius: 5px;
-  margin-bottom: 8px;
+.thumbnailBox::before {
+  content: 'No Thumbnail';
+  position: absolute;
+  inset: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 14px; 
   font-weight: bold;
-  text-align: center;
+  font-size: 14px;
+  color: #fff;
 }
 
-.cardText{
+
+.thumbnailBox img[src] ~ *::before { display: none; }
+
+.sizeText,
+.durationText {
+  position: absolute;
+  bottom: 0.5rem;
+  background: rgba(0, 0, 0, 0.65);
+  color: #fff;
+  font-weight: 500;
+  font-size: 0.75rem;
+  padding: 0.1rem 0.3rem;
+  border-radius: 0.25rem;
+  border: 2px solid rgb(var(--main-color));
+  backdrop-filter: blur(4px);          
+  white-space: nowrap;
+  pointer-events: none; 
+}
+
+.sizeText {
+  left: 0.5rem;
+}
+
+.durationText {
+  right: 0.5rem;
+}
+
+.videoCard h2 {
+  margin: 0.5rem 0 0.5rem;
+  padding: 0 0.5rem;
+  font-size: 1rem;
+  line-height: 1.3;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+

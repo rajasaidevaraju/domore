@@ -2,6 +2,8 @@
 interface FileData {
     fileId: number;
     fileName: string;
+    fileSize:number;
+    durationMs:number;
 }
   
 interface Meta {
@@ -16,5 +18,5 @@ interface FileDataList {
 }
   
   
-  export type { FileData, Meta, FileDataList };
+export type { FileData, Meta, FileDataList };
   

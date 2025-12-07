@@ -1,64 +1,50 @@
 'use client'
 
 import styles from "./management.module.css";
-import { useState,useEffect } from 'react'
-import {ServerRequest} from './../../service/ServerRequest'
-import { ServerStats } from '@/app/types/Types'
-import { formatSize } from '@/app/service/formatSize'
-import { Suspense } from "react";
+import { useEffect } from 'react'
+import { formatSize } from '@/app/service/format'
+import { useStatsStore } from '@/app/store/statsStore';
 import Loading from '@/app/loading'
 
 export default function Stats(){
 
-    const [stats,setStats]=useState<ServerStats>()
-    const [error,setError]=useState<string | null>(null)
-    let files = stats?.files ?? 0;
-    let freeInternal = stats?.freeInternal ?? 0;
-    let freeExternal = stats?.freeExternal ?? 0;
-    let totalInternal = stats?.totalInternal ?? 0;
-    let totalExternal = stats?.totalExternal ?? 0;
-    let hasExternalStorage = stats?.hasExternalStorage ?? false;
-    let batteryPercentage = stats?.percentage ?? -1;
-    let isCharging = stats?.charging ?? false;
-
-    useEffect(()=>{
+    const { stats, isLoading, error, fetchStats } = useStatsStore();
+    useEffect(() => {
         const controller = new AbortController();
-        const {signal} = controller;
-        let requestStat=async ()=>{
-            try{
-                let result=await ServerRequest.fetchStats(signal)
-                setStats(result)
-            }catch(error){
-                if(error instanceof Error){
-                    if(error.name === 'AbortError') {
-                        return;
-                    }else{
-                        setError((error.message))
-                        console.error('Error:', error);
-                    }
-                }
-                
-            }
-           
-        }
-        requestStat()
+        const { signal } = controller;
+        
+        fetchStats(signal);
+        
         return () => {
-            controller.abort();
+          controller.abort();
         }
-    },[])
-
-
-    if(error){
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+    
+    if (isLoading && !stats) {
         return (
-            <div className={`${styles.cardContainer}`}>
-                <div className={styles.header}>
-                    <h1>Stats</h1>
-                </div>
-                <div>
-                    <p className="errorText">Error: {error}</p>
-                </div>
+          <div className={`${styles.cardContainer}`}>
+            <div className={styles.header}>
+              <h1>Stats</h1>
             </div>
-        )
+            <Loading text="Requesting Stats" />
+          </div>
+        );
+    }
+
+
+
+    if (error) {
+        return (
+          <div className={`${styles.cardContainer}`}>
+            <div className={styles.header}>
+              <h1>Stats</h1>
+            </div>
+            <div>
+              <p className="errorText">Error: {error}</p>
+            </div>
+          </div>
+        );
     }
     if(!stats || stats==null){
         return (
@@ -70,6 +56,17 @@ export default function Stats(){
         </div>
         )
     }
+
+    const {
+        files = 0,
+        freeInternal = 0,
+        freeExternal = 0,
+        totalInternal = 0,
+        totalExternal = 0,
+        hasExternalStorage = false,
+        percentage: batteryPercentage = -1,
+        charging: isCharging = false,
+      } = stats;
 
     return(
         <div className={`${styles.cardContainer}`}>

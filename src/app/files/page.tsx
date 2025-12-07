@@ -1,108 +1,47 @@
-'use client'
+import { Suspense } from "react";
+import { HomeSearchParams } from '../types/Types';
+import NavContextBridge  from "@/app/files/components/NavContextBridge";
+import styles from './Files.module.css';
+import { notFound } from 'next/navigation';
+import VideoList from './components/VideoList';
+import Loading from '../loading';
 
-import { useEffect, useState,Suspense } from 'react'
-import VideoCard from './components/VideoCard';
-import { usePathname } from 'next/navigation'
-import { ServerRequest } from '../service/ServerRequest';
-import { FileDataList, FileData,Meta } from '../types/FileDataList';
-import Pagination from './components/Pagination';
-import { useSearchParams } from 'next/navigation'
-import styles from './Files.module.css'; 
-import Loading from './../loading'
-import path from 'path';
 
-function AltHome(){
-    const searchParams = useSearchParams()
-    const pathname = usePathname()
-    const [files, setFiles] = useState<FileData[]>([]);
-    const [error, setError] = useState<string | null>(null);
-    const [meta,setMeta]=useState<Meta>({page: 1,limit: 1,total: 1})
-    const [performerId, setPerformerId] = useState<number | null>(null);
+export default async function AltHomePage({searchParams}: {searchParams:HomeSearchParams}) {
+  const params= await searchParams;
+  const pagenoStr= params.page;
+  const performerIdStr = params.performerId;
+  const sortByStr = params.sortBy;
+  let pageNo=1
+  if(pagenoStr!=null &&!isNaN(Number(pagenoStr))){
+    pageNo=getPageNumber(pagenoStr);
+  }
+  let performerId: number | null = null;
 
-    const totalPages = Math.ceil(meta.total / meta.limit);
-    useEffect(() => {
-       let pageNo = getPageNumber(searchParams.get("page"))
-       let performerIdStr = searchParams.get("performerId")
-       
-       async function fetchFiles() {
-        try {
-            var filesDataList:FileDataList 
-            let newPerformerId = null;
-
-            if(performerIdStr==null){
-              filesDataList= await ServerRequest.fetchFiles(pageNo);
-            }else{
-              if(!isNaN(Number(performerIdStr))){
-                newPerformerId=Number(performerIdStr)
-                filesDataList= await ServerRequest.fetchFiles(pageNo,newPerformerId);
-
-              }else{
-                setError('Invalid performerId')
-                return;
-              }
-            }
-            
-            setFiles(filesDataList.data);
-            setMeta(filesDataList.meta)
-            setPerformerId(newPerformerId);
-            sessionStorage.setItem('lastPage', pathname);
-            window.scrollTo(0, 0);            
-        } catch (error) {
-            if (error instanceof Error) {
-              setError(error.message)
-            }else{
-              setError('Failed to fetch files');
-            }
-        }
-    }
-
-    fetchFiles();
-    }, [searchParams]);
-    
-
- return  (
-    <main className={styles.mainContainer}>
-     
-     <div className={styles.innerContainer}>
-      {files.length === 0 && !error && (
-        <Loading/>
-      )}
-      {error && (
-        <p className="errorText">{error}</p>
-      )}
-      </div>
-
-      {files.length > 0 && 
-      <div className={styles.videosContainer}>
-        {files.map((video) => (
-          <VideoCard key={video.fileId} video={video}/>
-        ))}
-      </div>
+    if (performerIdStr) {
+      const parsed = Number(performerIdStr);
+      if (!isNaN(parsed)) {
+        performerId = parsed;
+      } else {
+        return notFound();
       }
-      {totalPages>1 && !error && (
-         <Pagination meta={meta} performerId={performerId}/>
-      )}
-    </main>
-  );
-}
-
-function getPageNumber(page:string | null):number{
-    if(page!=null){
-        if(!isNaN(Number(page))){
-            return Number(page);
-        }
     }
-    return 1;
+
+    
+    return (
+      <main className={styles.mainContainer}>
+        <NavContextBridge page={pageNo} performerId={performerId} sortBy={sortByStr}/>
+         <Suspense fallback={<Loading  />}>
+          <VideoList page={pageNo} performerId={performerId} sortBy={sortByStr} />
+        </Suspense>
+     </main>
+    );
+
 }
 
-
-
-export default function AltHomePage(){
-
-    return (
-        <Suspense fallback={<Loading/>}>
-          <AltHome></AltHome>
-        </Suspense>
-      );
-    
+function getPageNumber(page: string | undefined): number {
+  if (page && !isNaN(Number(page))) {
+    return Number(page);
+  }
+  return 1;
 }

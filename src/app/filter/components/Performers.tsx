@@ -1,17 +1,20 @@
 'use client';
 
 import React, { useEffect, useState } from "react";
-import { Item,CardProps,EntityType, MessageType } from "../../types/Types";
+import { ItemWithCount,CardProps,EntityType, MessageType } from "../../types/Types";
 import {FilterRequests}  from "@/app/service/FilterRequests";
 import Card from "./CommonCard";
+import { useAuthStore } from '@/app/store/auth';
 
-const PerformersCard: React.FC<CardProps> = ({ isLoggedIn,showToast }) => {
-  const [performers, setPerformers] = useState<Item[]>([]);
+
+const PerformersCard: React.FC<CardProps> = ({showToast }) => {
+  const [performers, setPerformers] = useState<ItemWithCount[]>([]);
   const [loading, setLoading] = useState(false);
-
+  const {token} = useAuthStore();
+  
   const handleAddPerformers = async (newPerformers: string[]) => {
     try{
-      const data=await FilterRequests.addItems(EntityType.Performer,newPerformers,localStorage.getItem('token') ?? "");
+      const data=await FilterRequests.addItems(EntityType.Performer,newPerformers,token!!);
       showToast({ type: MessageType.SUCCESS, message:data.message})
     }catch(err){
       let message="Failed to add performers"
@@ -27,7 +30,7 @@ const PerformersCard: React.FC<CardProps> = ({ isLoggedIn,showToast }) => {
 
   const handleDeletePerformers = async(selectedIds: Set<number>) => {
     try{
-      const data=await FilterRequests.deleteItems(EntityType.Performer,[...selectedIds],localStorage.getItem('token') ?? "");
+      const data=await FilterRequests.deleteItems(EntityType.Performer,[...selectedIds],token!!);
       showToast({ type: MessageType.SUCCESS, message:data.message})
     }catch(err){
       let message="Failed to delete performers"
@@ -44,7 +47,7 @@ const PerformersCard: React.FC<CardProps> = ({ isLoggedIn,showToast }) => {
   const fetchPerformers = async () => {
     try {
       setLoading(true);
-      const data = await FilterRequests.fetchItems(EntityType.Performer);
+      const data = await FilterRequests.fetchItemsWithCount(EntityType.Performer);
       setPerformers(data);
     } catch (err) {
       let message="Failed to fetch performers"
@@ -67,7 +70,6 @@ const PerformersCard: React.FC<CardProps> = ({ isLoggedIn,showToast }) => {
       onAdd={handleAddPerformers}
       onDelete={handleDeletePerformers}
       label="Performers"
-      isLoggedIn={isLoggedIn}
       loading={loading}
     />
   );

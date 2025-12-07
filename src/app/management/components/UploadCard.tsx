@@ -1,16 +1,25 @@
 'use client'
-import { useEffect, useState, useRef, ChangeEvent } from "react";
+import {useState, useRef, ChangeEvent } from "react";
+import { StorageLocation } from "@/app/types/Types";
 import styles from "./management.module.css";
 import ProgressTracker from "./ProgressTracker";
 import RippleButton from "@/app/types/RippleButton";
+import { useStatsStore } from "@/app/store/statsStore";
+import { formatSize } from "@/app/service/format";
+
 const UploadCard=()=>{
 
     const [files, setFiles]=useState<File[]>([]);
     const [uploadingFiles, setUploadingFiles] = useState<Set<string>>(new Set());
     const [uploadVisible, setUploadVisible] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
-    const token=useRef<string | null>(null)
+    const [selectedStorage, setSelectedStorage] = useState<StorageLocation>(StorageLocation.Internal);
+    const {stats} = useStatsStore();
+
     let suggestion=uploadVisible?undefined:"Choose files first"
+
+    const totalFreeSpace = stats? selectedStorage === StorageLocation.Internal? stats.freeInternal: (stats.hasExternalStorage ? stats.freeExternal : 0): 0;
+
     const initiateUpload=async()=>{
         if (files.length > 0) {
             setUploadVisible(false)
@@ -23,9 +32,9 @@ const UploadCard=()=>{
 
     }
 
-    useEffect(() => {
-        token.current = localStorage.getItem('token');  
-    }, []);
+    const handleStorageChange = (event: ChangeEvent<HTMLSelectElement>) => {
+        setSelectedStorage(event.target.value as StorageLocation);
+    };
 
     const removeFile=(fileToRemove:File)=>{
         let newArray=files.filter((file)=>file.name!==fileToRemove.name)
@@ -33,6 +42,12 @@ const UploadCard=()=>{
             setUploadVisible(false)
         }
         setFiles(newArray)
+
+        setUploadingFiles(prev => {
+            const newSet = new Set(prev);
+            newSet.delete(fileToRemove.name);
+            return newSet;
+        });
     }
     const addFile=async(event:ChangeEvent<HTMLInputElement>)=>{
         
@@ -65,6 +80,27 @@ const UploadCard=()=>{
         <div className={styles.cardContainer}>
             <div className={styles.header}>
                 <h1>{"Upload File"}</h1>
+            </div>
+            <div className={styles.itemContainer}>
+                <div className={styles.buttons}>
+                    {stats && (
+                        <div>
+                            {formatSize(totalFreeSpace)} Free
+                        </div>
+                    )}
+                    <select
+                        className={styles.commonButton}
+                        value={selectedStorage}
+                        onChange={handleStorageChange}
+                        style={{height: 'auto'}} 
+                        aria-label="Select storage location"
+                    >
+                        <option value={StorageLocation.Internal}>Internal</option>
+                        {stats && stats.hasExternalStorage && (
+                            <option value={StorageLocation.External}>External</option>
+                        )}
+                    </select>
+                </div>
                 <div className={styles.buttons}>
                     <button
                         className={`${styles.commonButton}`}
@@ -93,13 +129,13 @@ const UploadCard=()=>{
                 </div>
             </div>
             <div className={styles.trackerContainer}>
-                {files.map((item, index) => (
+                {files.map((item) => (
                     <ProgressTracker 
                         key={item.name} 
                         file={item}
-                        token={token.current} 
                         startUpload={uploadingFiles.has(item.name)} 
                         removeFile={removeFile}
+                        selectedStorage={selectedStorage}
                     />
                 ))}
             </div>

@@ -1,50 +1,67 @@
-'use client'
+'use client';
 
-import React, { useEffect, useRef, useState } from 'react';
-import Video from '../../types/Video';
+import React, { useState, useEffect,useMemo } from 'react';
+import {thumbnailCache} from '@/app/types/Types'
 import styles from './VideoCard.module.css';
 import { ServerRequest } from '../../service/ServerRequest';
+import { FileData } from '@/app/types/FileDataList';
+import { formatSize, formatDuration } from '@/app/service/format';
+import Link from 'next/link';
 
 interface VideoCardProps {
-  video: Video;
+  file: FileData;
 }
 
-const VideoCard: React.FC<VideoCardProps> = ({ video }) => {
+export default function VideoCard({ file }: VideoCardProps) {
+
   const [imageData, setImageData] = useState<string | null>(null);
-  const requestMadeRef = useRef(false);
-  const cleanedString=video.fileName.replace(/\.[a-zA-Z0-9]+$/, "")
-    if (!requestMadeRef.current && !imageData) {
-      try {
-        (async () => {
-          requestMadeRef.current = true;
-          const requestData = await ServerRequest.fetchThumbnail(video.fileId.toString());
-          if (requestData.exists) {
-            setImageData(requestData.imageData);
-          }
-        })();
-      } catch (error) {
-        console.error('Failed to fetch thumbnail for id' + video.fileId);
-      }
+  const formattedSize=useMemo(() => formatSize(file.fileSize), [file.fileSize]);
+  const formattedDuration=useMemo(() => formatDuration(file.durationMs), [file.durationMs]);
+
+  const cleanedString = file.fileName.replace(/\.[a-zA-Z0-9]+$/, "");
+
+useEffect(() => {
+   
+    if (thumbnailCache.has(file.fileId)) {
+      setImageData(thumbnailCache.get(file.fileId)!);
+      return;
     }
 
+    const fetchThumb = async () => {
+      try {
+        const requestData = await ServerRequest.fetchThumbnail(file.fileId.toString());
+        if (requestData.exists) {
+          thumbnailCache.set(file.fileId, requestData.imageData);
+          setImageData(requestData.imageData);
+        } else {
+          setImageData(null); 
+        }
+      } catch (err) {
+        setImageData(null);
+      }
+    };
+
+    fetchThumb();
+
+  }, [file.fileId]);
 
   return (
-    <a href={`/getfile?fileId=${video.fileId}`} >
-        <div
-          className={styles.videoCard}
-          title={cleanedString}
-        >
+    <div className={styles.videoCard} title={cleanedString}>
+      <Link href={`/file/${file.fileId}`}>
+        <div className={styles.thumbnailBox}>
           {imageData ? (
-            <img src={imageData} alt="Thumbnail of the video" className={styles.thumbnail}/>
-          ) : (
-            <div className={styles.placeholderDiv}>
-              <p> Thumbnail not created </p>
-            </div>
-          )}
-          <h2 className={styles.cardText}>{cleanedString}</h2>
+            <img
+              src={imageData}
+              alt={`Thumbnail of ${cleanedString}`}
+              className={styles.thumbnail}
+            />
+          ) : null}
+          <p className={styles.sizeText}>{formattedSize}</p>
+          <p className={styles.durationText}>{formattedDuration}</p>
         </div>
-      </a>
-  );
-};
 
-export default VideoCard;
+        <h2 className={styles.cardTitle}>{cleanedString}</h2>
+      </Link>
+    </div>
+  );
+}

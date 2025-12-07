@@ -1,24 +1,27 @@
 import { useEffect, useState, useRef } from "react";
 import { ServerRequest } from "@/app/service/ServerRequest";
-import { formatSize } from "@/app/service/formatSize";
+import { formatSize } from "@/app/service/format";
 import styles from "./management.module.css";
-
+import { useAuthStore } from '@/app/store/auth';
+import { StorageLocation } from "@/app/types/Types";
 
 interface ProgressTrackerProps {
     file: File;
     startUpload:boolean
     removeFile:(file:File)=>void
-    token:string|null
+    selectedStorage:StorageLocation
   }
 
-const ProgressTracker: React.FC<ProgressTrackerProps>  = ({file,startUpload,removeFile,token}) => {
+const ProgressTracker: React.FC<ProgressTrackerProps>  = ({file,startUpload,removeFile,selectedStorage}) => {
   const [progress, setProgress] = useState<number>(0);
   const [speed, setSpeed] = useState<number>(0); 
   const xhr = useRef<XMLHttpRequest | null>(null);
   const uploadStarted = useRef(false);
   const [error, setError] = useState<string | null>(null);
   const [aborted,setAborted] = useState(false)
-
+  const {isLoggedIn,token} = useAuthStore();
+  //const {fetchStats} = useStatsStore();
+   //TODO(Update stats on upload complete)
 
   const handleFileUpload = async () => {
     if(token==null){
@@ -31,7 +34,7 @@ const ProgressTracker: React.FC<ProgressTrackerProps>  = ({file,startUpload,remo
         setProgress(0);
         setSpeed(0);
         try{
-            await ServerRequest.uploadFile(file,token,(progress,speed)=>{
+            await ServerRequest.uploadFile(file, token, selectedStorage, (progress,speed)=>{
                 setProgress(progress);
                 setSpeed(speed);
              },(xhrObj:XMLHttpRequest)=>{
@@ -55,7 +58,7 @@ const stopUpload=()=>{
   setAborted(true)
     setTimeout(() => {
       removeFile(file)
-    }, 1000);
+    }, 300);
 
 }
 
@@ -71,6 +74,7 @@ useEffect(()=>{
       xhr.current.abort()
     }
   }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
 },[startUpload])
 
 

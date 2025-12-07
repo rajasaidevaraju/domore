@@ -1,6 +1,15 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    distDir: 'build'
-}
+  distDir: 'build',
+  allowedDevOrigins: ['192.168.1.12'],
+  async rewrites() {
+    return [
+      {
+        source: '/server/:path*',
+        destination: process.env.SERVER_ADDRESS + '/server/:path*',
+      },
+    ];
+  },
+};
 
 module.exports = nextConfig
