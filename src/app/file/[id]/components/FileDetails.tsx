@@ -8,7 +8,7 @@ import { useAuthStore } from "@/app/store/auth";
 import { MessageType, Item } from "@/app/types/Types";
 import RippleButton from "@/app/types/RippleButton";
 import PressableLink from "@/app/types/PressableLink";
-import PerformerPanel from "./PerformerPanel"; 
+import PerformerPanel from "./PerformerPanel";
 import EditNamePanel from "./EditNamePanel";
 import ToastMessage from "@/app/types/ToastMessages";
 import { ServerRequest } from "@/app/service/ServerRequest";
@@ -166,14 +166,14 @@ export default function FileDetails({ initPerformers, fileId, initFileName, down
           ))
         )}
       </div>
-      
+
       {isLoggedIn && addPanel && (
-        <PerformerPanel 
+        <PerformerPanel
           fileId={fileId}
           token={token}
           currentPerformers={performers}
-          onClose={handlePanelClose} 
-          showToast={showToast} 
+          onClose={handlePanelClose}
+          showToast={showToast}
         />
       )}
 
@@ -184,7 +184,6 @@ export default function FileDetails({ initPerformers, fileId, initFileName, down
             {insertThumbnailLoading ? "uploading Thumbnail" : "Set As Thumbnail"}
           </RippleButton>
           <RippleButton className={styles.scbutton} onClick={handleDeleteClick}>
-            <img src="/svg/delete.svg" alt="Delete" />
             <p>&nbsp;Delete Video</p>
           </RippleButton>
           <RippleButton
@@ -193,11 +192,9 @@ export default function FileDetails({ initPerformers, fileId, initFileName, down
             suggestion={isEditingName ? "Editing in progress" : undefined}
             onClick={handleEditNameClick}
           >
-            <img src="/svg/edit.svg" alt="Edit" />
             <p>&nbsp;Edit Name</p>
           </RippleButton>
           <RippleButton className={`${styles.scbutton}`} onClick={() => setAddPanel(true)}>
-            <img src="/svg/add.svg" alt="Add" />
             <p>&nbsp;Manage Performers</p>
           </RippleButton>
         </div>

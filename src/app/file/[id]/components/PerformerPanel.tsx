@@ -3,6 +3,7 @@ import styles from "../File.module.css";
 import RippleButton from "@/app/types/RippleButton";
 import { FilterRequests } from "@/app/service/FilterRequests";
 import { EntityType, Item, MessageType } from "@/app/types/Types";
+import { usePerformersStore } from "@/app/store/performersStore";
 
 interface PerformerPanelProps {
   fileId: string;
@@ -14,27 +15,16 @@ interface PerformerPanelProps {
 
 function PerformerPanel({ fileId, token, currentPerformers, onClose, showToast }: PerformerPanelProps) {
   const [name, setName] = useState<string>("");
-  const [allPerformers, setAllPerformers] = useState<Item[]>([]);
   const [assignedPerformers, setAssignedPerformers] = useState<Item[]>(currentPerformers);
   const [filteredPerformers, setFilteredPerformers] = useState<Item[]>([]);
   const [loading, setLoading] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const fetchPerformers = async () => {
-    try {
-      const data = await FilterRequests.fetchItems(EntityType.Performer);
-      setAllPerformers(data);
-    } catch (err) {
-      let message = "Failed to fetch performers";
-      if (err instanceof Error) {
-        message = err.message;
-      }
-      showToast(message, MessageType.DANGER);
-    }
-  };
+  const { performers: allPerformers, fetchPerformersIfNeeded } = usePerformersStore();
+
+  fetchPerformersIfNeeded();
 
   useEffect(() => {
-    fetchPerformers();
     if (inputRef.current) {
       inputRef.current.focus();
     }
@@ -97,7 +87,7 @@ function PerformerPanel({ fileId, token, currentPerformers, onClose, showToast }
     }
   };
 
- return (
+  return (
     <div className={styles.overlay}>
       <div className={styles.dialog}>
         <div className={styles.header}>

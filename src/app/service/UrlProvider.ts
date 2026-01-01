@@ -15,5 +15,6 @@ export function ServerUrlProvider(): string {
         return `http://${hostname}:1280`;
     }*/
     const hostname = window.location.hostname;
-    return `http://${hostname}:3000`;
+    const port = window.location.port;
+    return `http://${hostname}:${port}`;
 }

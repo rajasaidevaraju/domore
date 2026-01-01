@@ -19,7 +19,7 @@ export default function VideoCard({ file }: VideoCardProps) {
   const formattedDuration=useMemo(() => formatDuration(file.durationMs), [file.durationMs]);
 
   const cleanedString = file.fileName.replace(/\.[a-zA-Z0-9]+$/, "");
-
+/*
 useEffect(() => {
    
     if (thumbnailCache.has(file.fileId)) {
@@ -44,7 +44,7 @@ useEffect(() => {
     fetchThumb();
 
   }, [file.fileId]);
-
+*/
   return (
     <div className={styles.videoCard} title={cleanedString}>
       <Link href={`/file/${file.fileId}`}>
@@ -60,7 +60,7 @@ useEffect(() => {
           <p className={styles.durationText}>{formattedDuration}</p>
         </div>
 
-        <h2 className={styles.cardTitle}>{cleanedString}</h2>
+        <h2 className={styles.cardTitle}>{"cleanedString"}</h2>
       </Link>
     </div>
   );
