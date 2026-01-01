@@ -7,7 +7,7 @@ import { ServerUrlProvider } from "@/app/service/UrlProvider";
 import { FileDetails as FileDetailsType } from "@/app/types/Types";
 import styles from "./File.module.css";
 
-type pageParams=Promise<{id:string}>
+type pageParams = Promise<{ id: string }>
 
 export async function generateMetadata({ params }: { params: pageParams }) {
   const { id } = await params;
@@ -29,19 +29,19 @@ export async function generateMetadata({ params }: { params: pageParams }) {
   }
 }
 
-export default async function FilePage({ params }: { params: pageParams}) {
+export default async function FilePage({ params }: { params: pageParams }) {
   const { id } = await params;
   const API_BASE_URL = ServerUrlProvider();
 
   try {
     const result: FileDetailsType = await ServerRequest.fetchfileDetails(id);
     const videoSrc = `${API_BASE_URL}/server/file?fileId=${id}`;
-    const downloadLink=videoSrc+"&download=true";
-    
+    const downloadLink = videoSrc + "&download=true";
+
     return (
       <div className={styles.videoContainer}>
-        <VideoPlayer videoSrc={"videoSrc"} fileId={id}/>
-        <FileDetails downloadLink={downloadLink} initPerformers={result.performers} fileId={id} initFileName={"result.name"} />
+        <VideoPlayer videoSrc={videoSrc} fileId={id} />
+        <FileDetails downloadLink={downloadLink} initPerformers={result.performers} fileId={id} initFileName={result.name} />
       </div>
     );
   } catch (error) {
