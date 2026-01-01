@@ -1,6 +1,6 @@
 'use client';
 
-import React from "react";
+import { useRef } from "react";
 import { CardProps, MessageType } from "../../types/Types";
 import Card from "./CommonCard";
 import { useAuthStore } from '@/app/store/auth';
@@ -12,10 +12,13 @@ const PerformersCard: React.FC<CardProps> = ({ showToast }) => {
   const {
     performersWithCount,
     isFetchingWithCount,
+    hasFetchedWithCount,
     fetchPerformersWithCountIfNeeded,
     addPerformers,
     deletePerformers
   } = usePerformersStore();
+
+  const wasFetchedOnMount = useRef(hasFetchedWithCount);
 
   fetchPerformersWithCountIfNeeded();
 
@@ -29,6 +32,7 @@ const PerformersCard: React.FC<CardProps> = ({ showToast }) => {
         message = err.message;
       }
       showToast({ type: MessageType.DANGER, message: message });
+      throw err; // Re-throw to keep AddPanel in loading state or prevent it from closing
     }
   };
 
@@ -53,6 +57,7 @@ const PerformersCard: React.FC<CardProps> = ({ showToast }) => {
       onDelete={handleDeletePerformers}
       label="Performers"
       loading={isFetchingWithCount}
+      shouldAnimate={!wasFetchedOnMount.current}
     />
   );
 };

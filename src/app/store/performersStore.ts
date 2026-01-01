@@ -74,10 +74,24 @@ export const usePerformersStore = create<PerformersState>((set, get) => ({
     addPerformers: async (names: string[], token: string) => {
         try {
             const response = await FilterRequests.addItems(EntityType.Performer, names, token);
-            await Promise.all([
-                get().fetchPerformers(),
-                get().fetchPerformersWithCount()
-            ]);
+
+            // If the response contains the new items with IDs, add them to the local state
+            if (response.items && response.items.length > 0) {
+                const newItems = response.items;
+                const newItemsWithCount: ItemWithCount[] = newItems.map(item => ({ ...item, count: 0 }));
+
+                set(state => ({
+                    performersWithCount: [...state.performersWithCount, ...newItemsWithCount]
+                }));
+            } else {
+                // Fallback: Fetch silently (without setting isFetching flags) to keep UI stable
+                try {
+                    const performersWithCount = await FilterRequests.fetchItemsWithCount(EntityType.Performer)
+                    set({ performersWithCount });
+                } catch (fetchError) {
+                    console.error("Failed to silently update performers after add", fetchError);
+                }
+            }
             return response;
         } catch (error) {
             const message = error instanceof Error ? error.message : 'Failed to add performers';
@@ -89,10 +103,10 @@ export const usePerformersStore = create<PerformersState>((set, get) => ({
     deletePerformers: async (ids: number[], token: string) => {
         try {
             const response = await FilterRequests.deleteItems(EntityType.Performer, ids, token);
-            await Promise.all([
-                get().fetchPerformers(),
-                get().fetchPerformersWithCount()
-            ]);
+            set(state => ({
+                performersWithCount: state.performersWithCount.filter(p => !ids.includes(p.id))
+            }));
+
             return response;
         } catch (error) {
             const message = error instanceof Error ? error.message : 'Failed to delete performers';

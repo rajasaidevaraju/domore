@@ -20,11 +20,12 @@ function PerformerPanel({ fileId, token, currentPerformers, onClose, showToast }
   const [loading, setLoading] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const { performers: allPerformers, fetchPerformersIfNeeded } = usePerformersStore();
+  const { performers: allPerformers, fetchPerformers } = usePerformersStore();
 
-  fetchPerformersIfNeeded();
+
 
   useEffect(() => {
+    fetchPerformers();
     if (inputRef.current) {
       inputRef.current.focus();
     }

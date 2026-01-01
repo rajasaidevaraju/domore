@@ -11,11 +11,12 @@ import Skeleton from "./Skeleton";
 // Generic types for items like Performer or Category
 interface CardProps<T> {
   items: T[];
-  onAdd: (name: string[]) => void;
+  onAdd: (name: string[]) => Promise<void>;
   onDelete: (selectedIds: Set<number>) => void;
   onEdit?: () => void;
   label: string;
   loading: boolean;
+  shouldAnimate?: boolean;
 }
 
 const Card = <T extends ItemWithCount>({
@@ -24,7 +25,8 @@ const Card = <T extends ItemWithCount>({
   onDelete,
   onEdit,
   label,
-  loading
+  loading,
+  shouldAnimate = true
 }: CardProps<T>) => {
   const [isSelecting, setIsSelecting] = useState(false);
   const [selectedItems, setSelectedItems] = useState<Set<number>>(new Set());
@@ -124,7 +126,7 @@ const Card = <T extends ItemWithCount>({
       ) : items.length === 0 ? (
         <p className={styles.noItems}>No {label} found.</p>
       ) : (
-        <div className={`${styles.cardList} ${styles.contentFadeIn}`}>
+        <div className={`${styles.cardList} ${shouldAnimate ? styles.contentFadeIn : ""}`}>
           {items.map((item) => (
             isSelecting ? (
               <div key={item.id}

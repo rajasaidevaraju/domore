@@ -171,7 +171,6 @@ export const ServerRequest = {
       throw new Error(error?.message || "Failed to fetch file details");
     }
     const data = await response.json();
-    console.log(data)
     // removing file extension
     let name = data.name.replace(/\.[a-zA-Z0-9]+$/, "")
     return { id: data.id, name: name, performers: data.performers }

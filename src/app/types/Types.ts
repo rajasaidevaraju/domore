@@ -5,9 +5,9 @@ export interface Item {
 }
 
 export interface ItemWithCount extends Item {
-  count:number;
+  count: number;
 }
-  
+
 // Define the structure of a Performer
 export interface Performer extends Item {
 
@@ -18,11 +18,11 @@ export interface Category extends Item {
 
 }
 
-export interface NetworkReturn{
-  message:string
+export interface NetworkReturn {
+  message: string
 }
 
-export interface ServerStats{
+export interface ServerStats {
   files: number,
   freeInternal: number,
   totalInternal: number,
@@ -52,15 +52,16 @@ export enum EntityType {
 export interface ToastData {
   id: number;
   message: string;
-  type: MessageType; 
+  type: MessageType;
 }
 
 export interface CardProps {
-  showToast:(toastDetails: ToastMessageDetails) => void
+  showToast: (toastDetails: ToastMessageDetails) => void
 }
 
 export interface ApiResponse {
   message: string;
+  items?: Item[];
 }
 
 export interface FileDetails {
@@ -71,7 +72,7 @@ export interface FileDetails {
 
 export interface HomeProps {
   searchParams: {
-    page?: string;        
+    page?: string;
     performerId?: string;
   };
 }
@@ -81,6 +82,6 @@ export enum StorageLocation {
   External = 'external',
 }
 
-export type HomeSearchParams=Promise<{ page:string|undefined,performerId:string|undefined,sortBy:string|undefined }>
+export type HomeSearchParams = Promise<{ page: string | undefined, performerId: string | undefined, sortBy: string | undefined }>
 
 export const thumbnailCache = new Map<number, string>();

@@ -1,11 +1,11 @@
 'use client';
 
-import React, { useState , useEffect, useRef} from "react";
+import { useState, useEffect, useRef } from "react";
 import styles from "./AddPanel.module.css";
 
 interface AddPanelProps<T extends { id: number; name: string }> {
   onClose: () => void;
-  onSave: (names: string [])  => void;
+  onSave: (names: string[]) => Promise<void>;
   label: string;
 }
 
@@ -16,17 +16,18 @@ const AddPanel = <T extends { id: number; name: string }>({
 }: AddPanelProps<T>) => {
 
   const [entries, setEntries] = useState<string[]>([""]); // Initial entry input
+  const [loading, setLoading] = useState(false);
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
-        onClose(); 
+        onClose();
       }
     };
 
     window.addEventListener("keydown", handleKeyDown);
-      return () => {
-        window.removeEventListener("keydown", handleKeyDown);
-      };
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -47,47 +48,55 @@ const AddPanel = <T extends { id: number; name: string }>({
     setEntries([...entries, ""]);
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     const validEntries = entries.filter((entry) => entry.trim() !== "");
     if (validEntries.length === 0) {
       alert("Please add at least one valid entry.");
       return;
     }
 
-    onSave(validEntries);
-    onClose();
+    try {
+      setLoading(true);
+      await onSave(validEntries);
+      onClose();
+    } catch (err) {
+      // Error is handled by the parent component (PerformersCard)
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const placeholder=`New ${label === 'Categories' ? 'Category' : label.slice(0, -1)}`
+  const placeholder = `New ${label === 'Categories' ? 'Category' : label.slice(0, -1)}`
 
   return (
-      <div className={styles.panel}>
-        <h2 className={styles.row}>{`Add ${label}`}</h2>
-        <div className={styles.row}>
-          {entries.map((entry, index) => (
-            <input
-              key={index}
-              ref={index === 0 ? firstInputRef : null}
-              type="text"
-              value={entry}
-              onChange={(e) => handleInputChange(index, e.target.value)}
-              placeholder={`${placeholder} ${index + 1}`} // Dynamic placeholder
-              className={styles.input}
-            />
-          ))}
-        </div>
-        <div className={styles.actions}>
-        <button className={styles.commonButton} onClick={handleAddEntry}>
+    <div className={styles.panel}>
+      <h2 className={styles.row}>{`Add ${label}`}</h2>
+      <div className={styles.row}>
+        {entries.map((entry, index) => (
+          <input
+            key={index}
+            ref={index === 0 ? firstInputRef : null}
+            type="text"
+            value={entry}
+            onChange={(e) => handleInputChange(index, e.target.value)}
+            placeholder={`${placeholder} ${index + 1}`} // Dynamic placeholder
+            className={styles.input}
+            disabled={loading}
+          />
+        ))}
+      </div>
+      <div className={styles.actions}>
+        <button className={styles.commonButton} onClick={handleAddEntry} disabled={loading}>
           + Add
         </button>
-          <button className={styles.commonButton} onClick={handleSave}>
-            Save
-          </button>
-          <button className={`${styles.commonButton} ${styles.cancelButton}`} onClick={onClose}>
-            Cancel
-          </button>
-        </div>
+        <button className={styles.commonButton} onClick={handleSave} disabled={loading}>
+          {loading ? "Saving..." : "Save"}
+        </button>
+        <button className={`${styles.commonButton} ${styles.cancelButton}`} onClick={onClose} disabled={loading}>
+          Cancel
+        </button>
       </div>
+    </div>
   );
 };
 
