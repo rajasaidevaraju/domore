@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef, useState,useEffect } from "react";
+import { useRef, useState, useEffect, useCallback } from "react";
 import styles from "../File.module.css";
 import RippleButton from "@/app/types/RippleButton";
 
@@ -9,35 +9,34 @@ interface VideoPlayerProps {
   fileId: string;
 }
 
-export default function VideoPlayer({ videoSrc}: VideoPlayerProps) {
-
+export default function VideoPlayer({ videoSrc }: VideoPlayerProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [speed, setSpeed] = useState(1);
 
-  const rateChnage = "ratechange";
+  const rateChange = "ratechange";
   const volumeChange = "volumechange";
   const videoVolume = "videoVolume";
   const videoMuted = "videoMuted";
   const videoPlaybackSpeed = "videoPlaybackSpeed";
 
-  const handleRateChange = () => {
+  const handleRateChange = useCallback(() => {
     if (videoRef.current) {
       const newSpeed = videoRef.current.playbackRate;
       localStorage.setItem(videoPlaybackSpeed, newSpeed.toString());
       setSpeed(newSpeed);
     }
-  };
+  }, []);
 
-  const handleVolumeChange = () => {
+  const handleVolumeChange = useCallback(() => {
     if (videoRef.current) {
-      let volume = videoRef.current.volume;
+      const volume = videoRef.current.volume;
       const isMuted = videoRef.current.muted;
       localStorage.setItem(videoMuted, isMuted.toString());
       if (!isMuted && volume > 0) {
         localStorage.setItem(videoVolume, volume.toString());
       }
     }
-  };
+  }, []);
 
   const changeSpeed = (value: number) => {
     if (videoRef.current) {
@@ -53,41 +52,56 @@ export default function VideoPlayer({ videoSrc}: VideoPlayerProps) {
     }
   };
 
-const skipNext = () => {
-  if (videoRef.current) {
-    videoRef.current.currentTime = Math.min(videoRef.current.currentTime + 10,videoRef.current.duration || videoRef.current.currentTime + 10);
-  }
-};
-
+  const skipNext = () => {
+    if (videoRef.current) {
+      videoRef.current.currentTime = Math.min(
+        videoRef.current.currentTime + 10,
+        videoRef.current.duration || videoRef.current.currentTime + 10
+      );
+    }
+  };
 
   useEffect(() => {
     const videoElement = videoRef.current;
-    if (videoElement) {
+    if (!videoElement) return;
+
+    const applySettings = () => {
       const playbackRate = parseFloat(localStorage.getItem(videoPlaybackSpeed) ?? "1");
       const storedVolume = parseFloat(localStorage.getItem(videoVolume) ?? "1");
       const storedMuted = localStorage.getItem(videoMuted) === "true";
 
-      videoElement.playbackRate =
-        playbackRate >= 0.5 && playbackRate <= 2.0 ? playbackRate : 1;
+      videoElement.playbackRate = playbackRate >= 0.5 && playbackRate <= 2.0 ? playbackRate : 1;
       videoElement.volume = Math.min(Math.max(storedVolume, 0.1), 1);
       videoElement.muted = storedMuted;
+      setSpeed(videoElement.playbackRate);
+    };
 
-      videoElement.addEventListener(rateChnage, handleRateChange);
-      videoElement.addEventListener(volumeChange, handleVolumeChange);
+    applySettings();
+    videoElement.addEventListener("loadedmetadata", applySettings);
+    videoElement.addEventListener(rateChange, handleRateChange);
+    videoElement.addEventListener(volumeChange, handleVolumeChange);
+    if (videoElement.readyState >= 1) {
+      applySettings();
     }
 
     return () => {
-      if (videoElement) {
-        videoElement.removeEventListener(rateChnage, handleRateChange);
-        videoElement.removeEventListener(volumeChange, handleVolumeChange);
-      }
+      videoElement.removeEventListener("loadedmetadata", applySettings);
+      videoElement.removeEventListener(rateChange, handleRateChange);
+      videoElement.removeEventListener(volumeChange, handleVolumeChange);
     };
-  }, [videoRef]);
+  }, [videoSrc, handleRateChange, handleVolumeChange]);
 
   return (
     <div className={styles.videoDiv}>
-      <video crossOrigin="anonymous" ref={videoRef} controls className={styles.videoElement}>
-        <source src={videoSrc} type="video/mp4" />
+      <video
+        key={videoSrc}
+        crossOrigin="anonymous"
+        ref={videoRef}
+        controls
+        className={styles.videoElement}
+        src={videoSrc}
+      >
+        Your browser does not support the video tag.
       </video>
       <div className={styles.controlDiv}>
         <RippleButton className={styles.scbutton} onClick={skipPrev}>
@@ -112,7 +126,5 @@ const skipNext = () => {
         </RippleButton>
       </div>
     </div>
-
-    
   );
 }
