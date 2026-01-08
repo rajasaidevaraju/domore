@@ -114,6 +114,10 @@ export default function VideoPlayer({ videoSrc }: VideoPlayerProps) {
 
   const handleSeekEnd = () => {
     setIsSeeking(false);
+    // Explicitly blur the input to remove focus on mobile
+    if (seekBarRef.current) {
+      seekBarRef.current.blur();
+    }
     if (isFullscreen) {
       if (controlsTimeoutRef.current) clearTimeout(controlsTimeoutRef.current);
       controlsTimeoutRef.current = setTimeout(() => {
@@ -331,7 +335,7 @@ export default function VideoPlayer({ videoSrc }: VideoPlayerProps) {
               onMouseUp={handleSeekEnd}
               onTouchStart={handleSeekStart}
               onTouchEnd={handleSeekEnd}
-              className={styles.seekbar}
+              className={`${styles.seekbar} ${isSeeking ? styles.seeking : ""}`}
             />
           </div>
           <span className={styles.timeDisplay}>{formatTime(duration)}</span>

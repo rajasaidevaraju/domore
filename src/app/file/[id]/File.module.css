@@ -167,23 +167,37 @@
 .seekbar::-webkit-slider-thumb {
     -webkit-appearance: none;
     appearance: none;
-    width: 16px;
-    height: 16px;
+    width: 6px;
+    height: 6px;
     border-radius: 50%;
     background: #67b8f7;
     cursor: pointer;
     border: 2px solid white;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+    transition: width 0.15s ease, height 0.15s ease;
+}
+
+.seekbar:hover::-webkit-slider-thumb,
+.seekbar.seeking::-webkit-slider-thumb,
+.seekbar:active::-webkit-slider-thumb {
+    width: 16px;
+    height: 16px;
 }
 
 .seekbar::-moz-range-thumb {
-    width: 16px;
-    height: 16px;
+    width: 6px;
+    height: 6px;
     border-radius: 50%;
     background: #67b8f7;
     cursor: pointer;
     border: 2px solid white;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+    transition: width 0.15s ease, height 0.15s ease;
+}
+
+.seekbar:hover::-moz-range-thumb,
+.seekbar.seeking::-moz-range-thumb,
+.seekbar:active::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
 }
 
 /* Control Buttons Row */
@@ -556,13 +570,30 @@
     }
 
     .seekbar::-webkit-slider-thumb {
-        width: 20px;
-        height: 20px;
+        width: 8px;
+        height: 8px;
+    }
+
+    /* On mobile, only enlarge when actually seeking (JS state) */
+    /* This prevents sticky hover/focus states from keeping it large */
+    .seekbar.seeking::-webkit-slider-thumb {
+        width: 24px;
+        height: 24px;
+    }
+
+    .seekbar:focus {
+        outline: none;
+        box-shadow: none;
     }
 
     .seekbar::-moz-range-thumb {
-        width: 20px;
-        height: 20px;
+        width: 8px;
+        height: 8px;
+    }
+
+    .seekbar.seeking::-moz-range-thumb {
+        width: 24px;
+        height: 24px;
     }
 
     .speedLabel {
