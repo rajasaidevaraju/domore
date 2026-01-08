@@ -49,18 +49,12 @@ export default function VideoCard({ file }: VideoCardProps) {
     <div className={styles.videoCard} title={cleanedString}>
       <Link href={`/file/${file.fileId}`}>
         <div className={styles.thumbnailBox}>
-          {imageData ? (
-            <img
-              src={imageData}
-              alt={`Thumbnail of ${cleanedString}`}
-              className={styles.thumbnail}
-            />
-          ) : null}
+
           <p className={styles.sizeText}>{formattedSize}</p>
           <p className={styles.durationText}>{formattedDuration}</p>
         </div>
 
-        <h2 className={styles.cardTitle}>{cleanedString}</h2>
+        <h2 className={styles.cardTitle}>{"cleanedString"}</h2>
       </Link>
     </div>
   );

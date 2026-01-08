@@ -41,7 +41,7 @@ export default async function FilePage({ params }: { params: pageParams }) {
     return (
       <div className={styles.videoContainer}>
         <VideoPlayer videoSrc={videoSrc} fileId={id} />
-        <FileDetails downloadLink={downloadLink} initPerformers={result.performers} fileId={id} initFileName={result.name} />
+        <FileDetails downloadLink={downloadLink} initPerformers={result.performers} fileId={id} initFileName={"result.name"} />
       </div>
     );
   } catch (error) {
