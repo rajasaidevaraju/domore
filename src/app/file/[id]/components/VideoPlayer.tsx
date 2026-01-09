@@ -23,7 +23,9 @@ export default function VideoPlayer({ videoSrc }: VideoPlayerProps) {
   const [isSeeking, setIsSeeking] = useState(false);
   const [volume, setVolume] = useState(1);
   const [isMuted, setIsMuted] = useState(false);
+  const [showSpeedMenu, setShowSpeedMenu] = useState(false);
   const controlsTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const wasVisibleRef = useRef(true);
 
   const rateChange = "ratechange";
   const volumeChange = "volumechange";
@@ -153,36 +155,102 @@ export default function VideoPlayer({ videoSrc }: VideoPlayerProps) {
     }
   };
 
-  const handleTap = () => {
-    if (!isFullscreen) return;
 
+  const showControlsWithTimeout = useCallback(() => {
+    setShowControls(true);
     if (controlsTimeoutRef.current) clearTimeout(controlsTimeoutRef.current);
 
-    if (showControls) {
-      setShowControls(false);
-    } else {
-      setShowControls(true);
-      controlsTimeoutRef.current = setTimeout(() => {
-        if (document.fullscreenElement) {
-          setShowControls(false);
+    controlsTimeoutRef.current = setTimeout(() => {
+      if (document.fullscreenElement || isFullscreen) {
+        setShowControls(false);
+      }
+    }, 4000);
+  }, [isFullscreen]);
+
+  const handleTap = useCallback((e?: React.MouseEvent | React.TouchEvent | React.PointerEvent) => {
+    if (e) {
+      e.stopPropagation();
+      if (e.type === 'touchend' || e.type === 'pointerup') {
+        const touchEvent = e as unknown as TouchEvent;
+        if (touchEvent.cancelable && typeof touchEvent.preventDefault === 'function') {
+          // Generally pointer events don't need preventDefault for clicks, 
+          // but we want to stop simulated clicks if using touch.
         }
-      }, 4000);
+      }
     }
-  };
+
+    const isTouch = window.matchMedia("(pointer: coarse)").matches;
+    const isActuallyFull = !!document.fullscreenElement;
+
+    if (isActuallyFull) {
+      if (isTouch) {
+        if (wasVisibleRef.current && showControls) {
+          setShowControls(false);
+          if (controlsTimeoutRef.current) clearTimeout(controlsTimeoutRef.current);
+        } else {
+          showControlsWithTimeout();
+        }
+      } else {
+        if (showControls) {
+          setShowControls(false);
+          if (controlsTimeoutRef.current) clearTimeout(controlsTimeoutRef.current);
+        } else {
+          showControlsWithTimeout();
+        }
+      }
+    } else {
+      if (!showControls) {
+        setShowControls(true);
+      }
+      if (e && !isTouch) {
+        togglePlay();
+      }
+    }
+  }, [showControls, showControlsWithTimeout]);
+
+  const handlePointerDown = useCallback((e: React.PointerEvent) => {
+    if (e.pointerType === 'touch') {
+      wasVisibleRef.current = showControls;
+      if (!showControls) {
+        setShowControls(true);
+      }
+      if (controlsTimeoutRef.current) clearTimeout(controlsTimeoutRef.current);
+    }
+  }, [showControls]);
+
+
+  useEffect(() => {
+    if (!showControls) {
+      setShowSpeedMenu(false);
+    }
+  }, [showControls]);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (showSpeedMenu) {
+        setShowSpeedMenu(false);
+      }
+    };
+    document.addEventListener("click", handleClickOutside);
+    return () => document.removeEventListener("click", handleClickOutside);
+  }, [showSpeedMenu]);
 
   const handleMouseMove = () => {
-    if (!isFullscreen) return;
+    if (window.matchMedia("(pointer: coarse)").matches) return;
 
     if (!showControls) {
       setShowControls(true);
     }
 
     if (controlsTimeoutRef.current) clearTimeout(controlsTimeoutRef.current);
-    controlsTimeoutRef.current = setTimeout(() => {
-      if (document.fullscreenElement) {
-        setShowControls(false);
-      }
-    }, 4000);
+
+    if (document.fullscreenElement) {
+      controlsTimeoutRef.current = setTimeout(() => {
+        if (document.fullscreenElement) {
+          setShowControls(false);
+        }
+      }, 4000);
+    }
   };
 
   useEffect(() => {
@@ -239,12 +307,7 @@ export default function VideoPlayer({ videoSrc }: VideoPlayerProps) {
       if (!isFull) {
         setShowControls(true);
       } else {
-        setShowControls(true);
-        controlsTimeoutRef.current = setTimeout(() => {
-          if (document.fullscreenElement) {
-            setShowControls(false);
-          }
-        }, 4000);
+        showControlsWithTimeout();
       }
     };
 
@@ -278,7 +341,7 @@ export default function VideoPlayer({ videoSrc }: VideoPlayerProps) {
       document.removeEventListener("fullscreenchange", handleFullscreenChange);
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [videoSrc, handleRateChange, handleVolumeChange, speed, isSeeking]);
+  }, [videoSrc, handleRateChange, handleVolumeChange, speed, isSeeking, isPlaying, showControlsWithTimeout, isFullscreen]);
 
   const progress = duration > 0 ? (currentTime / duration) * 100 : 0;
 
@@ -294,7 +357,8 @@ export default function VideoPlayer({ videoSrc }: VideoPlayerProps) {
         ref={videoRef}
         className={styles.videoElement}
         src={videoSrc}
-        onClick={() => !isFullscreen && togglePlay()}
+        onPointerDown={handlePointerDown}
+        onPointerUp={handleTap}
         onDoubleClick={(e) => {
           e.stopPropagation();
           toggleFullscreen();
@@ -307,15 +371,14 @@ export default function VideoPlayer({ videoSrc }: VideoPlayerProps) {
       {isFullscreen && (
         <div
           className={styles.tapOverlay}
-          onTouchEnd={(e) => {
-            e.preventDefault();
-            handleTap();
-          }}
-          onClick={handleTap}
+          onPointerDown={handlePointerDown}
+          onPointerUp={handleTap}
         />
       )}
 
-      <div className={`${styles.customControlBar} ${isFullscreen ? styles.fullscreenControlBar : ""} ${!showControls ? styles.hideControls : ""}`}>
+      <div
+        className={`${styles.customControlBar} ${isFullscreen ? styles.fullscreenControlBar : ""} ${!showControls ? styles.hideControls : ""}`}
+      >
         <div className={styles.seekbarRow}>
           <span className={styles.timeDisplay}>{formatTime(currentTime)}</span>
           <div className={styles.seekbarContainer}>
@@ -348,20 +411,32 @@ export default function VideoPlayer({ videoSrc }: VideoPlayerProps) {
           <button className={styles.scbutton} onClick={skipPrev} title="Skip Backward 10s">
             -10s
           </button>
-          <div className={styles.speedDiv}>
-            <select
-              value={speed}
-              onChange={(e) => changeSpeed(parseFloat(e.target.value))}
-              className={styles.speedSelect}
+          <div className={styles.speedContainer}>
+            <button
+              className={styles.scbutton}
+              onClick={(e) => {
+                e.stopPropagation();
+                setShowSpeedMenu(!showSpeedMenu);
+              }}
             >
-              <option value={0.5}>0.5x</option>
-              <option value={0.75}>0.75x</option>
-              <option value={1}>1.0x</option>
-              <option value={1.25}>1.25x</option>
-              <option value={1.5}>1.5x</option>
-              <option value={1.75}>1.75x</option>
-              <option value={2}>2.0x</option>
-            </select>
+              {speed}x
+            </button>
+            {showSpeedMenu && (
+              <div className={styles.speedMenu} onClick={(e) => e.stopPropagation()}>
+                {[0.5, 0.75, 1, 1.25, 1.5, 1.75, 2].map((s) => (
+                  <div
+                    key={s}
+                    className={`${styles.speedOption} ${speed === s ? styles.speedOptionActive : ""}`}
+                    onClick={() => {
+                      changeSpeed(s);
+                      setShowSpeedMenu(false);
+                    }}
+                  >
+                    {s === 1 ? "Normal" : `${s}x`}
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
           <button className={styles.scbutton} onClick={skipNext} title="Skip Forward 10s">
             +10s

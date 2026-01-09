@@ -22,10 +22,11 @@ interface FileDetailsProps {
 
 export default function FileDetails({ initPerformers, fileId, initFileName, downloadLink }: FileDetailsProps) {
   const router = useRouter();
+  const isDev = process.env.NODE_ENV === "development";
   const { page, performerId, sortBy } = useNavStore();
   const { token, isLoggedIn } = useAuthStore();
   const [performers, setPerformers] = useState<Item[]>(initPerformers);
-  const [fileName, setFileName] = useState(initFileName);
+  const [fileName, setFileName] = useState(isDev ? "This should be file name" : initFileName);
   const [addPanel, setAddPanel] = useState(false);
   const [isEditingName, setIsEditingName] = useState(false);
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
@@ -112,6 +113,11 @@ export default function FileDetails({ initPerformers, fileId, initFileName, down
   };
 
   const handleNameSave = async (newName: string) => {
+
+    if (isDev) {
+      return;
+    }
+
     setIsEditingName(false);
     try {
       if (token == null) {

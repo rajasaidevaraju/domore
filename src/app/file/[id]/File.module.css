@@ -75,11 +75,10 @@
 .hideControls {
     opacity: 0;
     pointer-events: none;
-    transform: translateY(20px);
 }
 
 .fullscreenControlBar.hideControls {
-    transform: translateX(-50%) translateY(20px);
+    transform: translateX(-50%);
 }
 
 /* Custom Control Bar */
@@ -93,7 +92,7 @@
     width: 100%;
     max-width: 100%;
     box-sizing: border-box;
-    transition: opacity 0.3s ease, transform 0.3s ease;
+    transition: opacity 0.3s ease;
     color: #111;
     /* Ensure text is visible on light background */
 }
@@ -176,7 +175,13 @@
     transition: width 0.15s ease, height 0.15s ease;
 }
 
-.seekbar:hover::-webkit-slider-thumb,
+@media (pointer: fine) {
+    .seekbar:hover::-webkit-slider-thumb {
+        width: 16px;
+        height: 16px;
+    }
+}
+
 .seekbar.seeking::-webkit-slider-thumb,
 .seekbar:active::-webkit-slider-thumb {
     width: 16px;
@@ -193,7 +198,13 @@
     transition: width 0.15s ease, height 0.15s ease;
 }
 
-.seekbar:hover::-moz-range-thumb,
+@media (pointer: fine) {
+    .seekbar:hover::-moz-range-thumb {
+        width: 16px;
+        height: 16px;
+    }
+}
+
 .seekbar.seeking::-moz-range-thumb,
 .seekbar:active::-moz-range-thumb {
     width: 16px;
@@ -205,9 +216,10 @@
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-    gap: 10px;
+    gap: 8px;
     align-items: center;
     justify-content: center;
+    width: 100%;
 }
 
 .controlDiv {
@@ -219,10 +231,45 @@
     max-width: 100%;
 }
 
-.speedDiv {
+.speedContainer {
+    position: relative;
     display: flex;
-    align-items: center;
-    gap: 6px;
+}
+
+.speedMenu {
+    position: absolute;
+    bottom: calc(100% + 10px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(15, 15, 15, 0.95);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 6px 0;
+    min-width: 90px;
+    z-index: 200;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    max-height: 250px;
+    overflow-y: auto;
+}
+
+.speedOption {
+    padding: 8px 16px;
+    font-size: 0.85rem;
+    color: white;
+    cursor: pointer;
+    transition: background 0.2s ease;
+    text-align: center;
+}
+
+.speedOption:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.speedOptionActive {
+    color: #67b8f7;
+    font-weight: bold;
+    background: rgba(103, 184, 247, 0.1);
 }
 
 .volumeDiv {
@@ -266,19 +313,6 @@
     font-weight: 500;
 }
 
-.speedSelect {
-    padding: 4px 8px;
-    border-radius: 6px;
-    font-size: 0.8rem;
-    background-color: rgb(var(--main-color));
-    cursor: pointer;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.fullscreenControlBar .speedSelect {
-    background-color: rgba(var(--main-color), 0.5);
-    color: inherit;
-}
 
 .controlIcon {
     width: 20px;
@@ -446,8 +480,10 @@
     flex-shrink: 0;
 }
 
-.scbutton:hover {
-    background-color: rgb(var(--main-color-active));
+@media (pointer: fine) {
+    .scbutton:hover {
+        background-color: rgb(var(--main-color-active));
+    }
 }
 
 .scbutton:active {
@@ -530,7 +566,13 @@
     }
 
     .controlButtonsRow {
-        gap: 8px;
+        gap: 6px;
+        justify-content: space-between;
+    }
+
+    .speedMenu {
+        bottom: calc(100% + 5px);
+        min-width: 80px;
     }
 
     .videoElement {
@@ -596,16 +638,32 @@
         height: 24px;
     }
 
-    .speedLabel {
-        display: none;
-    }
-
-    .speedSelect {
-        font-size: 0.75rem;
-        padding: 4px 6px;
-    }
 
     .volumeSlider {
         display: none;
+    }
+
+    .isFullscreen .volumeSlider {
+        display: block !important;
+        width: 80px !important;
+    }
+}
+
+
+@media (pointer: coarse) {
+    .scbutton {
+        min-width: 44px;
+        height: 44px;
+        padding: 8px 14px;
+    }
+
+    .seekbar::-webkit-slider-thumb {
+        width: 12px;
+        height: 12px;
+    }
+
+    .seekbar::-moz-range-thumb {
+        width: 12px;
+        height: 12px;
     }
 }

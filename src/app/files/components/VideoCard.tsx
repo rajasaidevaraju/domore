@@ -14,6 +14,7 @@ interface VideoCardProps {
 
 export default function VideoCard({ file }: VideoCardProps) {
 
+  const isDev = process.env.NODE_ENV === "development";
   const [imageData, setImageData] = useState<string | null>(null);
   const formattedSize = useMemo(() => formatSize(file.fileSize), [file.fileSize]);
   const formattedDuration = useMemo(() => formatDuration(file.durationMs), [file.durationMs]);
@@ -49,7 +50,7 @@ export default function VideoCard({ file }: VideoCardProps) {
     <div className={styles.videoCard} title={cleanedString}>
       <Link href={`/file/${file.fileId}`}>
         <div className={styles.thumbnailBox}>
-          {imageData ? (
+          {!isDev && imageData ? (
             <img
               src={imageData}
               alt={`Thumbnail of ${cleanedString}`}
@@ -61,7 +62,7 @@ export default function VideoCard({ file }: VideoCardProps) {
           <p className={styles.durationText}>{formattedDuration}</p>
         </div>
 
-        <h2 className={styles.cardTitle}>{cleanedString}</h2>
+        <h2 className={styles.cardTitle}>{isDev ? "This should be file name" : cleanedString}</h2>
       </Link>
     </div>
   );
