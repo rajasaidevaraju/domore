@@ -14,6 +14,7 @@ export default function VideoPlayer({ videoSrc }: VideoPlayerProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const seekBarRef = useRef<HTMLInputElement>(null);
+  const volumeSliderRef = useRef<HTMLInputElement>(null);
   const [speed, setSpeed] = useState(1);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [showControls, setShowControls] = useState(true);
@@ -21,6 +22,7 @@ export default function VideoPlayer({ videoSrc }: VideoPlayerProps) {
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [isSeeking, setIsSeeking] = useState(false);
+  const [isAdjustingVolume, setIsAdjustingVolume] = useState(false);
   const [volume, setVolume] = useState(1);
   const [isMuted, setIsMuted] = useState(false);
   const [showSpeedMenu, setShowSpeedMenu] = useState(false);
@@ -138,6 +140,28 @@ export default function VideoPlayer({ videoSrc }: VideoPlayerProps) {
     }
   };
 
+  const handleVolumeStart = () => {
+    setIsAdjustingVolume(true);
+    if (controlsTimeoutRef.current) {
+      clearTimeout(controlsTimeoutRef.current);
+    }
+  };
+
+  const handleVolumeEnd = () => {
+    setIsAdjustingVolume(false);
+    if (volumeSliderRef.current) {
+      volumeSliderRef.current.blur();
+    }
+    if (isFullscreen) {
+      if (controlsTimeoutRef.current) clearTimeout(controlsTimeoutRef.current);
+      controlsTimeoutRef.current = setTimeout(() => {
+        if (document.fullscreenElement) {
+          setShowControls(false);
+        }
+      }, 4000);
+    }
+  };
+
   const toggleFullscreen = () => {
     if (!containerRef.current) return;
     if (!document.fullscreenElement) {
@@ -244,13 +268,11 @@ export default function VideoPlayer({ videoSrc }: VideoPlayerProps) {
 
     if (controlsTimeoutRef.current) clearTimeout(controlsTimeoutRef.current);
 
-    if (document.fullscreenElement) {
-      controlsTimeoutRef.current = setTimeout(() => {
-        if (document.fullscreenElement) {
-          setShowControls(false);
-        }
-      }, 4000);
-    }
+    controlsTimeoutRef.current = setTimeout(() => {
+      if (document.fullscreenElement && !isSeeking && !isAdjustingVolume) {
+        setShowControls(false);
+      }
+    }, 4000);
   };
 
   useEffect(() => {
@@ -341,7 +363,7 @@ export default function VideoPlayer({ videoSrc }: VideoPlayerProps) {
       document.removeEventListener("fullscreenchange", handleFullscreenChange);
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [videoSrc, handleRateChange, handleVolumeChange, speed, isSeeking, isPlaying, showControlsWithTimeout, isFullscreen]);
+  }, [videoSrc, handleRateChange, handleVolumeChange, speed, isSeeking, isAdjustingVolume, isPlaying, showControlsWithTimeout, isFullscreen]);
 
   const progress = duration > 0 ? (currentTime / duration) * 100 : 0;
 
@@ -409,7 +431,7 @@ export default function VideoPlayer({ videoSrc }: VideoPlayerProps) {
             <img src={isPlaying ? "/svg/pause.svg" : "/svg/play.svg"} alt={isPlaying ? "Pause" : "Play"} className={styles.controlIcon} />
           </button>
           <button className={styles.scbutton} onClick={skipPrev} title="Skip Backward 10s">
-            -10s
+            -10
           </button>
           <div className={styles.speedContainer}>
             <button
@@ -439,7 +461,7 @@ export default function VideoPlayer({ videoSrc }: VideoPlayerProps) {
             )}
           </div>
           <button className={styles.scbutton} onClick={skipNext} title="Skip Forward 10s">
-            +10s
+            +10
           </button>
           <div className={styles.volumeDiv}>
             <button className={styles.scbutton} onClick={toggleMute} title={isMuted ? "Unmute" : "Mute"}>
@@ -450,13 +472,18 @@ export default function VideoPlayer({ videoSrc }: VideoPlayerProps) {
               />
             </button>
             <input
+              ref={volumeSliderRef}
               type="range"
               min={0}
               max={1}
               step={0.05}
               value={isMuted ? 0 : volume}
               onChange={(e) => changeVolume(parseFloat(e.target.value))}
-              className={styles.volumeSlider}
+              onMouseDown={handleVolumeStart}
+              onMouseUp={handleVolumeEnd}
+              onTouchStart={handleVolumeStart}
+              onTouchEnd={handleVolumeEnd}
+              className={`${styles.volumeSlider} ${isAdjustingVolume ? styles.adjusting : ""}`}
             />
           </div>
           <button className={styles.scbutton} onClick={toggleFullscreen}>
