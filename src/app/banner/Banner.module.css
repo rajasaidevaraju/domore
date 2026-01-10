@@ -29,7 +29,7 @@
 .dropdownContent {
   padding: 10px 0px;
   position: absolute;
-  z-index: 1;
+  z-index: 100;
   background-color: rgb(var(--background-rgb));
   margin: 10px 0px;
   border-radius: 5px;
