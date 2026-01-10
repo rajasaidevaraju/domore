@@ -89,10 +89,6 @@ function ActionItems({ isMobile, closeMenu }: ActionItemsProps) {
                         <span className={styles.iconText}>Login</span>
                     </PressableLink>
                 )}
-                {/*<RippleButton className={buttonStyle} onClick={openPanel}>
-                <img src="/svg/switch.svg" alt="Change Server" className={styles.icon} />
-                <span className={styles.iconText}>Change Server</span>
-                </RippleButton>*/}
             </div>
             {showChangePanel && (
                 <div>
