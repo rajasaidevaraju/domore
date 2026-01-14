@@ -1,15 +1,14 @@
-
 .videoCard {
   display: flex;
   flex-direction: column;
-  width: 100%;                    
-  max-width: 320px;               
+  width: 100%;
+  max-width: 320px;
   border: 1px solid rgb(var(--main-color));
   border-radius: 5px;
   background: rgb(var(--background-rgb));
   box-shadow: 0 2px 4px rgba(var(--foreground-rgb), .1);
   transition: background-color .3s ease;
-  overflow: hidden;              
+  overflow: hidden;
 }
 
 .videoCard:hover {
@@ -21,10 +20,10 @@
 .thumbnailBox {
   position: relative;
   width: 100%;
-  padding-bottom: 56.25%;         
+  padding-bottom: 56.25%;
   background: rgb(var(--main-color));
-  border-radius: 5px 5px 0 0;     
-  overflow: hidden;               
+  border-radius: 5px 5px 0 0;
+  overflow: hidden;
 }
 
 .thumbnailBox img {
@@ -32,7 +31,7 @@
   inset: 0;
   width: 100%;
   height: 100%;
-  object-fit: cover;              
+  object-fit: contain;
   display: block;
 }
 
@@ -50,7 +49,9 @@
 }
 
 
-.thumbnailBox img[src] ~ *::before { display: none; }
+.thumbnailBox img[src]~*::before {
+  display: none;
+}
 
 .sizeText,
 .durationText {
@@ -63,9 +64,9 @@
   padding: 0.1rem 0.3rem;
   border-radius: 0.25rem;
   border: 2px solid rgb(var(--main-color));
-  backdrop-filter: blur(4px);          
+  backdrop-filter: blur(4px);
   white-space: nowrap;
-  pointer-events: none; 
+  pointer-events: none;
 }
 
 .sizeText {
@@ -85,5 +86,3 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
-
-

@@ -445,7 +445,7 @@ export default function VideoPlayer({ videoSrc }: VideoPlayerProps) {
             </button>
             {showSpeedMenu && (
               <div className={styles.speedMenu} onClick={(e) => e.stopPropagation()}>
-                {[0.5, 0.75, 1, 1.25, 1.5, 1.75, 2].map((s) => (
+                {[0.7, 0.8, 1, 1.25, 2].map((s) => (
                   <div
                     key={s}
                     className={`${styles.speedOption} ${speed === s ? styles.speedOptionActive : ""}`}
