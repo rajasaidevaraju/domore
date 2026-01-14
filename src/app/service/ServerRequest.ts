@@ -34,17 +34,18 @@ export const ServerRequest = {
 
 
 
-  async uploadThumbnail(fileId: string, imageData: string, token: string): Promise<void> {
+  async uploadThumbnail(fileId: string | number, image: Blob, token: string): Promise<void> {
+    const formData = new FormData();
+    formData.append("fileId", fileId.toString());
+    formData.append("image", image);
 
-    let requestBody = JSON.stringify({ fileId, imageData });
     const response = await fetch(`${API_BASE_URL}/server/thumbnail`, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`
       },
       credentials: "include",
-      body: requestBody,
+      body: formData,
     });
     if (!response.ok) {
       let defaultErrorMessage = "Thumbnail upload failed";
@@ -54,17 +55,17 @@ export const ServerRequest = {
       const error = await response.json().catch(() => null);
       throw new Error(error?.message || defaultErrorMessage);
     }
-    await response.json();
-
-    return;
   },
 
-  async fetchThumbnail(fileId: string): Promise<{ imageData: string, exists: boolean }> {
+  async fetchThumbnail(fileId: string): Promise<Blob | null> {
     const response = await fetch(`${API_BASE_URL}/server/thumbnail?fileId=${fileId}`);
     if (!response.ok) {
-      return { imageData: "", exists: false }
+      if (response.status === 404) {
+        return null;
+      }
+      return null;
     }
-    return await response.json();
+    return await response.blob();
   },
   async uploadFile(file: File | undefined, token: string, target: StorageLocation, onProgress: (progress: number, speed: number) => void, passXMLObj: (xhr: XMLHttpRequest) => void): Promise<string> {
     return new Promise((resolve, reject) => {

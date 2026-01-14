@@ -22,18 +22,23 @@ export default function VideoCard({ file }: VideoCardProps) {
   const cleanedString = file.fileName.replace(/\.[a-zA-Z0-9]+$/, "");
 
   useEffect(() => {
-
-    if (thumbnailCache.has(file.fileId)) {
-      setImageData(thumbnailCache.get(file.fileId)!);
-      return;
-    }
+    let objectUrl: string | null = null;
 
     const fetchThumb = async () => {
       try {
-        const requestData = await ServerRequest.fetchThumbnail(file.fileId.toString());
-        if (requestData.exists) {
-          thumbnailCache.set(file.fileId, requestData.imageData);
-          setImageData(requestData.imageData);
+        let blob = thumbnailCache.get(file.fileId);
+
+        if (!blob) {
+          const fetchedBlob = await ServerRequest.fetchThumbnail(file.fileId.toString());
+          if (fetchedBlob && fetchedBlob.size > 0) {
+            thumbnailCache.set(file.fileId, fetchedBlob);
+            blob = fetchedBlob;
+          }
+        }
+
+        if (blob && blob.size > 0) {
+          objectUrl = URL.createObjectURL(blob);
+          setImageData(objectUrl);
         } else {
           setImageData(null);
         }
@@ -44,17 +49,26 @@ export default function VideoCard({ file }: VideoCardProps) {
 
     fetchThumb();
 
+    return () => {
+      if (objectUrl) {
+        URL.revokeObjectURL(objectUrl);
+      }
+    };
+
   }, [file.fileId]);
 
   return (
     <div className={styles.videoCard} title={cleanedString}>
       <Link href={`/file/${file.fileId}`}>
         <div className={styles.thumbnailBox}>
-          {!isDev && imageData ? (
+          {imageData ? (
             <img
               src={imageData}
-              alt={`Thumbnail of ${cleanedString}`}
               className={styles.thumbnail}
+              onLoad={() => {
+                if (imageData) URL.revokeObjectURL(imageData);
+              }}
+              onError={() => setImageData(null)}
             />
           ) : null}
 

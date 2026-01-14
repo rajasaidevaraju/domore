@@ -63,8 +63,9 @@ export default function FileDetails({ initPerformers, fileId, initFileName, down
         if (!ctx) throw new Error("Could not get canvas context");
 
         ctx.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
-        const imageData = canvas.toDataURL("image/jpeg", 0.5);
-        await ServerRequest.uploadThumbnail(fileId, imageData, token);
+        const blob = await new Promise<Blob | null>(resolve => canvas.toBlob(resolve, "image/jpeg", 0.5));
+        if (!blob) throw new Error("Failed to create thumbnail blob");
+        await ServerRequest.uploadThumbnail(fileId, blob, token);
         showToast("Screenshot set as Thumbnail", MessageType.SUCCESS);
       } catch (error: Error | any) {
         if (error instanceof Error) {
