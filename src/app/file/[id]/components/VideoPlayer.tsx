@@ -288,6 +288,8 @@ export default function VideoPlayer({ videoSrc }: VideoPlayerProps) {
       videoElement.volume = Math.min(Math.max(storedVolume, 0.1), 1);
       videoElement.muted = storedMuted;
       setSpeed(videoElement.playbackRate);
+      setVolume(videoElement.volume);
+      setIsMuted(videoElement.muted);
     };
 
     const handleTimeUpdate = () => {
