@@ -336,6 +336,15 @@ export default function VideoPlayer({ videoSrc }: VideoPlayerProps) {
     };
 
     const handleKeyDown = (e: KeyboardEvent) => {
+      const target = e.target as HTMLElement;
+      if (
+        target.tagName === "INPUT" ||
+        target.tagName === "TEXTAREA" ||
+        target.isContentEditable
+      ) {
+        return;
+      }
+
       if (e.key === "f" || e.key === "F") {
         toggleFullscreen();
       } else if (e.key === "ArrowLeft" || e.key === "j" || e.key === "J") {
