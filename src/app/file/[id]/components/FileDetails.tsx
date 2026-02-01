@@ -9,6 +9,7 @@ import { MessageType, Item } from "@/app/types/Types";
 import RippleButton from "@/app/types/RippleButton";
 import PressableLink from "@/app/types/PressableLink";
 import PerformerPanel from "./PerformerPanel";
+import DeletePanel from "./DeletePanel";
 import EditNamePanel from "./EditNamePanel";
 import ToastMessage from "@/app/types/ToastMessages";
 import { ServerRequest } from "@/app/service/ServerRequest";
@@ -82,32 +83,6 @@ export default function FileDetails({ initPerformers, fileId, initFileName, down
     if (token != null) {
       setShowDeleteConfirmation(true);
     }
-  };
-
-  const handleConfirmDelete = async () => {
-    setShowDeleteConfirmation(false);
-    if (token != null) {
-      try {
-        await ServerRequest.deleteVideo(fileId, token);
-        let redirectUrl = `/?page=${page}`;
-        if (performerId) {
-          redirectUrl += `&performerId=${performerId}`;
-        }
-        if (sortBy) {
-          redirectUrl += `&sortBy=${sortBy}`;
-        }
-        router.push(redirectUrl);
-      } catch (error: Error | any) {
-        if (error instanceof Error) {
-          showToast(error.message, MessageType.DANGER);
-        }
-        console.error("Error while deleting video:", error);
-      }
-    }
-  };
-
-  const handleCancelDelete = () => {
-    setShowDeleteConfirmation(false);
   };
 
   const handleEditNameClick = () => {
@@ -212,27 +187,13 @@ export default function FileDetails({ initPerformers, fileId, initFileName, down
         </div>
       )}
       {showDeleteConfirmation && (
-        <div className={styles.overlay}>
-          <div className={styles.dialog}>
-            <div className={styles.header}>
-              <h2>Confirm Deletion</h2>
-            </div>
-            <div className={styles.body}>
-              <p>Are you sure you want to permanently delete the file {fileName}?</p>
-              <p>This action cannot be undone.</p>
-            </div>
-            <div className={styles.actions}>
-              <RippleButton className={styles.scbutton} onClick={handleCancelDelete}>
-                <img src="/svg/cancel.svg" alt="Cancel" />
-                <p>&nbsp;Cancel</p>
-              </RippleButton>
-              <RippleButton className={styles.scbutton} onClick={handleConfirmDelete}>
-                <img src="/svg/delete.svg" alt="Delete" />
-                <p>&nbsp;Delete</p>
-              </RippleButton>
-            </div>
-          </div>
-        </div>
+        <DeletePanel
+          fileId={fileId}
+          fileName={fileName}
+          token={token}
+          showToast={showToast}
+          onClose={() => setShowDeleteConfirmation(false)}
+        />
       )}
       {toasts.length > 0 && <ToastMessage toasts={toasts} onClose={removeToast} />}
     </>

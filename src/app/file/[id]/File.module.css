@@ -556,9 +556,21 @@
 
 .confirmDeleteButton {
     background-color: rgb(var(--red));
-    color: rgb(var(--background-rgb));
+    color: white !important;
     font-weight: bold;
     border: 1px solid rgb(var(--red));
+    filter: brightness(95%);
+}
+
+@media (pointer: fine) {
+    .confirmDeleteButton:hover {
+        filter: brightness(100%);
+        background-color: rgb(var(--red)) !important;
+    }
+}
+
+.confirmDeleteButton:active {
+    filter: brightness(90%);
 }
 
 @media (max-width: 768px) {
