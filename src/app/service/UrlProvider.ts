@@ -16,5 +16,5 @@ export function ServerUrlProvider(): string {
     }*/
     const hostname = window.location.hostname;
     const port = window.location.port;
-    return `http://${hostname}:${port}`;
+    return port ? `http://${hostname}:${port}` : `http://${hostname}`;
 }

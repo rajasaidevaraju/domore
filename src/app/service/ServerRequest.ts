@@ -126,6 +126,65 @@ export const ServerRequest = {
     });
 
   },
+  async getUploadStatus(fileName: string, fileSize: number, chunkSize: number, target: StorageLocation, token: string): Promise<any> {
+    try {
+      const url = new URL(`${API_BASE_URL}/server/file/status`);
+      url.searchParams.append("fileName", fileName);
+      url.searchParams.append("fileSize", fileSize.toString());
+      url.searchParams.append("chunkSize", chunkSize.toString());
+      url.searchParams.append("target", target);
+
+      const response = await fetch(url.toString(), {
+        method: "GET",
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (!response.ok && response.status !== 409) {
+        const error = await response.json().catch(() => null);
+        throw new Error(error?.message || `Server returned ${response.status}`);
+      }
+      return await response.json();
+    } catch (e) {
+      console.error("[ServerRequest] getUploadStatus failed:", e);
+      throw e;
+    }
+  },
+
+  async uploadChunk(chunk: Blob, chunkIndex: number, totalChunks: number, fileName: string, fileSize: number, chunkSize: number, target: StorageLocation, token: string, passXMLObj: (xhr: XMLHttpRequest) => void): Promise<any> {
+    return new Promise((resolve, reject) => {
+      const url = new URL(`${API_BASE_URL}/server/file/chunk`);
+      url.searchParams.append("chunkIndex", chunkIndex.toString());
+      url.searchParams.append("totalChunks", totalChunks.toString());
+      url.searchParams.append("fileName", fileName);
+      url.searchParams.append("fileSize", fileSize.toString());
+      url.searchParams.append("chunkSize", chunkSize.toString());
+      url.searchParams.append("target", target);
+
+      const xhr = new XMLHttpRequest();
+      passXMLObj(xhr);
+      xhr.responseType = 'json';
+      xhr.open('POST', url.toString(), true);
+      xhr.setRequestHeader('Authorization', `Bearer ${token}`);
+      xhr.setRequestHeader('Content-Type', 'application/octet-stream');
+
+      xhr.onerror = function () {
+        reject(new Error(`Failed to upload chunk ${chunkIndex}`));
+      };
+
+      xhr.onload = function () {
+        if (xhr.status === 200) {
+          resolve(xhr.response);
+        } else {
+          const response = xhr.response;
+          reject(new Error(response?.message || `Upload failed for chunk ${chunkIndex} with status ${xhr.status}`));
+        }
+      };
+
+      xhr.send(chunk);
+    });
+  },
   async fetchStats(signal: AbortSignal): Promise<ServerStats> {
     const response = await fetch(`${API_BASE_URL}/server/stats`, { signal });
 

@@ -25,6 +25,7 @@ export default function VideoCard({ file }: VideoCardProps) {
     let objectUrl: string | null = null;
 
     const fetchThumb = async () => {
+      if (isDev) return;
       try {
         let blob = thumbnailCache.get(file.fileId);
 

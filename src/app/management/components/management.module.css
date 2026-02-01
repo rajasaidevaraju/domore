@@ -201,6 +201,19 @@
   color: rgb(var(--red));
 }
 
+.errorContainer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.retryButton {
+  height: 26px !important;
+  font-size: 13px !important;
+  padding: 0 10px !important;
+}
+
 @media (prefers-color-scheme: dark) {
   .storageText {
     color:rgb(190, 190, 190)
