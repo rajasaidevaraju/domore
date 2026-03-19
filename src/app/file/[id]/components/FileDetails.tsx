@@ -5,7 +5,7 @@ import { useNavStore } from "@/app/store/navigation";
 import { useRouter } from "next/navigation";
 import styles from "../File.module.css";
 import { useAuthStore } from "@/app/store/auth";
-import { MessageType, Item } from "@/app/types/Types";
+import { MessageType, Item, thumbnailCache } from "@/app/types/Types";
 import RippleButton from "@/app/types/RippleButton";
 import PressableLink from "@/app/types/PressableLink";
 import PerformerPanel from "./PerformerPanel";
@@ -22,9 +22,7 @@ interface FileDetailsProps {
 }
 
 export default function FileDetails({ initPerformers, fileId, initFileName, downloadLink }: FileDetailsProps) {
-  const router = useRouter();
   const isDev = process.env.NODE_ENV === "development";
-  const { page, performerId, sortBy } = useNavStore();
   const { token, isLoggedIn } = useAuthStore();
   const [performers, setPerformers] = useState<Item[]>(initPerformers);
   const [fileName, setFileName] = useState(isDev ? "This should be file name" : initFileName);
@@ -33,6 +31,7 @@ export default function FileDetails({ initPerformers, fileId, initFileName, down
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
   const [toasts, setToasts] = useState<any[]>([]);
   const [insertThumbnailLoading, setInsertThumbnailLoading] = useState(false);
+  const [uploadedThumbnail, setUploadedThumbnail] = useState<string | null>(null);
 
   const showToast = (message: string, type: MessageType) => {
     const newMessage = { id: Date.now(), message, type };
@@ -57,16 +56,18 @@ export default function FileDetails({ initPerformers, fileId, initFileName, down
       }
       try {
         setInsertThumbnailLoading(true);
-        const canvas = document.createElement("canvas");
-        canvas.width = videoElement.videoWidth;
-        canvas.height = videoElement.videoHeight;
-        const ctx = canvas.getContext("2d");
-        if (!ctx) throw new Error("Could not get canvas context");
+        const timestampMs = videoElement.currentTime * 1000;
 
-        ctx.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
-        const blob = await new Promise<Blob | null>(resolve => canvas.toBlob(resolve, "image/jpeg", 0.5));
-        if (!blob) throw new Error("Failed to create thumbnail blob");
-        await ServerRequest.uploadThumbnail(fileId, blob, token);
+        const blob = await ServerRequest.extractThumbnail(fileId, timestampMs, token);
+        thumbnailCache.set(Number(fileId), blob);
+
+        const objectUrl = URL.createObjectURL(blob);
+        setUploadedThumbnail(objectUrl);
+        setTimeout(() => {
+          setUploadedThumbnail(null);
+          URL.revokeObjectURL(objectUrl);
+        }, 3000);
+
         showToast("Screenshot set as Thumbnail", MessageType.SUCCESS);
       } catch (error: Error | any) {
         if (error instanceof Error) {
@@ -196,6 +197,11 @@ export default function FileDetails({ initPerformers, fileId, initFileName, down
         />
       )}
       {toasts.length > 0 && <ToastMessage toasts={toasts} onClose={removeToast} />}
+      {uploadedThumbnail && (
+        <div style={{ position: 'fixed', bottom: '20px', right: '20px', zIndex: 1000, borderRadius: '8px', overflow: 'hidden', boxShadow: '0 4px 6px rgba(0,0,0,0.5)' }}>
+          <img src={uploadedThumbnail} alt="Thumbnail preview" style={{ width: '150px', height: 'auto', display: 'block' }} />
+        </div>
+      )}
     </>
   );
 }

@@ -67,6 +67,31 @@ export const ServerRequest = {
     }
     return await response.blob();
   },
+
+  async extractThumbnail(fileId: string | number, timestampMs: number, token: string): Promise<Blob> {
+    const url = new URL(`${API_BASE_URL}/server/thumbnail/extract`);
+    url.searchParams.append("fileId", fileId.toString());
+    url.searchParams.append("timestamp", Math.floor(timestampMs).toString());
+
+    const response = await fetch(url.toString(), {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`
+      },
+      credentials: "include"
+    });
+
+    if (!response.ok) {
+      let defaultErrorMessage = "Thumbnail extraction failed";
+      if (response.status === 401) {
+        defaultErrorMessage = "Unauthorized";
+      }
+      const error = await response.json().catch(() => null);
+      throw new Error(error?.message || defaultErrorMessage);
+    }
+    
+    return await response.blob();
+  },
   async uploadFile(file: File | undefined, token: string, target: StorageLocation, onProgress: (progress: number, speed: number) => void, passXMLObj: (xhr: XMLHttpRequest) => void): Promise<string> {
     return new Promise((resolve, reject) => {
       if (!file) {
