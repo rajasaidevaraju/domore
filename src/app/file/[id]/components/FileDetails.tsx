@@ -1,8 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
-import { useNavStore } from "@/app/store/navigation";
-import { useRouter } from "next/navigation";
+import { useState } from "react";
 import styles from "../File.module.css";
 import { useAuthStore } from "@/app/store/auth";
 import { MessageType, Item, thumbnailCache } from "@/app/types/Types";
@@ -67,8 +65,6 @@ export default function FileDetails({ initPerformers, fileId, initFileName, down
           setUploadedThumbnail(null);
           URL.revokeObjectURL(objectUrl);
         }, 3000);
-
-        showToast("Screenshot set as Thumbnail", MessageType.SUCCESS);
       } catch (error: Error | any) {
         if (error instanceof Error) {
           showToast(error.message, MessageType.DANGER);
@@ -198,8 +194,20 @@ export default function FileDetails({ initPerformers, fileId, initFileName, down
       )}
       {toasts.length > 0 && <ToastMessage toasts={toasts} onClose={removeToast} />}
       {uploadedThumbnail && (
-        <div style={{ position: 'fixed', bottom: '20px', right: '20px', zIndex: 1000, borderRadius: '8px', overflow: 'hidden', boxShadow: '0 4px 6px rgba(0,0,0,0.5)' }}>
-          <img src={uploadedThumbnail} alt="Thumbnail preview" style={{ width: '150px', height: 'auto', display: 'block' }} />
+        <div className={styles.thumbnailPreview}>
+          <button
+            className={styles.thumbnailPreviewClose}
+            onClick={() => {
+              setUploadedThumbnail(null);
+              if (uploadedThumbnail) URL.revokeObjectURL(uploadedThumbnail);
+            }}
+          >
+            <img src="/svg/cancel.svg" alt="Close" />
+          </button>
+          <img src={uploadedThumbnail} alt="Thumbnail preview" className={styles.thumbnailPreviewImage} />
+          <div className={styles.thumbnailPreviewFooter}>
+            Thumbnail Updated
+          </div>
         </div>
       )}
     </>
