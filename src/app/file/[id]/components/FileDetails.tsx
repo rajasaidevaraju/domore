@@ -1,14 +1,13 @@
 "use client";
 
-import React, { useState } from "react";
-import { useNavStore } from "@/app/store/navigation";
-import { useRouter } from "next/navigation";
+import { useState } from "react";
 import styles from "../File.module.css";
 import { useAuthStore } from "@/app/store/auth";
-import { MessageType, Item } from "@/app/types/Types";
+import { MessageType, Item, thumbnailCache } from "@/app/types/Types";
 import RippleButton from "@/app/types/RippleButton";
 import PressableLink from "@/app/types/PressableLink";
-import PerformerPanel from "./PerformerPanel"; 
+import PerformerPanel from "./PerformerPanel";
+import DeletePanel from "./DeletePanel";
 import EditNamePanel from "./EditNamePanel";
 import ToastMessage from "@/app/types/ToastMessages";
 import { ServerRequest } from "@/app/service/ServerRequest";
@@ -21,16 +20,16 @@ interface FileDetailsProps {
 }
 
 export default function FileDetails({ initPerformers, fileId, initFileName, downloadLink }: FileDetailsProps) {
-  const router = useRouter();
-  const { page, performerId, sortBy } = useNavStore();
+  const isDev = process.env.NODE_ENV === "development";
   const { token, isLoggedIn } = useAuthStore();
   const [performers, setPerformers] = useState<Item[]>(initPerformers);
-  const [fileName, setFileName] = useState(initFileName);
+  const [fileName, setFileName] = useState(isDev ? "This should be file name" : initFileName);
   const [addPanel, setAddPanel] = useState(false);
   const [isEditingName, setIsEditingName] = useState(false);
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
   const [toasts, setToasts] = useState<any[]>([]);
   const [insertThumbnailLoading, setInsertThumbnailLoading] = useState(false);
+  const [uploadedThumbnail, setUploadedThumbnail] = useState<string | null>(null);
 
   const showToast = (message: string, type: MessageType) => {
     const newMessage = { id: Date.now(), message, type };
@@ -55,11 +54,17 @@ export default function FileDetails({ initPerformers, fileId, initFileName, down
       }
       try {
         setInsertThumbnailLoading(true);
-        const html2canvas = (await import("html2canvas")).default;
-        const canvas = await html2canvas(videoElement, { allowTaint: true });
-        const imageData = canvas.toDataURL("image/jpeg", 0.3);
-        await ServerRequest.uploadThumbnail(fileId, imageData, token);
-        showToast("Screenshot set as Thumbnail", MessageType.SUCCESS);
+        const timestampMs = videoElement.currentTime * 1000;
+
+        const blob = await ServerRequest.extractThumbnail(fileId, timestampMs, token);
+        thumbnailCache.set(Number(fileId), blob);
+
+        const objectUrl = URL.createObjectURL(blob);
+        setUploadedThumbnail(objectUrl);
+        setTimeout(() => {
+          setUploadedThumbnail(null);
+          URL.revokeObjectURL(objectUrl);
+        }, 3000);
       } catch (error: Error | any) {
         if (error instanceof Error) {
           showToast(error.message, MessageType.DANGER);
@@ -77,32 +82,6 @@ export default function FileDetails({ initPerformers, fileId, initFileName, down
     }
   };
 
-  const handleConfirmDelete = async () => {
-    setShowDeleteConfirmation(false);
-    if (token != null) {
-      try {
-        await ServerRequest.deleteVideo(fileId, token);
-        let redirectUrl = `/?page=${page}`;
-        if (performerId) {
-          redirectUrl += `&performerId=${performerId}`;
-        }
-        if (sortBy) {
-          redirectUrl += `&sortBy=${sortBy}`;
-        }
-        router.push(redirectUrl);
-      } catch (error: Error | any) {
-        if (error instanceof Error) {
-          showToast(error.message, MessageType.DANGER);
-        }
-        console.error("Error while deleting video:", error);
-      }
-    }
-  };
-
-  const handleCancelDelete = () => {
-    setShowDeleteConfirmation(false);
-  };
-
   const handleEditNameClick = () => {
     setIsEditingName(true);
   };
@@ -112,6 +91,11 @@ export default function FileDetails({ initPerformers, fileId, initFileName, down
   };
 
   const handleNameSave = async (newName: string) => {
+
+    if (isDev) {
+      return;
+    }
+
     setIsEditingName(false);
     try {
       if (token == null) {
@@ -166,14 +150,14 @@ export default function FileDetails({ initPerformers, fileId, initFileName, down
           ))
         )}
       </div>
-      
+
       {isLoggedIn && addPanel && (
-        <PerformerPanel 
+        <PerformerPanel
           fileId={fileId}
           token={token}
           currentPerformers={performers}
-          onClose={handlePanelClose} 
-          showToast={showToast} 
+          onClose={handlePanelClose}
+          showToast={showToast}
         />
       )}
 
@@ -184,7 +168,6 @@ export default function FileDetails({ initPerformers, fileId, initFileName, down
             {insertThumbnailLoading ? "uploading Thumbnail" : "Set As Thumbnail"}
           </RippleButton>
           <RippleButton className={styles.scbutton} onClick={handleDeleteClick}>
-            <img src="/svg/delete.svg" alt="Delete" />
             <p>&nbsp;Delete Video</p>
           </RippleButton>
           <RippleButton
@@ -193,39 +176,40 @@ export default function FileDetails({ initPerformers, fileId, initFileName, down
             suggestion={isEditingName ? "Editing in progress" : undefined}
             onClick={handleEditNameClick}
           >
-            <img src="/svg/edit.svg" alt="Edit" />
             <p>&nbsp;Edit Name</p>
           </RippleButton>
           <RippleButton className={`${styles.scbutton}`} onClick={() => setAddPanel(true)}>
-            <img src="/svg/add.svg" alt="Add" />
             <p>&nbsp;Manage Performers</p>
           </RippleButton>
         </div>
       )}
       {showDeleteConfirmation && (
-        <div className={styles.overlay}>
-          <div className={styles.dialog}>
-            <div className={styles.header}>
-              <h2>Confirm Deletion</h2>
-            </div>
-            <div className={styles.body}>
-              <p>Are you sure you want to permanently delete the file {fileName}?</p>
-              <p>This action cannot be undone.</p>
-            </div>
-            <div className={styles.actions}>
-              <RippleButton className={styles.scbutton} onClick={handleCancelDelete}>
-                <img src="/svg/cancel.svg" alt="Cancel" />
-                <p>&nbsp;Cancel</p>
-              </RippleButton>
-              <RippleButton className={styles.scbutton} onClick={handleConfirmDelete}>
-                <img src="/svg/delete.svg" alt="Delete" />
-                <p>&nbsp;Delete</p>
-              </RippleButton>
-            </div>
+        <DeletePanel
+          fileId={fileId}
+          fileName={fileName}
+          token={token}
+          showToast={showToast}
+          onClose={() => setShowDeleteConfirmation(false)}
+        />
+      )}
+      {toasts.length > 0 && <ToastMessage toasts={toasts} onClose={removeToast} />}
+      {uploadedThumbnail && (
+        <div className={styles.thumbnailPreview}>
+          <button
+            className={styles.thumbnailPreviewClose}
+            onClick={() => {
+              setUploadedThumbnail(null);
+              if (uploadedThumbnail) URL.revokeObjectURL(uploadedThumbnail);
+            }}
+          >
+            <img src="/svg/cancel.svg" alt="Close" />
+          </button>
+          <img src={uploadedThumbnail} alt="Thumbnail preview" className={styles.thumbnailPreviewImage} />
+          <div className={styles.thumbnailPreviewFooter}>
+            Thumbnail Updated
           </div>
         </div>
       )}
-      {toasts.length > 0 && <ToastMessage toasts={toasts} onClose={removeToast} />}
     </>
   );
 }

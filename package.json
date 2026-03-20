@@ -1,6 +1,6 @@
 {
   "name": "domore",
-  "version": "0.3.5",
+  "version": "0.3.6",
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
@@ -10,7 +10,6 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "html2canvas": "^1.4.1",
     "next": "^16.0.7",
     "react": "^19.2.1",
     "react-dom": "^19.2.1",

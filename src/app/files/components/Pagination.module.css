@@ -1,57 +1,144 @@
-.button_container{
+.button_container {
     display: flex;
-    gap:10px;
+    gap: 12px;
     align-items: center;
     justify-content: center;
     width: 100%;
-    margin-top: auto;
-    padding: 10px 0px; 
+    margin-top: 20px;
+    padding: 10px 0px;
 }
 
-.disabled{
-    cursor: not-allowed;     
-    opacity: 0.5; 
+.disabled {
+    cursor: not-allowed;
+    opacity: 0.4;
     pointer-events: none;
 }
 
 .disabled img {
-    opacity: 0.5;    
-  }
-
-.button{
-    background-color: rgb(var(--main-color));
-    border-radius: 5px;
-    width: 40px;
-    height: 30px;
-    justify-content: center;
-    display: flex;
-    padding: 0.25rem .5rem;
-    text-decoration: none;
-    color: inherit;
-    transition: background-color 0.3s ease;
+    opacity: 0.5;
 }
 
+.button {
+    background-color: rgb(var(--main-color));
+    border: 1px solid rgba(var(--foreground-rgb), 0.1);
+    border-radius: 8px;
+    width: 44px;
+    height: 36px;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.2s ease;
+}
 
-.button:hover {
-    background-color: rgba(var(--main-color-hover));
+@media (pointer: fine) {
+    .button:hover {
+        background-color: rgb(var(--main-color-hover));
+    }
 }
 
 .button:active {
-    background-color: rgba(var(--main-color-active));
+    background-color: rgb(var(--main-color-active));
 }
 
-.disabled:hover, .disabled:active {
+.disabled:hover,
+.disabled:active {
     background-color: rgb(var(--main-color));
-    transform: none; 
+    transform: none;
 }
 
+.customDropdown {
+    position: relative;
+    min-width: 80px;
+    z-index: 50;
+}
 
-.pageSelect {
-    text-align: center;
-    padding: 0.25rem .5rem;
+.dropdownTrigger {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 10px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    border-radius: 8px;
     background-color: rgb(var(--main-color));
-    border-radius: 5px;
-    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-    appearance: none;
+    color: rgb(var(--foreground-rgb));
+    border: 1px solid rgba(var(--foreground-rgb), 0.1);
     cursor: pointer;
+    transition: all 0.2s ease;
+    user-select: none;
+}
+
+@media (pointer: fine) {
+    .dropdownTrigger:hover {
+        background-color: rgb(var(--main-color-hover));
+    }
+}
+
+.dropdownTrigger.active {
+    border-color: rgb(var(--secondary-color));
+    background-color: rgb(var(--main-color-hover));
+}
+
+.dropdownIcon {
+    width: 12px;
+    height: 12px;
+    margin-left: 6px;
+    transition: transform 0.2s ease;
+    opacity: 0.6;
+}
+
+.dropdownTrigger.active .dropdownIcon {
+    transform: rotate(180deg);
+}
+
+.dropdownMenu {
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%);
+    min-width: 100px;
+    max-height: 250px;
+    overflow-y: auto;
+    background-color: rgb(var(--background-rgb));
+    border: 1px solid rgba(var(--foreground-rgb), 0.1);
+    border-radius: 10px;
+    box-shadow: 0 -10px 25px rgba(0, 0, 0, 0.2);
+    padding: 6px;
+    animation: slideUp 0.2s ease;
+}
+
+.dropdownItem {
+    padding: 8px 12px;
+    font-size: 0.85rem;
+    border-radius: 6px;
+    color: rgb(var(--foreground-rgb));
+    cursor: pointer;
+    transition: all 0.15s ease;
+    text-align: center;
+}
+
+@media (pointer: fine) {
+    .dropdownItem:hover {
+        background-color: rgb(var(--main-color-hover));
+    }
+}
+
+.dropdownItem.selected {
+    background-color: rgba(var(--secondary-color), 0.15);
+    color: rgb(var(--secondary-color));
+    font-weight: 600;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translate(-50%, 8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translate(-50%, 0);
+    }
 }

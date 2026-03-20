@@ -3,18 +3,20 @@
 import React, { useState } from "react";
 import styles from "./filter.module.css";
 import AddPanel from "./AddPanel";
-import {ItemWithCount} from "@/app/types/Types";
+import { ItemWithCount } from "@/app/types/Types";
 import Loading from "@/app/loading";
 import PressableLink from "@/app/types/PressableLink";
 import { useAuthStore } from '@/app/store/auth';
+import Skeleton from "./Skeleton";
 // Generic types for items like Performer or Category
 interface CardProps<T> {
   items: T[];
-  onAdd: (name: string[])=>void;
+  onAdd: (name: string[]) => Promise<void>;
   onDelete: (selectedIds: Set<number>) => void;
   onEdit?: () => void;
   label: string;
   loading: boolean;
+  shouldAnimate?: boolean;
 }
 
 const Card = <T extends ItemWithCount>({
@@ -23,13 +25,14 @@ const Card = <T extends ItemWithCount>({
   onDelete,
   onEdit,
   label,
-  loading
+  loading,
+  shouldAnimate = true
 }: CardProps<T>) => {
   const [isSelecting, setIsSelecting] = useState(false);
   const [selectedItems, setSelectedItems] = useState<Set<number>>(new Set());
   const [showAddPanel, setShowAddPanel] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
-  const {isLoggedIn} = useAuthStore();
+  const { isLoggedIn } = useAuthStore();
   const openPanel = () => {
     setShowAddPanel(true);
     setIsAnimating(true);
@@ -83,68 +86,66 @@ const Card = <T extends ItemWithCount>({
     <div className={styles.cardContainer}>
       <div className={styles.header}>
         <h1>{label}</h1>
-        {isLoggedIn && 
+        {isLoggedIn &&
           <div className={styles.buttons}>
-          {!isSelecting ? (
-            <>
-              <button className={`${styles.commonButton}`} onClick={openPanel}><img src="/svg/add.svg" alt="Add" /></button>
-              {onEdit && (
+            {!isSelecting ? (
+              <>
+                <button className={`${styles.commonButton}`} onClick={openPanel}><img src="/svg/add.svg" alt="Add" /></button>
+                {onEdit && (
+                  <button
+                    className={`${styles.editButton} ${styles.commonButton}`}
+                    onClick={onEdit}
+                  >
+                    <img src="/svg/edit.svg" alt="Edit" />
+                  </button>
+                )}
+                <button className={`${styles.removeButton} ${styles.commonButton}`} onClick={handleDeleteMode}><img src="/svg/delete.svg" alt="Delete" /></button>
+              </>
+            ) : (
+              <>
                 <button
-                  className={`${styles.editButton} ${styles.commonButton}`}
-                  onClick={onEdit}
+                  className={`${styles.removeButton} ${styles.commonButton}`}
+                  onClick={handleDeleteSelected}
                 >
-                  <img src="/svg/edit.svg" alt="Edit" />
+                  Confirm Delete
                 </button>
-              )}
-              <button className={`${styles.removeButton} ${styles.commonButton}`} onClick={handleDeleteMode}><img src="/svg/delete.svg" alt="Delete" /></button>
-            </>
-          ) : (
-            <>
-              <button
-                className={`${styles.removeButton} ${styles.commonButton}`}
-                onClick={handleDeleteSelected}
-              >
-                Confirm Delete
-              </button>
-              <button
-                className={`${styles.commonButton}`}
-                onClick={handleCancelSelection}
-              >
-                Cancel
-              </button>
-            </>
-          )}
+                <button
+                  className={`${styles.commonButton}`}
+                  onClick={handleCancelSelection}
+                >
+                  Cancel
+                </button>
+              </>
+            )}
           </div>
-        
+
         }
       </div>
       {loading ? (
-        <Loading text={"Requesting "+label}/>
+        <Skeleton />
       ) : items.length === 0 ? (
         <p className={styles.noItems}>No {label} found.</p>
-      ) : null}
-      <div className={styles.cardList}>
-        {items.map((item) => (
-          
-          isSelecting ? (
-            <div key={item.id}
-              className={`${styles.card} ${selectedItems.has(item.id) ? styles.selected : ""}`}
-              onClick={()=>handleSelect(item.id)}>
-              
+      ) : (
+        <div className={`${styles.cardList} ${shouldAnimate ? styles.contentFadeIn : ""}`}>
+          {items.map((item) => (
+            isSelecting ? (
+              <div key={item.id}
+                className={`${styles.card} ${selectedItems.has(item.id) ? styles.selected : ""}`}
+                onClick={() => handleSelect(item.id)}>
+
                 <label className={styles.checkboxLabel}>
-                  <input id={`checkbox-${item.id}`} type="checkbox" checked={selectedItems.has(item.id)} onChange={()=>{}} className={styles.checkbox}/>
+                  <input id={`checkbox-${item.id}`} type="checkbox" checked={selectedItems.has(item.id)} onChange={() => { }} className={styles.checkbox} />
                 </label>
-            
-              <p className={styles.text}>{item.name}</p>
-            </div>
-        ):(
-          <PressableLink key={item.id} className={styles.card} href={`/files?performerId=${item.id}`}> {item.name +" | "+item.count}</PressableLink>
-        )
 
+                <p className={styles.text}>{item.name}</p>
+              </div>
+            ) : (
+              <PressableLink key={item.id} className={styles.card} href={`/files?performerId=${item.id}`}> {item.name + " | " + item.count}</PressableLink>
+            )
+          ))}
+        </div>
+      )}
 
-        ))}
-      </div>
-      
       {showAddPanel && (
         <div>
           <div className={`${styles.overlay} ${isAnimating ? styles.enter : styles.exit}`}></div>

@@ -1,7 +1,7 @@
 'use client';
 
-import React, { useState, useEffect,useMemo } from 'react';
-import {thumbnailCache} from '@/app/types/Types'
+import React, { useState, useEffect, useMemo } from 'react';
+import { thumbnailCache } from '@/app/types/Types'
 import styles from './VideoCard.module.css';
 import { ServerRequest } from '../../service/ServerRequest';
 import { FileData } from '@/app/types/FileDataList';
@@ -14,27 +14,34 @@ interface VideoCardProps {
 
 export default function VideoCard({ file }: VideoCardProps) {
 
+  const isDev = process.env.NODE_ENV === "development";
   const [imageData, setImageData] = useState<string | null>(null);
-  const formattedSize=useMemo(() => formatSize(file.fileSize), [file.fileSize]);
-  const formattedDuration=useMemo(() => formatDuration(file.durationMs), [file.durationMs]);
+  const formattedSize = useMemo(() => formatSize(file.fileSize), [file.fileSize]);
+  const formattedDuration = useMemo(() => formatDuration(file.durationMs), [file.durationMs]);
 
   const cleanedString = file.fileName.replace(/\.[a-zA-Z0-9]+$/, "");
 
-useEffect(() => {
-   
-    if (thumbnailCache.has(file.fileId)) {
-      setImageData(thumbnailCache.get(file.fileId)!);
-      return;
-    }
+  useEffect(() => {
+    let objectUrl: string | null = null;
 
     const fetchThumb = async () => {
+      if (isDev) return;
       try {
-        const requestData = await ServerRequest.fetchThumbnail(file.fileId.toString());
-        if (requestData.exists) {
-          thumbnailCache.set(file.fileId, requestData.imageData);
-          setImageData(requestData.imageData);
+        let blob = thumbnailCache.get(file.fileId);
+
+        if (!blob) {
+          const fetchedBlob = await ServerRequest.fetchThumbnail(file.fileId.toString());
+          if (fetchedBlob && fetchedBlob.size > 0) {
+            thumbnailCache.set(file.fileId, fetchedBlob);
+            blob = fetchedBlob;
+          }
+        }
+
+        if (blob && blob.size > 0) {
+          objectUrl = URL.createObjectURL(blob);
+          setImageData(objectUrl);
         } else {
-          setImageData(null); 
+          setImageData(null);
         }
       } catch (err) {
         setImageData(null);
@@ -42,6 +49,12 @@ useEffect(() => {
     };
 
     fetchThumb();
+
+    return () => {
+      if (objectUrl) {
+        URL.revokeObjectURL(objectUrl);
+      }
+    };
 
   }, [file.fileId]);
 
@@ -52,15 +65,19 @@ useEffect(() => {
           {imageData ? (
             <img
               src={imageData}
-              alt={`Thumbnail of ${cleanedString}`}
               className={styles.thumbnail}
+              onLoad={() => {
+                if (imageData) URL.revokeObjectURL(imageData);
+              }}
+              onError={() => setImageData(null)}
             />
           ) : null}
+
           <p className={styles.sizeText}>{formattedSize}</p>
           <p className={styles.durationText}>{formattedDuration}</p>
         </div>
 
-        <h2 className={styles.cardTitle}>{cleanedString}</h2>
+        <h2 className={styles.cardTitle}>{isDev ? "This should be file name" : cleanedString}</h2>
       </Link>
     </div>
   );

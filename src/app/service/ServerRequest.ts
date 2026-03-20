@@ -1,26 +1,26 @@
 import { ServerUrlProvider } from './UrlProvider';
 import { FileDataList } from "../types/FileDataList";
-import { ServerStats,Item, ApiResponse,StorageLocation } from '@/app/types/Types'
+import { ServerStats, Item, ApiResponse, StorageLocation } from '@/app/types/Types'
 
 const API_BASE_URL = ServerUrlProvider();
 
 export const ServerRequest = {
-  
-  async fetchFiles( page?:number, performerId?:number, sortBy?: string ): Promise<FileDataList> {
-    
-    let baseURL=API_BASE_URL || window.location.origin
 
-    let url = new URL("/server/files",baseURL);
+  async fetchFiles(page?: number, performerId?: number, sortBy?: string): Promise<FileDataList> {
+
+    let baseURL = API_BASE_URL || window.location.origin
+
+    let url = new URL("/server/files", baseURL);
     if (page) {
       url.searchParams.append("page", page.toString());
     }
     if (performerId) {
       url.searchParams.append("performerId", performerId.toString());
     }
-    if(sortBy){
-      url.searchParams.append("sortBy",sortBy);
+    if (sortBy) {
+      url.searchParams.append("sortBy", sortBy);
     }
-    const response = await fetch(url,{method:"GET",redirect:"follow"});
+    const response = await fetch(url, { method: "GET", redirect: "follow" });
     if (!response.ok) {
       if (response.status === 404) {
         throw new Error(`No files found on page ${page}`);
@@ -29,54 +29,80 @@ export const ServerRequest = {
       throw new Error(error?.message || "Failed to fetch files");
     }
     return await response.json();
-    
+
   },
 
 
 
-  async uploadThumbnail(fileId: string, imageData: string,token:string):Promise<void> {
+  async uploadThumbnail(fileId: string | number, image: Blob, token: string): Promise<void> {
+    const formData = new FormData();
+    formData.append("fileId", fileId.toString());
+    formData.append("image", image);
 
-    let requestBody = JSON.stringify({ fileId, imageData });
     const response = await fetch(`${API_BASE_URL}/server/thumbnail`, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`
       },
       credentials: "include",
-      body: requestBody,
+      body: formData,
     });
     if (!response.ok) {
       let defaultErrorMessage = "Thumbnail upload failed";
-      if(response.status===401){
-         defaultErrorMessage="Unauthorized"
+      if (response.status === 401) {
+        defaultErrorMessage = "Unauthorized"
       }
       const error = await response.json().catch(() => null);
       throw new Error(error?.message || defaultErrorMessage);
     }
-    await response.json();
-
-    return;
   },
 
-  async fetchThumbnail(fileId: string): Promise<{ imageData: string, exists: boolean }> {
+  async fetchThumbnail(fileId: string): Promise<Blob | null> {
     const response = await fetch(`${API_BASE_URL}/server/thumbnail?fileId=${fileId}`);
     if (!response.ok) {
-      return { imageData: "", exists: false }
+      if (response.status === 404) {
+        return null;
+      }
+      return null;
     }
-    return await response.json();
+    return await response.blob();
   },
-  async uploadFile(file: File|undefined, token:string, target:StorageLocation,onProgress: (progress: number, speed: number) => void, passXMLObj:(xhr:XMLHttpRequest)=>void): Promise<string> {
+
+  async extractThumbnail(fileId: string | number, timestampMs: number, token: string): Promise<Blob> {
+    const url = new URL(`${API_BASE_URL}/server/thumbnail/extract`);
+    url.searchParams.append("fileId", fileId.toString());
+    url.searchParams.append("timestamp", Math.floor(timestampMs).toString());
+
+    const response = await fetch(url.toString(), {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`
+      },
+      credentials: "include"
+    });
+
+    if (!response.ok) {
+      let defaultErrorMessage = "Thumbnail extraction failed";
+      if (response.status === 401) {
+        defaultErrorMessage = "Unauthorized";
+      }
+      const error = await response.json().catch(() => null);
+      throw new Error(error?.message || defaultErrorMessage);
+    }
+    
+    return await response.blob();
+  },
+  async uploadFile(file: File | undefined, token: string, target: StorageLocation, onProgress: (progress: number, speed: number) => void, passXMLObj: (xhr: XMLHttpRequest) => void): Promise<string> {
     return new Promise((resolve, reject) => {
       if (!file) {
         reject(new Error('No file provided'));
         return;
-      } 
-      
+      }
+
       const formData = new FormData();
       formData.append('file', file);
       formData.append('fileName', file.name);
-      
+
       const xhr = new XMLHttpRequest();
       passXMLObj(xhr)
       xhr.responseType = 'json'
@@ -88,31 +114,31 @@ export const ServerRequest = {
       let lastUpdate = 0;
       const UPDATE_INTERVAL = 1000;
 
-      xhr.upload.addEventListener("progress",function(event: ProgressEvent<EventTarget>) {
+      xhr.upload.addEventListener("progress", function (event: ProgressEvent<EventTarget>) {
         if (event.lengthComputable) {
           const percentComplete = (event.loaded / event.total) * 100;
           // Calculate speed
           const currentTime = Date.now();
           const timeElapsed = (currentTime - lastTime) / 1000;
-          const bytesTransferred = event.loaded - lastLoaded; 
+          const bytesTransferred = event.loaded - lastLoaded;
           const speed = (bytesTransferred / timeElapsed)
 
-          if (currentTime - lastUpdate >= UPDATE_INTERVAL|| percentComplete === 100) {
+          if (currentTime - lastUpdate >= UPDATE_INTERVAL || percentComplete === 100) {
             onProgress(percentComplete, speed);
             lastUpdate = currentTime;
           }
 
           lastTime = currentTime;
           lastLoaded = event.loaded;
-          
+
         } else {
           console.warn('Progress not computable');
         }
-      },false)
-      xhr.onerror = function() {
+      }, false)
+      xhr.onerror = function () {
         reject(new Error('Failed to upload file'));
       };
-      xhr.onload = function() {
+      xhr.onload = function () {
         if (xhr.status === 200) {
           resolve('File uploaded successfully!');
         } else {
@@ -122,49 +148,108 @@ export const ServerRequest = {
         }
       };
       xhr.send(formData);
-    });  
-    
-  },
-  async fetchStats (signal: AbortSignal): Promise<ServerStats>{
-      const response = await fetch(`${API_BASE_URL}/server/stats`,{signal});
+    });
 
-      if (!response.ok) {
+  },
+  async getUploadStatus(fileName: string, fileSize: number, chunkSize: number, target: StorageLocation, token: string): Promise<any> {
+    try {
+      const url = new URL(`${API_BASE_URL}/server/file/status`);
+      url.searchParams.append("fileName", fileName);
+      url.searchParams.append("fileSize", fileSize.toString());
+      url.searchParams.append("chunkSize", chunkSize.toString());
+      url.searchParams.append("target", target);
+
+      const response = await fetch(url.toString(), {
+        method: "GET",
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (!response.ok && response.status !== 409) {
         const error = await response.json().catch(() => null);
-        throw new Error(error?.message || "Failed to fetch file stats");
+        throw new Error(error?.message || `Server returned ${response.status}`);
       }
-      const data = await response.json();
-
-      const responseContent = {
-        files: data.files,
-        freeInternal: data.freeInternal,  
-        totalInternal: data.totalInternal,
-        freeExternal: data.freeExternal,
-        totalExternal: data.totalExternal,
-        hasExternalStorage: data.hasExternalStorage,
-        percentage: data.percentage ?? -1,
-        charging: data.charging ?? false
-      }
-      return responseContent
-  },
-  async fetchName(fileId: string,signal?: AbortSignal): Promise<string>{
-   
-    const response = await fetch(`${API_BASE_URL}/server/name?fileId=${fileId}`,{signal});
-
-      if (!response.ok) {
-        const error = await response.json().catch(() => null);
-        throw new Error(error?.message || "Failed to fetch file stats");
-      }
-      const data = await response.json();
-      
-      // removing file extension
-      let name=data.fileName.replace(/\.[a-zA-Z0-9]+$/, "")
-      return name
-
+      return await response.json();
+    } catch (e) {
+      console.error("[ServerRequest] getUploadStatus failed:", e);
+      throw e;
+    }
   },
 
-  async fetchfileDetails(fileId: string,signal?: AbortSignal): Promise<{id:number, name:string,performers:Item[]}>{
+  async uploadChunk(chunk: Blob, chunkIndex: number, totalChunks: number, fileName: string, fileSize: number, chunkSize: number, target: StorageLocation, token: string, passXMLObj: (xhr: XMLHttpRequest) => void): Promise<any> {
+    return new Promise((resolve, reject) => {
+      const url = new URL(`${API_BASE_URL}/server/file/chunk`);
+      url.searchParams.append("chunkIndex", chunkIndex.toString());
+      url.searchParams.append("totalChunks", totalChunks.toString());
+      url.searchParams.append("fileName", fileName);
+      url.searchParams.append("fileSize", fileSize.toString());
+      url.searchParams.append("chunkSize", chunkSize.toString());
+      url.searchParams.append("target", target);
 
-    const response = await fetch(`${API_BASE_URL}/server/fileDetails/${fileId}`,{signal});
+      const xhr = new XMLHttpRequest();
+      passXMLObj(xhr);
+      xhr.responseType = 'json';
+      xhr.open('POST', url.toString(), true);
+      xhr.setRequestHeader('Authorization', `Bearer ${token}`);
+      xhr.setRequestHeader('Content-Type', 'application/octet-stream');
+
+      xhr.onerror = function () {
+        reject(new Error(`Failed to upload chunk ${chunkIndex}`));
+      };
+
+      xhr.onload = function () {
+        if (xhr.status === 200) {
+          resolve(xhr.response);
+        } else {
+          const response = xhr.response;
+          reject(new Error(response?.message || `Upload failed for chunk ${chunkIndex} with status ${xhr.status}`));
+        }
+      };
+
+      xhr.send(chunk);
+    });
+  },
+  async fetchStats(signal: AbortSignal): Promise<ServerStats> {
+    const response = await fetch(`${API_BASE_URL}/server/stats`, { signal });
+
+    if (!response.ok) {
+      const error = await response.json().catch(() => null);
+      throw new Error(error?.message || "Failed to fetch file stats");
+    }
+    const data = await response.json();
+
+    const responseContent = {
+      files: data.files,
+      freeInternal: data.freeInternal,
+      totalInternal: data.totalInternal,
+      freeExternal: data.freeExternal,
+      totalExternal: data.totalExternal,
+      hasExternalStorage: data.hasExternalStorage,
+      percentage: data.percentage ?? -1,
+      charging: data.charging ?? false
+    }
+    return responseContent
+  },
+  async fetchName(fileId: string, signal?: AbortSignal): Promise<string> {
+
+    const response = await fetch(`${API_BASE_URL}/server/name?fileId=${fileId}`, { signal });
+
+    if (!response.ok) {
+      const error = await response.json().catch(() => null);
+      throw new Error(error?.message || "Failed to fetch file stats");
+    }
+    const data = await response.json();
+
+    // removing file extension
+    let name = data.fileName.replace(/\.[a-zA-Z0-9]+$/, "")
+    return name
+
+  },
+
+  async fetchfileDetails(fileId: string, signal?: AbortSignal): Promise<{ id: number, name: string, performers: Item[] }> {
+
+    const response = await fetch(`${API_BASE_URL}/server/fileDetails/${fileId}`, { signal });
 
     if (!response.ok) {
       const error = await response.json().catch(() => null);
@@ -172,8 +257,8 @@ export const ServerRequest = {
     }
     const data = await response.json();
     // removing file extension
-    let name=data.name.replace(/\.[a-zA-Z0-9]+$/, "")
-    return {id:data.id, name:name	,performers:data.performers}
+    let name = data.name.replace(/\.[a-zA-Z0-9]+$/, "")
+    return { id: data.id, name: name, performers: data.performers }
 
   },
   async getActiveServersList(signal: AbortSignal): Promise<string[]> {
@@ -193,11 +278,11 @@ export const ServerRequest = {
         }
         resolve(result);
       } catch (error: any) {
-        if(error instanceof Error){
-          if(error.message==="Failed to fetch"){
+        if (error instanceof Error) {
+          if (error.message === "Failed to fetch") {
             reject(new Error("Server is unreachable."));
-            
-          }else{
+
+          } else {
             reject(error);
           }
         }
@@ -205,29 +290,30 @@ export const ServerRequest = {
     });
   },
 
-  async deleteVideo(fileId: string,token:string): Promise<void>{
-   
+  async deleteVideo(fileId: string, token: string): Promise<void> {
+
     const response = await fetch(`${API_BASE_URL}/server/file?fileId=${fileId}`,
       {
-        method:"DELETE",
-        headers: {'Authorization': `Bearer ${token}`},
+        method: "DELETE",
+        headers: { 'Authorization': `Bearer ${token}` },
         credentials: "include"
       });
 
-      if (!response.ok) {
-        const error = await response.json().catch(() => null);
-        throw new Error(error?.message || "Failed to delete the file");
-      }
+    if (!response.ok) {
+      const error = await response.json().catch(() => null);
+      throw new Error(error?.message || "Failed to delete the file");
+    }
   },
 
-  async updateFileName(fileId: string,newName:string,token:string):Promise<ApiResponse>{
+  async updateFileName(fileId: string, newName: string, token: string): Promise<ApiResponse> {
     const response = await fetch(`${API_BASE_URL}/server/file/${fileId}/rename`, {
       method: "PUT",
-      headers: { "Content-Type": "application/json",
-      'Authorization': `Bearer ${token}`
+      headers: {
+        "Content-Type": "application/json",
+        'Authorization': `Bearer ${token}`
       },
       credentials: "include",
-      body: JSON.stringify({newName}),
+      body: JSON.stringify({ newName }),
     });
     if (response.status === 401) {
       throw new Error("Unauthorized access");
@@ -239,5 +325,5 @@ export const ServerRequest = {
     return await response.json();
   }
 
- 
+
 };

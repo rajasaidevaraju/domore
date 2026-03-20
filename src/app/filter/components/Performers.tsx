@@ -1,76 +1,63 @@
 'use client';
 
-import React, { useEffect, useState } from "react";
-import { ItemWithCount,CardProps,EntityType, MessageType } from "../../types/Types";
-import {FilterRequests}  from "@/app/service/FilterRequests";
+import { useRef } from "react";
+import { CardProps, MessageType } from "../../types/Types";
 import Card from "./CommonCard";
 import { useAuthStore } from '@/app/store/auth';
+import { usePerformersStore } from '@/app/store/performersStore';
 
 
-const PerformersCard: React.FC<CardProps> = ({showToast }) => {
-  const [performers, setPerformers] = useState<ItemWithCount[]>([]);
-  const [loading, setLoading] = useState(false);
-  const {token} = useAuthStore();
-  
+const PerformersCard: React.FC<CardProps> = ({ showToast }) => {
+  const { token } = useAuthStore();
+  const {
+    performersWithCount,
+    isFetchingWithCount,
+    hasFetchedWithCount,
+    fetchPerformersWithCountIfNeeded,
+    addPerformers,
+    deletePerformers
+  } = usePerformersStore();
+
+  const wasFetchedOnMount = useRef(hasFetchedWithCount);
+
+  fetchPerformersWithCountIfNeeded();
+
   const handleAddPerformers = async (newPerformers: string[]) => {
-    try{
-      const data=await FilterRequests.addItems(EntityType.Performer,newPerformers,token!!);
-      showToast({ type: MessageType.SUCCESS, message:data.message})
-    }catch(err){
-      let message="Failed to add performers"
-      if(err instanceof Error){
-        message=err.message;
-      }
-      showToast({ type: MessageType.DANGER, message:message})
-    }
-    finally{
-      fetchPerformers();
-    }
-  };
-
-  const handleDeletePerformers = async(selectedIds: Set<number>) => {
-    try{
-      const data=await FilterRequests.deleteItems(EntityType.Performer,[...selectedIds],token!!);
-      showToast({ type: MessageType.SUCCESS, message:data.message})
-    }catch(err){
-      let message="Failed to delete performers"
-      if(err instanceof Error){
-        message=err.message;
-      }
-      showToast({ type: MessageType.DANGER, message:message})
-    }
-    finally{
-      fetchPerformers();
-    }
-  };
-
-  const fetchPerformers = async () => {
     try {
-      setLoading(true);
-      const data = await FilterRequests.fetchItemsWithCount(EntityType.Performer);
-      setPerformers(data);
+      const data = await addPerformers(newPerformers, token!!);
+      showToast({ type: MessageType.SUCCESS, message: data.message });
     } catch (err) {
-      let message="Failed to fetch performers"
-      if(err instanceof Error){
-        message=err.message;
+      let message = "Failed to add performers";
+      if (err instanceof Error) {
+        message = err.message;
       }
-      showToast({ type: MessageType.DANGER, message:message});
-    }finally{
-      setLoading(false);
+      showToast({ type: MessageType.DANGER, message: message });
+      throw err; // Re-throw to keep AddPanel in loading state or prevent it from closing
     }
   };
 
-  useEffect(() => {
-    fetchPerformers();
-  }, []);
+  const handleDeletePerformers = async (selectedIds: Set<number>) => {
+    try {
+      const data = await deletePerformers([...selectedIds], token!!);
+      showToast({ type: MessageType.SUCCESS, message: data.message });
+    } catch (err) {
+      let message = "Failed to delete performers";
+      if (err instanceof Error) {
+        message = err.message;
+      }
+      showToast({ type: MessageType.DANGER, message: message });
+    }
+  };
+
 
   return (
     <Card
-      items={performers}
+      items={performersWithCount}
       onAdd={handleAddPerformers}
       onDelete={handleDeletePerformers}
       label="Performers"
-      loading={loading}
+      loading={isFetchingWithCount}
+      shouldAnimate={!wasFetchedOnMount.current}
     />
   );
 };

@@ -1,18 +1,21 @@
-/* src/app/globals.css */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
 
 :root {
   --foreground-rgb: 0, 0, 0;
   --background-rgb: 255, 255, 255;
-  --main-color-faint: 240, 240, 240; 
-  --main-color: 222, 222, 222; 
+  --main-color-faint: 240, 240, 240;
+  --main-color: 222, 222, 222;
   --main-color-hover: 200, 200, 200;
   --main-color-active: 180, 180, 180;
-  --red:244, 67, 54;
+  --red: 244, 67, 54;
   --secondary-color: 100, 149, 237;
   --secondary-color-hover: 70, 130, 180;
   --secondary-color-active: 60, 120, 180;
@@ -22,7 +25,7 @@
   :root {
     --foreground-rgb: 210, 210, 210;
     --background-rgb: 20, 20, 20;
-    --main-color-faint: 50, 50, 50;  
+    --main-color-faint: 50, 50, 50;
     --main-color: 50, 50, 50;
     --main-color-hover: 78, 78, 78;
     --main-color-active: 88, 88, 88;
@@ -31,7 +34,7 @@
 
 body {
   color: rgb(var(--foreground-rgb));
-  background-color: rgb(var(--background-rgb)); 
+  background-color: rgb(var(--background-rgb));
   height: 100vh;
 }
 
@@ -41,18 +44,17 @@ table {
   color: rgb(var(--foreground-rgb));
 }
 
-th, td {
+th,
+td {
   padding: 10px 5px;
   text-align: center;
   border: 1px solid rgb(var(--foreground-rgb));
 }
 
-input{
-  background-color: rgb(var(--main-color-faint)); 
+input {
+  background-color: rgb(var(--main-color-faint));
 }
 
-.errorText{
-  color:rgb(var(--red))
+.errorText {
+  color: rgb(var(--red))
 }
-
-
