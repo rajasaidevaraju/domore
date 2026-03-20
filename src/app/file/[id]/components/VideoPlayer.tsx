@@ -386,7 +386,6 @@ export default function VideoPlayer({ videoSrc }: VideoPlayerProps) {
     >
       <video
         key={videoSrc}
-        crossOrigin="anonymous"
         ref={videoRef}
         className={styles.videoElement}
         src={videoSrc}

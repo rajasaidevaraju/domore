@@ -31,11 +31,10 @@ export async function generateMetadata({ params }: { params: pageParams }) {
 
 export default async function FilePage({ params }: { params: pageParams }) {
   const { id } = await params;
-  const API_BASE_URL = ServerUrlProvider();
 
   try {
     const result: FileDetailsType = await ServerRequest.fetchfileDetails(id);
-    const videoSrc = `${API_BASE_URL}/server/file?fileId=${id}`;
+    const videoSrc = `/server/file?fileId=${id}`;
     const downloadLink = videoSrc + "&download=true";
 
     return (
