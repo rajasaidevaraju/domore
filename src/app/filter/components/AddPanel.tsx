@@ -87,7 +87,7 @@ const AddPanel = <T extends { id: number; name: string }>({
       </div>
       <div className={styles.actions}>
         <button className={styles.commonButton} onClick={handleAddEntry} disabled={loading}>
-          + Add
+          Add
         </button>
         <button className={styles.commonButton} onClick={handleSave} disabled={loading}>
           {loading ? "Saving..." : "Save"}

@@ -426,6 +426,16 @@
     height: 20px;
 }
 
+[data-theme='dark'] .icon {
+    filter: invert(0.8);
+}
+
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme='light']) .icon {
+        filter: invert(0.8);
+    }
+}
+
 .name {
     font-size: 1.2rem;
     font-weight: bold;

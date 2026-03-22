@@ -8,6 +8,7 @@ import ChangePanel from './ChangePanel'
 import { usePathname, useRouter } from 'next/navigation';
 import { UserRequests } from '../service/UserRequests';
 import { useAuthStore } from '@/app/store/auth';
+import ThemeToggle from './ThemeToggle';
 interface ActionItemsProps {
     isMobile: Boolean
     closeMenu?: () => void
@@ -70,6 +71,7 @@ function ActionItems({ isMobile, closeMenu }: ActionItemsProps) {
     return (
         <>
             <div className={style}>
+                <ThemeToggle isMobile={isMobile as boolean} />
                 <PressableLink href="/filter" className={filterStyle} onClick={closeMenu}>
                     <img src="/svg/filter.svg" alt="Filter" className={styles.icon} />
                     <span className={styles.iconText}>Filter</span>

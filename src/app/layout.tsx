@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google'
 import './globals.css'
 import Banner from './banner/Banner'
 import AuthProvider from './auth-provider'
+import ThemeProvider from './theme-provider'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
@@ -36,10 +37,12 @@ export default function RootLayout({
         <link rel="preload" href="/svg/home.svg" as="image" type="image/svg+xml" />
       </head>
       <body className={inter.className}>
-        <AuthProvider>
-          <Banner/>
-          {children}
-        </AuthProvider>
+        <ThemeProvider>
+          <AuthProvider>
+            <Banner />
+            {children}
+          </AuthProvider>
+        </ThemeProvider>
       </body>
     </html>
   )

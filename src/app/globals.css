@@ -21,8 +21,26 @@
   --secondary-color-active: 60, 120, 180;
 }
 
+[data-theme='dark'] {
+  --foreground-rgb: 210, 210, 210;
+  --background-rgb: 20, 20, 20;
+  --main-color-faint: 50, 50, 50;
+  --main-color: 50, 50, 50;
+  --main-color-hover: 78, 78, 78;
+  --main-color-active: 88, 88, 88;
+}
+
+[data-theme='light'] {
+  --foreground-rgb: 0, 0, 0;
+  --background-rgb: 255, 255, 255;
+  --main-color-faint: 240, 240, 240;
+  --main-color: 222, 222, 222;
+  --main-color-hover: 200, 200, 200;
+  --main-color-active: 180, 180, 180;
+}
+
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme='light']) {
     --foreground-rgb: 210, 210, 210;
     --background-rgb: 20, 20, 20;
     --main-color-faint: 50, 50, 50;
@@ -57,4 +75,17 @@ input {
 
 .errorText {
   color: rgb(var(--red))
+}
+
+[data-theme='dark'] .icon,
+[data-theme='dark'] img[src$='.svg']:not([src*='noThumbnail']) {
+  filter: invert(0.8);
+}
+
+@media (prefers-color-scheme: dark) {
+
+  :root:not([data-theme='light']) .icon,
+  :root:not([data-theme='light']) img[src$='.svg']:not([src*='noThumbnail']) {
+    filter: invert(0.8);
+  }
 }
