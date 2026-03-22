@@ -42,7 +42,7 @@ const Banner = () => {
     return (
         <nav className={styles.banner}>
             <PressableLink href="/" className={styles.actionItem}>
-                <img src="/svg/home.svg" alt="Filter" className={styles.icon} />
+                <img src="/icon.svg" alt="Filter" className={styles.icon} />
                 <span className={styles.icon_text}>Home</span>
             </PressableLink>
 
