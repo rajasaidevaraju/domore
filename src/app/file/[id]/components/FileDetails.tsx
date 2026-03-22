@@ -93,6 +93,7 @@ export default function FileDetails({ initPerformers, fileId, initFileName, down
   const handleNameSave = async (newName: string) => {
 
     if (isDev) {
+      showToast("Cannot update name in dev mode", MessageType.DANGER);
       return;
     }
 
@@ -128,7 +129,7 @@ export default function FileDetails({ initPerformers, fileId, initFileName, down
     <>
       <div className={styles.buttonsDiv}>
         {isEditingName && isLoggedIn ? (
-          <EditNamePanel name={fileName} onClose={handleNameCancel} onSave={handleNameSave} />
+          <EditNamePanel name={fileName} onClose={handleNameCancel} onSave={handleNameSave} showToast={showToast} />
         ) : (
           <p className={styles.name}>{fileName}</p>
         )}

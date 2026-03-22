@@ -348,6 +348,31 @@
     padding: 5px;
 }
 
+.textarea {
+    width: 100%;
+    min-height: 2.5rem;
+    max-height: 12rem;
+    padding: 10px 12px;
+    border-radius: 10px;
+    border: 1px solid rgba(var(--foreground-rgb), 0.15);
+    background: rgba(var(--main-color-faint), 0.5);
+    color: rgb(var(--foreground-rgb));
+    font-size: 1.1rem;
+    font-weight: 500;
+    line-height: 1.5;
+    resize: none;
+    overflow-y: hidden;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.textarea:focus {
+    outline: none;
+    background: rgb(var(--background-rgb));
+    border-color: rgb(var(--secondary-color));
+    box-shadow: 0 0 0 3px rgba(var(--secondary-color), 0.15), inset 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
 .searchContainer {
     position: relative;
     margin-bottom: 20px;
@@ -420,10 +445,12 @@
 
 .namePanelDiv {
     display: flex;
-    gap: .5rem;
-    flex-wrap: wrap;
-    flex-direction: row;
-    align-items: center;
+    gap: 0.75rem;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+    max-width: 800px;
+    margin-bottom: 0.5rem;
 }
 
 .errorMessageContainer {
@@ -717,7 +744,7 @@
     cursor: pointer;
     display: flex;
     align-items: center;
-    justifyContent: center;
+    justify-content: center;
     z-index: 10;
     padding: 4px;
     transition: transform 0.2s ease;
