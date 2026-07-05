@@ -26,8 +26,12 @@ export default function VideoPlayer({ videoSrc }: VideoPlayerProps) {
   const [volume, setVolume] = useState(1);
   const [isMuted, setIsMuted] = useState(false);
   const [showSpeedMenu, setShowSpeedMenu] = useState(false);
+  const [isBuffering, setIsBuffering] = useState(false);
   const controlsTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const wasVisibleRef = useRef(true);
+
+  const isSeekingRef = useRef(isSeeking);
+  const speedRef = useRef(speed);
 
   const rateChange = "ratechange";
   const volumeChange = "volumechange";
@@ -275,6 +279,11 @@ export default function VideoPlayer({ videoSrc }: VideoPlayerProps) {
     }, 4000);
   };
 
+  const showControlsWithTimeoutRef = useRef(showControlsWithTimeout);
+  useEffect(() => { isSeekingRef.current = isSeeking; }, [isSeeking]);
+  useEffect(() => { speedRef.current = speed; }, [speed]);
+  useEffect(() => { showControlsWithTimeoutRef.current = showControlsWithTimeout; }, [showControlsWithTimeout]);
+
   useEffect(() => {
     const videoElement = videoRef.current;
     if (!videoElement) return;
@@ -293,7 +302,7 @@ export default function VideoPlayer({ videoSrc }: VideoPlayerProps) {
     };
 
     const handleTimeUpdate = () => {
-      if (!isSeeking) {
+      if (!isSeekingRef.current) {
         setCurrentTime(videoElement.currentTime);
       }
     };
@@ -307,11 +316,17 @@ export default function VideoPlayer({ videoSrc }: VideoPlayerProps) {
       setIsPlaying(!videoElement.paused);
     };
 
+    const handleWaiting = () => setIsBuffering(true);
+    const handleResumePlayback = () => setIsBuffering(false);
+
     applySettings();
     videoElement.addEventListener("loadedmetadata", handleLoadedMetadata);
     videoElement.addEventListener("timeupdate", handleTimeUpdate);
     videoElement.addEventListener("play", handlePlayPause);
     videoElement.addEventListener("pause", handlePlayPause);
+    videoElement.addEventListener("waiting", handleWaiting);
+    videoElement.addEventListener("playing", handleResumePlayback);
+    videoElement.addEventListener("canplay", handleResumePlayback);
     videoElement.addEventListener(rateChange, handleRateChange);
     videoElement.addEventListener(volumeChange, handleVolumeChange);
 
@@ -331,7 +346,7 @@ export default function VideoPlayer({ videoSrc }: VideoPlayerProps) {
       if (!isFull) {
         setShowControls(true);
       } else {
-        showControlsWithTimeout();
+        showControlsWithTimeoutRef.current();
       }
     };
 
@@ -352,9 +367,9 @@ export default function VideoPlayer({ videoSrc }: VideoPlayerProps) {
       } else if (e.key === "ArrowRight" || e.key === "l" || e.key === "L") {
         skipNext();
       } else if (e.key === ">" && e.shiftKey) {
-        changeSpeed(Math.min(speed + 0.1, 2));
+        changeSpeed(Math.min(speedRef.current + 0.1, 2));
       } else if (e.key === "<" && e.shiftKey) {
-        changeSpeed(Math.max(speed - 0.1, 0.5));
+        changeSpeed(Math.max(speedRef.current - 0.1, 0.5));
       } else if (e.key === " " || e.key === "k" || e.key === "K") {
         e.preventDefault();
         togglePlay();
@@ -369,12 +384,15 @@ export default function VideoPlayer({ videoSrc }: VideoPlayerProps) {
       videoElement.removeEventListener("timeupdate", handleTimeUpdate);
       videoElement.removeEventListener("play", handlePlayPause);
       videoElement.removeEventListener("pause", handlePlayPause);
+      videoElement.removeEventListener("waiting", handleWaiting);
+      videoElement.removeEventListener("playing", handleResumePlayback);
+      videoElement.removeEventListener("canplay", handleResumePlayback);
       videoElement.removeEventListener(rateChange, handleRateChange);
       videoElement.removeEventListener(volumeChange, handleVolumeChange);
       document.removeEventListener("fullscreenchange", handleFullscreenChange);
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [videoSrc, handleRateChange, handleVolumeChange, speed, isSeeking, isAdjustingVolume, isPlaying, showControlsWithTimeout, isFullscreen]);
+  }, [videoSrc, handleRateChange, handleVolumeChange]);
 
   const progress = duration > 0 ? (currentTime / duration) * 100 : 0;
 
@@ -384,29 +402,50 @@ export default function VideoPlayer({ videoSrc }: VideoPlayerProps) {
       ref={containerRef}
       onMouseMove={handleMouseMove}
     >
-      <video
-        key={videoSrc}
-        ref={videoRef}
-        className={styles.videoElement}
-        src={videoSrc}
-        onPointerDown={handlePointerDown}
-        onPointerUp={handleTap}
-        onDoubleClick={(e) => {
-          e.stopPropagation();
-          toggleFullscreen();
-        }}
-        playsInline
-      >
-        Your browser does not support the video tag.
-      </video>
-
-      {isFullscreen && (
-        <div
-          className={styles.tapOverlay}
+      <div className={styles.videoStage}>
+        <video
+          key={videoSrc}
+          ref={videoRef}
+          className={styles.videoElement}
+          src={videoSrc}
           onPointerDown={handlePointerDown}
           onPointerUp={handleTap}
-        />
-      )}
+          onDoubleClick={(e) => {
+            e.stopPropagation();
+            toggleFullscreen();
+          }}
+          playsInline
+        >
+          Your browser does not support the video tag.
+        </video>
+
+        {isFullscreen && (
+          <div
+            className={styles.tapOverlay}
+            onPointerDown={handlePointerDown}
+            onPointerUp={handleTap}
+          />
+        )}
+
+        {isBuffering && (
+          <div className={styles.bufferingSpinner} aria-label="Buffering">
+            <span className={styles.spinnerRing} />
+          </div>
+        )}
+
+        {!isPlaying && !isBuffering && (
+          <button
+            className={styles.centerPlayButton}
+            onClick={(e) => {
+              e.stopPropagation();
+              togglePlay();
+            }}
+            aria-label="Play video"
+          >
+            <img src="/svg/play.svg" alt="" />
+          </button>
+        )}
+      </div>
 
       <div
         className={`${styles.customControlBar} ${isFullscreen ? styles.fullscreenControlBar : ""} ${!showControls ? styles.hideControls : ""}`}
@@ -437,7 +476,7 @@ export default function VideoPlayer({ videoSrc }: VideoPlayerProps) {
         </div>
 
         <div className={styles.controlButtonsRow}>
-          <button className={styles.scbutton} onClick={togglePlay}>
+          <button className={`${styles.scbutton} ${styles.playPauseButton}`} onClick={togglePlay}>
             <img src={isPlaying ? "/svg/pause.svg" : "/svg/play.svg"} alt={isPlaying ? "Pause" : "Play"} className={styles.controlIcon} />
           </button>
           <button className={styles.scbutton} onClick={skipPrev} title="Skip Backward 10s">
