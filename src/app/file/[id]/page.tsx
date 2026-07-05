@@ -44,6 +44,7 @@ export default async function FilePage({ params }: { params: pageParams }) {
       </div>
     );
   } catch (error) {
+    console.error(`Failed to load file ${id}:`, error);
     notFound();
   }
 }

@@ -2,8 +2,7 @@
 
 import { useRef, useState, useEffect, useCallback } from "react";
 import styles from "../File.module.css";
-
-import { formatTime } from "@/app/service/format";
+import SeekBar from "./SeekBar";
 
 interface VideoPlayerProps {
   videoSrc: string;
@@ -13,15 +12,11 @@ interface VideoPlayerProps {
 export default function VideoPlayer({ videoSrc }: VideoPlayerProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-  const seekBarRef = useRef<HTMLInputElement>(null);
   const volumeSliderRef = useRef<HTMLInputElement>(null);
   const [speed, setSpeed] = useState(1);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [showControls, setShowControls] = useState(true);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [currentTime, setCurrentTime] = useState(0);
-  const [duration, setDuration] = useState(0);
-  const [isSeeking, setIsSeeking] = useState(false);
   const [isAdjustingVolume, setIsAdjustingVolume] = useState(false);
   const [volume, setVolume] = useState(1);
   const [isMuted, setIsMuted] = useState(false);
@@ -29,8 +24,8 @@ export default function VideoPlayer({ videoSrc }: VideoPlayerProps) {
   const [isBuffering, setIsBuffering] = useState(false);
   const controlsTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const wasVisibleRef = useRef(true);
+  const isVisibleRef = useRef(true);
 
-  const isSeekingRef = useRef(isSeeking);
   const speedRef = useRef(speed);
 
   const rateChange = "ratechange";
@@ -60,31 +55,26 @@ export default function VideoPlayer({ videoSrc }: VideoPlayerProps) {
     }
   }, []);
 
+  // Volume/mute/speed are only mutated on the element here; the native
+  // "volumechange"/"ratechange" listeners (handleVolumeChange/handleRateChange)
+  // are the single source of truth for React state + localStorage sync,
+  // since the browser fires those events for these exact mutations.
   const changeVolume = (value: number) => {
     if (videoRef.current) {
       videoRef.current.volume = value;
       videoRef.current.muted = value === 0;
-      setVolume(value);
-      setIsMuted(value === 0);
-      localStorage.setItem(videoVolume, value.toString());
-      localStorage.setItem(videoMuted, (value === 0).toString());
     }
   };
 
   const toggleMute = () => {
     if (videoRef.current) {
-      const newMuted = !videoRef.current.muted;
-      videoRef.current.muted = newMuted;
-      setIsMuted(newMuted);
-      localStorage.setItem(videoMuted, newMuted.toString());
+      videoRef.current.muted = !videoRef.current.muted;
     }
   };
 
   const changeSpeed = (value: number) => {
     if (videoRef.current) {
       videoRef.current.playbackRate = value;
-      setSpeed(value);
-      localStorage.setItem(videoPlaybackSpeed, value.toString());
     }
   };
 
@@ -113,19 +103,17 @@ export default function VideoPlayer({ videoSrc }: VideoPlayerProps) {
     }
   };
 
-  const handleSeekStart = () => {
-    setIsSeeking(true);
+  const isSeekingRef = useRef(false);
+
+  const handleSeekBarStart = () => {
+    isSeekingRef.current = true;
     if (controlsTimeoutRef.current) {
       clearTimeout(controlsTimeoutRef.current);
     }
   };
 
-  const handleSeekEnd = () => {
-    setIsSeeking(false);
-    // Explicitly blur the input to remove focus on mobile
-    if (seekBarRef.current) {
-      seekBarRef.current.blur();
-    }
+  const handleSeekBarEnd = () => {
+    isSeekingRef.current = false;
     if (isFullscreen) {
       if (controlsTimeoutRef.current) clearTimeout(controlsTimeoutRef.current);
       controlsTimeoutRef.current = setTimeout(() => {
@@ -133,14 +121,6 @@ export default function VideoPlayer({ videoSrc }: VideoPlayerProps) {
           setShowControls(false);
         }
       }, 4000);
-    }
-  };
-
-  const handleSeekChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newTime = parseFloat(e.target.value);
-    if (videoRef.current) {
-      videoRef.current.currentTime = newTime;
-      setCurrentTime(newTime);
     }
   };
 
@@ -273,16 +253,26 @@ export default function VideoPlayer({ videoSrc }: VideoPlayerProps) {
     if (controlsTimeoutRef.current) clearTimeout(controlsTimeoutRef.current);
 
     controlsTimeoutRef.current = setTimeout(() => {
-      if (document.fullscreenElement && !isSeeking && !isAdjustingVolume) {
+      if (document.fullscreenElement && !isSeekingRef.current && !isAdjustingVolume) {
         setShowControls(false);
       }
     }, 4000);
   };
 
   const showControlsWithTimeoutRef = useRef(showControlsWithTimeout);
-  useEffect(() => { isSeekingRef.current = isSeeking; }, [isSeeking]);
   useEffect(() => { speedRef.current = speed; }, [speed]);
   useEffect(() => { showControlsWithTimeoutRef.current = showControlsWithTimeout; }, [showControlsWithTimeout]);
+
+  useEffect(() => {
+    const node = containerRef.current;
+    if (!node) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => { isVisibleRef.current = entry.isIntersecting; },
+      { threshold: 0.3 }
+    );
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, []);
 
   useEffect(() => {
     const videoElement = videoRef.current;
@@ -294,21 +284,14 @@ export default function VideoPlayer({ videoSrc }: VideoPlayerProps) {
       const storedMuted = localStorage.getItem(videoMuted) === "true";
 
       videoElement.playbackRate = playbackRate >= 0.5 && playbackRate <= 2.0 ? playbackRate : 1;
-      videoElement.volume = Math.min(Math.max(storedVolume, 0.1), 1);
+      videoElement.volume = Number.isFinite(storedVolume) ? Math.min(Math.max(storedVolume, 0.1), 1) : 1;
       videoElement.muted = storedMuted;
       setSpeed(videoElement.playbackRate);
       setVolume(videoElement.volume);
       setIsMuted(videoElement.muted);
     };
 
-    const handleTimeUpdate = () => {
-      if (!isSeekingRef.current) {
-        setCurrentTime(videoElement.currentTime);
-      }
-    };
-
     const handleLoadedMetadata = () => {
-      setDuration(videoElement.duration);
       applySettings();
     };
 
@@ -321,7 +304,6 @@ export default function VideoPlayer({ videoSrc }: VideoPlayerProps) {
 
     applySettings();
     videoElement.addEventListener("loadedmetadata", handleLoadedMetadata);
-    videoElement.addEventListener("timeupdate", handleTimeUpdate);
     videoElement.addEventListener("play", handlePlayPause);
     videoElement.addEventListener("pause", handlePlayPause);
     videoElement.addEventListener("waiting", handleWaiting);
@@ -331,7 +313,6 @@ export default function VideoPlayer({ videoSrc }: VideoPlayerProps) {
     videoElement.addEventListener(volumeChange, handleVolumeChange);
 
     if (videoElement.readyState >= 1) {
-      setDuration(videoElement.duration);
       applySettings();
     }
 
@@ -360,6 +341,10 @@ export default function VideoPlayer({ videoSrc }: VideoPlayerProps) {
         return;
       }
 
+      if (!document.fullscreenElement && !isVisibleRef.current) {
+        return;
+      }
+
       if (e.key === "f" || e.key === "F") {
         toggleFullscreen();
       } else if (e.key === "ArrowLeft" || e.key === "j" || e.key === "J") {
@@ -381,7 +366,6 @@ export default function VideoPlayer({ videoSrc }: VideoPlayerProps) {
 
     return () => {
       videoElement.removeEventListener("loadedmetadata", handleLoadedMetadata);
-      videoElement.removeEventListener("timeupdate", handleTimeUpdate);
       videoElement.removeEventListener("play", handlePlayPause);
       videoElement.removeEventListener("pause", handlePlayPause);
       videoElement.removeEventListener("waiting", handleWaiting);
@@ -393,8 +377,6 @@ export default function VideoPlayer({ videoSrc }: VideoPlayerProps) {
       window.removeEventListener("keydown", handleKeyDown);
     };
   }, [videoSrc, handleRateChange, handleVolumeChange]);
-
-  const progress = duration > 0 ? (currentTime / duration) * 100 : 0;
 
   return (
     <div
@@ -450,30 +432,7 @@ export default function VideoPlayer({ videoSrc }: VideoPlayerProps) {
       <div
         className={`${styles.customControlBar} ${isFullscreen ? styles.fullscreenControlBar : ""} ${!showControls ? styles.hideControls : ""}`}
       >
-        <div className={styles.seekbarRow}>
-          <span className={styles.timeDisplay}>{formatTime(currentTime)}</span>
-          <div className={styles.seekbarContainer}>
-            <div
-              className={styles.seekbarProgress}
-              style={{ width: `${progress}%` }}
-            />
-            <input
-              ref={seekBarRef}
-              type="range"
-              min={0}
-              max={duration || 100}
-              step={0.1}
-              value={currentTime}
-              onChange={handleSeekChange}
-              onMouseDown={handleSeekStart}
-              onMouseUp={handleSeekEnd}
-              onTouchStart={handleSeekStart}
-              onTouchEnd={handleSeekEnd}
-              className={`${styles.seekbar} ${isSeeking ? styles.seeking : ""}`}
-            />
-          </div>
-          <span className={styles.timeDisplay}>{formatTime(duration)}</span>
-        </div>
+        <SeekBar videoRef={videoRef} onSeekStart={handleSeekBarStart} onSeekEnd={handleSeekBarEnd} />
 
         <div className={styles.controlButtonsRow}>
           <button className={`${styles.scbutton} ${styles.playPauseButton}`} onClick={togglePlay}>
