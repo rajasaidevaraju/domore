@@ -53,8 +53,42 @@
   display: none;
 }
 
+.gifPreview {
+  z-index: 1;
+  background: rgb(var(--main-color));
+}
+
+.gifLoadingBadge {
+  position: absolute;
+  top: 0.5rem;
+  left: 0.5rem;
+  z-index: 2;
+  background: rgba(0, 0, 0, 0.65);
+  color: #fff;
+  font-weight: 600;
+  font-size: 0.7rem;
+  letter-spacing: 0.05em;
+  padding: 0.1rem 0.3rem;
+  border-radius: 0.25rem;
+  pointer-events: none;
+  animation: gifBadgePulse 1s ease-in-out infinite;
+}
+
+@keyframes gifBadgePulse {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.4;
+  }
+}
+
 .sizeText,
 .durationText {
+  z-index: 2;
   position: absolute;
   bottom: 0.5rem;
   background: rgba(0, 0, 0, 0.65);

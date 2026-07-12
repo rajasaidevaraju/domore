@@ -11,6 +11,7 @@ import DeletePanel from "./DeletePanel";
 import EditNamePanel from "./EditNamePanel";
 import ToastMessage from "@/app/types/ToastMessages";
 import { ServerRequest } from "@/app/service/ServerRequest";
+import { isDevMode } from "@/app/service/env";
 
 interface FileDetailsProps {
   initPerformers: Item[];
@@ -20,7 +21,7 @@ interface FileDetailsProps {
 }
 
 export default function FileDetails({ initPerformers, fileId, initFileName, downloadLink }: FileDetailsProps) {
-  const isDev = process.env.NODE_ENV === "development";
+  const isDev = isDevMode();
   const { token, isLoggedIn } = useAuthStore();
   const [performers, setPerformers] = useState<Item[]>(initPerformers);
   const [fileName, setFileName] = useState(isDev ? "This should be file name" : initFileName);

@@ -68,6 +68,14 @@ export const ServerRequest = {
     return await response.blob();
   },
 
+  async fetchGifPreview(fileId: string, signal?: AbortSignal): Promise<Blob | null> {
+    const response = await fetch(`${API_BASE_URL}/server/file/${fileId}/gif`, { signal });
+    if (!response.ok) {
+      return null;
+    }
+    return await response.blob();
+  },
+
   async extractThumbnail(fileId: string | number, timestampMs: number, token: string): Promise<Blob> {
     const url = new URL(`${API_BASE_URL}/server/thumbnail/extract`);
     url.searchParams.append("fileId", fileId.toString());
