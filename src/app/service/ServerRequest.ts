@@ -1,6 +1,6 @@
 import { ServerUrlProvider } from './UrlProvider';
 import { FileDataList } from "../types/FileDataList";
-import { ServerStats, Item, ApiResponse, StorageLocation } from '@/app/types/Types'
+import { ServerStats, Item, ApiResponse, StorageLocation, thumbnailVersions } from '@/app/types/Types'
 
 const API_BASE_URL = ServerUrlProvider();
 
@@ -57,23 +57,20 @@ export const ServerRequest = {
     }
   },
 
-  async fetchThumbnail(fileId: string): Promise<Blob | null> {
-    const response = await fetch(`${API_BASE_URL}/server/thumbnail?fileId=${fileId}`);
-    if (!response.ok) {
-      if (response.status === 404) {
-        return null;
-      }
-      return null;
+  // Image bytes are fetched by <img> tags directly so the browser's HTTP
+  // cache and off-thread decoding handle them; these only build the URLs.
+  thumbnailUrl(fileId: number): string {
+    const url = new URL("/server/thumbnail", API_BASE_URL || window.location.origin);
+    url.searchParams.append("fileId", fileId.toString());
+    const version = thumbnailVersions.get(fileId);
+    if (version) {
+      url.searchParams.append("v", version.toString());
     }
-    return await response.blob();
+    return url.toString();
   },
 
-  async fetchGifPreview(fileId: string, signal?: AbortSignal): Promise<Blob | null> {
-    const response = await fetch(`${API_BASE_URL}/server/file/${fileId}/gif`, { signal });
-    if (!response.ok) {
-      return null;
-    }
-    return await response.blob();
+  gifPreviewUrl(fileId: number): string {
+    return new URL(`/server/file/${fileId}/gif`, API_BASE_URL || window.location.origin).toString();
   },
 
   async extractThumbnail(fileId: string | number, timestampMs: number, token: string): Promise<Blob> {

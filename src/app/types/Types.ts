@@ -84,4 +84,10 @@ export enum StorageLocation {
 
 export type HomeSearchParams = Promise<{ page: string | undefined, performerId: string | undefined, sortBy: string | undefined }>
 
-export const thumbnailCache = new Map<number, Blob>();
+// Image bytes are cached by the browser's HTTP cache; this only tracks
+// replacements so <img> URLs get a cache-busting query param after an update.
+export const thumbnailVersions = new Map<number, number>();
+
+export function bumpThumbnailVersion(fileId: number): void {
+  thumbnailVersions.set(fileId, (thumbnailVersions.get(fileId) ?? 0) + 1);
+}

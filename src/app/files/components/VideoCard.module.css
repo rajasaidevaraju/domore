@@ -9,6 +9,8 @@
   box-shadow: 0 2px 4px rgba(var(--foreground-rgb), .1);
   transition: background-color .3s ease;
   overflow: hidden;
+  -webkit-user-select: none;
+  user-select: none;
 }
 
 .videoCard:hover {
@@ -56,6 +58,7 @@
 .gifPreview {
   z-index: 1;
   background: rgb(var(--main-color));
+  transform: translateZ(0);
 }
 
 .gifLoadingBadge {
@@ -98,7 +101,6 @@
   padding: 0.1rem 0.3rem;
   border-radius: 0.25rem;
   border: 2px solid rgb(var(--main-color));
-  backdrop-filter: blur(4px);
   white-space: nowrap;
   pointer-events: none;
 }
