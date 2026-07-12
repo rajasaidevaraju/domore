@@ -7,9 +7,10 @@ interface PressableLinkProps {
     children: React.ReactNode;
     className?: string;
     onClick?:()=>void
+    prefetch?: boolean
 }
 
-const PressableLink = ({ href, children, onClick, className = ''}: PressableLinkProps) => {
+const PressableLink = ({ href, children, onClick, className = '', prefetch}: PressableLinkProps) => {
     const [isPressed, setIsPressed] = useState(false);
 
     const handlePress = () => setIsPressed(true);
@@ -19,6 +20,7 @@ const PressableLink = ({ href, children, onClick, className = ''}: PressableLink
         <Link
             onClick={()=>onClick?.()}
             href={href}
+            prefetch={prefetch}
             className={`${styles.pressable} ${isPressed ? styles.pressed : ''} ${className}`}
             onTouchStart={handlePress}
             onTouchEnd={handleRelease}

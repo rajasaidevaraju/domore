@@ -1,10 +1,8 @@
-import { Suspense } from "react";
 import { HomeSearchParams } from '../types/Types';
 import NavContextBridge  from "@/app/files/components/NavContextBridge";
 import styles from './Files.module.css';
 import { notFound } from 'next/navigation';
 import VideoList from './components/VideoList';
-import Loading from '../loading';
 
 
 export default async function AltHomePage({searchParams}: {searchParams:HomeSearchParams}) {
@@ -31,9 +29,7 @@ export default async function AltHomePage({searchParams}: {searchParams:HomeSear
     return (
       <main className={styles.mainContainer}>
         <NavContextBridge page={pageNo} performerId={performerId} sortBy={sortByStr}/>
-         <Suspense fallback={<Loading  />}>
-          <VideoList page={pageNo} performerId={performerId} sortBy={sortByStr} />
-        </Suspense>
+        <VideoList page={pageNo} performerId={performerId} sortBy={sortByStr} />
      </main>
     );
 

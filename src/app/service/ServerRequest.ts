@@ -20,7 +20,7 @@ export const ServerRequest = {
     if (sortBy) {
       url.searchParams.append("sortBy", sortBy);
     }
-    const response = await fetch(url, { method: "GET", redirect: "follow" });
+    const response = await fetch(url, { method: "GET", redirect: "follow", next: { revalidate: 5 } });
     if (!response.ok) {
       if (response.status === 404) {
         throw new Error(`No files found on page ${page}`);

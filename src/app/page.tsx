@@ -1,5 +1,3 @@
-export const dynamic = 'force-dynamic';
-
 import { HomeSearchParams } from '@/app/types/Types';
 import AltHomePage from '@/app/files/page';
 
