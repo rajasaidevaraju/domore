@@ -87,11 +87,13 @@
 .commonButton.editButton {
   background-color: #2196f3;
   color: white;
+  --icon-filter: var(--icon-filter-on-accent);
 }
 
 .commonButton.removeButton {
   background-color: rgba(var(--red));
   color: white;
+  --icon-filter: var(--icon-filter-on-accent);
 }
 
 

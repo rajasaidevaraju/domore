@@ -15,7 +15,7 @@ interface DeletePanelProps {
 
 export default function DeletePanel({ fileId, fileName, token, showToast, onClose }: DeletePanelProps) {
     const router = useRouter();
-    const { page, performerId, sortBy } = useNavStore();
+    const { page, performerId, sortBy, unassignedOnly } = useNavStore();
 
     const handleConfirmDelete = async () => {
         onClose();
@@ -28,6 +28,9 @@ export default function DeletePanel({ fileId, fileName, token, showToast, onClos
                 }
                 if (sortBy) {
                     redirectUrl += `&sortBy=${sortBy}`;
+                }
+                if (unassignedOnly) {
+                    redirectUrl += `&unassigned=true`;
                 }
                 router.push(redirectUrl);
             } catch (error: Error | any) {

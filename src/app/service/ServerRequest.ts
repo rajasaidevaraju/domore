@@ -6,7 +6,7 @@ const API_BASE_URL = ServerUrlProvider();
 
 export const ServerRequest = {
 
-  async fetchFiles(page?: number, performerId?: number, sortBy?: string): Promise<FileDataList> {
+  async fetchFiles(page?: number, performerId?: number, sortBy?: string, unassignedOnly?: boolean): Promise<FileDataList> {
 
     let baseURL = API_BASE_URL || window.location.origin
 
@@ -19,6 +19,9 @@ export const ServerRequest = {
     }
     if (sortBy) {
       url.searchParams.append("sortBy", sortBy);
+    }
+    if (unassignedOnly) {
+      url.searchParams.append("unassigned", "true");
     }
     const response = await fetch(url, { method: "GET", redirect: "follow", next: { revalidate: 5 } });
     if (!response.ok) {

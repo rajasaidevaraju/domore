@@ -115,11 +115,14 @@
 
 .commonButton img {
   vertical-align: middle;
+  width: 20px;
+  height: 20px;
 }
 
 .commonButton.removeButton {
   background-color: rgba(var(--red));
   color: white;
+  --icon-filter: var(--icon-filter-on-accent);
 }
 
 

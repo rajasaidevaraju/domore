@@ -28,15 +28,12 @@ export default function VideoCard({ file }: VideoCardProps) {
   const hoverTimerRef = useRef<number | null>(null);
   const holdTimerRef = useRef<number | null>(null);
   const previewingRef = useRef(false);
-  // releasing a hold-to-preview fires a click; that click must not navigate
   const suppressNextClickRef = useRef(false);
-  // set only for the hold gesture that starts a preview, so that gesture's
-  // long-press menu is blocked but a later long-press shows it
+
   const suppressContextMenuRef = useRef(false);
 
   const cleanedString = file.fileName.replace(/\.[a-zA-Z0-9]+$/, "");
 
-  // src is assigned client-side only, so SSR markup never bakes in a URL
   useEffect(() => {
     if (isDev) return;
     setThumbSrc(ServerRequest.thumbnailUrl(file.fileId));
@@ -48,14 +45,13 @@ export default function VideoCard({ file }: VideoCardProps) {
       hoverTimerRef.current = null;
     }
     previewingRef.current = false;
-    // unmounting the img cancels any in-flight download
+
     setGifSrc(null);
     setGifLoading(false);
     releaseGifPreview(file.fileId);
   }, [file.fileId]);
 
-  // delay filters out cursor sweeps across the grid; hold-to-preview passes 0
-  // because the hold itself already proved intent
+
   const startPreview = useCallback((delayMs: number = HOVER_INTENT_DELAY_MS) => {
     if (isDev || previewingRef.current) return;
     previewingRef.current = true;
@@ -79,9 +75,6 @@ export default function VideoCard({ file }: VideoCardProps) {
     }
   };
 
-  // a quick tap navigates like any click; only a hold starts the preview.
-  // While a preview is already playing, a second long-press is left to the
-  // browser so its native menu (open in new tab, etc.) can appear.
   const handleTouchStart = () => {
     if (previewingRef.current) return;
     suppressNextClickRef.current = false;

@@ -4,12 +4,14 @@ interface NavState {
   page: number;
   performerId: number | null;
   sortBy:string|undefined
-  setNavContext: (page: number, performerId: number | null,sortBy:string|undefined) => void;
+  unassignedOnly: boolean;
+  setNavContext: (page: number, performerId: number | null,sortBy:string|undefined,unassignedOnly:boolean) => void;
 }
 
 export const useNavStore = create<NavState>((set) => ({
   page: 1,
   performerId: null,
   sortBy:undefined,
-  setNavContext: (page, performerId,sortBy) => set({ page, performerId,sortBy }),
+  unassignedOnly: false,
+  setNavContext: (page, performerId,sortBy,unassignedOnly) => set({ page, performerId,sortBy,unassignedOnly }),
 }));

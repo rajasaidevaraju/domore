@@ -77,15 +77,38 @@ input {
   color: rgb(var(--red))
 }
 
-[data-theme='dark'] .icon,
-[data-theme='dark'] img[src$='.svg']:not([src*='noThumbnail']) {
-  filter: invert(0.8);
+/*
+ * Icon tinting lives here and nowhere else. The svg files are authored in
+ * whatever colour their source pack used, so brightness(0) flattens each one to
+ * black before the theme inverts it — otherwise a white-authored icon lands on a
+ * different tone than a black-authored one sitting next to it.
+ *
+ * Components override --icon-filter rather than `filter` on the image: the
+ * variable inherits from the button, so no specificity contest with the
+ * attribute selector below.
+ */
+:root {
+  --icon-filter: brightness(0);
+  /* icons on a filled accent button stay white in both themes */
+  --icon-filter-on-accent: brightness(0) invert(1);
+}
+
+[data-theme='dark'] {
+  --icon-filter: brightness(0) invert(0.82);
 }
 
 @media (prefers-color-scheme: dark) {
-
-  :root:not([data-theme='light']) .icon,
-  :root:not([data-theme='light']) img[src$='.svg']:not([src*='noThumbnail']) {
-    filter: invert(0.8);
+  :root:not([data-theme='light']) {
+    --icon-filter: brightness(0) invert(0.82);
   }
+}
+
+/* every icon in /svg/ is single-colour line art; noThumbnail is an illustration */
+img[src^='/svg/']:not([src*='noThumbnail']) {
+  filter: var(--icon-filter);
+}
+
+/* the logo is brand-coloured artwork that reads on either background: no tint */
+img[src='/icon.svg'] {
+  filter: none;
 }

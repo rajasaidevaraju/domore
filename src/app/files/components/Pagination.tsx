@@ -10,9 +10,10 @@ interface PaginationProps {
     meta: Meta,
     performerId: number | null
     sortBy: string | undefined
+    unassignedOnly?: boolean
 }
 
-export default function Pagination({ meta: { page, limit, total }, performerId, sortBy }: PaginationProps) {
+export default function Pagination({ meta: { page, limit, total }, performerId, sortBy, unassignedOnly }: PaginationProps) {
     const router = useRouter();
     const dropdownRef = useRef<HTMLDivElement>(null);
     const [isOpen, setIsOpen] = useState(false);
@@ -34,6 +35,9 @@ export default function Pagination({ meta: { page, limit, total }, performerId, 
             if (sortBy) {
                 base.searchParams.append("sortBy", sortBy)
             }
+            if (unassignedOnly) {
+                base.searchParams.append("unassigned", "true")
+            }
 
             let calculatedPrevUrl: URL;
             if (isFirstPage) {
@@ -53,7 +57,7 @@ export default function Pagination({ meta: { page, limit, total }, performerId, 
             }
             setNextUrl(calculatedNextUrl.toString());
         }
-    }, [page, performerId, sortBy, isFirstPage, isLastPage]);
+    }, [page, performerId, sortBy, unassignedOnly, isFirstPage, isLastPage]);
 
     const handlePageChange = (selectedPage: number) => {
         if (typeof window !== 'undefined') {
@@ -64,6 +68,9 @@ export default function Pagination({ meta: { page, limit, total }, performerId, 
             }
             if (sortBy) {
                 url.searchParams.append("sortBy", sortBy)
+            }
+            if (unassignedOnly) {
+                url.searchParams.append("unassigned", "true")
             }
             router.push(url.pathname + url.search);
             setIsOpen(false);

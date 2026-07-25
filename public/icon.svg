@@ -1,5 +1,17 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
-  <rect x="16" y="8" width="32" height="48" rx="4" ry="4" stroke="black" stroke-width="2" fill="white"/>
-  <circle cx="32" cy="50" r="2" fill="black"/>
-  <polygon points="26,24 42,32 26,40" fill="black"/>
+<svg width="100%" viewBox="0 0 220 220" role="img" xmlns="http://www.w3.org/2000/svg">
+<title>Phone icon with play badge, no notch</title>
+<desc>A rounded rectangle representing a phone, with a circular play button badge centered inside</desc>
+<defs>
+<!-- the app's secondary blue, shaded top-left to bottom-right for depth -->
+<linearGradient id="phoneBody" x1="60" y1="30" x2="160" y2="190" gradientUnits="userSpaceOnUse">
+<stop offset="0" stop-color="#6E9EF2"/>
+<stop offset="1" stop-color="#3F6FB8"/>
+</linearGradient>
+</defs>
+<!-- Colours are fixed rather than theme-tinted: the blue body carries enough
+     contrast against both the light and dark page backgrounds on its own, and
+     the white badge keeps the play mark legible down to favicon size. -->
+<rect x="60" y="30" width="100" height="160" rx="18" fill="url(#phoneBody)" stroke="#2F5C9E" stroke-width="2"/>
+<circle cx="110" cy="110" r="34" fill="#FFFFFF"/>
+<path d="M100 92 L128 110 L100 128 Z" fill="#2F5C9E"/>
 </svg>

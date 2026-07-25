@@ -52,7 +52,7 @@ export default function SortDropdown({ selected }: { selected: string }) {
   }, []);
 
   return (
-    <div className={styles.controlDiv}>
+    <div className={styles.sortControl}>
       <span className={styles.sortLabel}>Sort by:</span>
       <div className={styles.customDropdown} ref={dropdownRef}>
         <div

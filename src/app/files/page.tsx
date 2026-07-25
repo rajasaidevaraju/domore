@@ -3,6 +3,8 @@ import NavContextBridge  from "@/app/files/components/NavContextBridge";
 import styles from './Files.module.css';
 import { notFound } from 'next/navigation';
 import VideoList from './components/VideoList';
+import SortDropdown from './components/SortDropdown';
+import UnassignedFilterToggle from './components/UnassignedFilterToggle';
 
 
 export default async function AltHomePage({searchParams}: {searchParams:HomeSearchParams}) {
@@ -10,6 +12,7 @@ export default async function AltHomePage({searchParams}: {searchParams:HomeSear
   const pagenoStr= params.page;
   const performerIdStr = params.performerId;
   const sortByStr = params.sortBy;
+  const unassignedOnly = isTruthyParam(params.unassigned);
   let pageNo=1
   if(pagenoStr!=null &&!isNaN(Number(pagenoStr))){
     pageNo=getPageNumber(pagenoStr);
@@ -25,11 +28,20 @@ export default async function AltHomePage({searchParams}: {searchParams:HomeSear
       }
     }
 
-    
+    // the two filters are mutually exclusive: files without performers can never
+    // belong to the requested performer
+    if (unassignedOnly) {
+      performerId = null;
+    }
+
     return (
       <main className={styles.mainContainer}>
-        <NavContextBridge page={pageNo} performerId={performerId} sortBy={sortByStr}/>
-        <VideoList page={pageNo} performerId={performerId} sortBy={sortByStr} />
+        <NavContextBridge page={pageNo} performerId={performerId} sortBy={sortByStr} unassignedOnly={unassignedOnly}/>
+        <div className={styles.controlDiv}>
+          <UnassignedFilterToggle active={unassignedOnly} />
+          <SortDropdown selected={sortByStr ?? "latest"} />
+        </div>
+        <VideoList page={pageNo} performerId={performerId} sortBy={sortByStr} unassignedOnly={unassignedOnly} />
      </main>
     );
 
@@ -40,4 +52,11 @@ function getPageNumber(page: string | undefined): number {
     return Number(page);
   }
   return 1;
+}
+
+function isTruthyParam(value: string | undefined): boolean {
+  if (!value) {
+    return false;
+  }
+  return ["1", "true", "yes"].includes(value.toLowerCase());
 }
