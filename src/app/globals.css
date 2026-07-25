@@ -108,7 +108,6 @@ img[src^='/svg/']:not([src*='noThumbnail']) {
   filter: var(--icon-filter);
 }
 
-/* the logo is brand-coloured artwork that reads on either background: no tint */
 img[src='/icon.svg'] {
-  filter: none;
+  filter: var(--icon-filter);
 }

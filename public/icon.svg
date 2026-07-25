@@ -1,17 +1,16 @@
-<svg width="100%" viewBox="0 0 220 220" role="img" xmlns="http://www.w3.org/2000/svg">
+<!-- 24 unit grid to match the icons in /svg/; the intrinsic size is only what a
+     standalone viewer uses, since the app sizes icons in CSS and the favicon
+     scales from the viewBox -->
+<svg width="256" height="256" viewBox="0 0 24 24" fill="none" role="img" xmlns="http://www.w3.org/2000/svg">
 <title>Phone icon with play badge, no notch</title>
 <desc>A rounded rectangle representing a phone, with a circular play button badge centered inside</desc>
-<defs>
-<!-- the app's secondary blue, shaded top-left to bottom-right for depth -->
-<linearGradient id="phoneBody" x1="60" y1="30" x2="160" y2="190" gradientUnits="userSpaceOnUse">
-<stop offset="0" stop-color="#6E9EF2"/>
-<stop offset="1" stop-color="#3F6FB8"/>
-</linearGradient>
-</defs>
-<!-- Colours are fixed rather than theme-tinted: the blue body carries enough
-     contrast against both the light and dark page backgrounds on its own, and
-     the white badge keeps the play mark legible down to favicon size. -->
-<rect x="60" y="30" width="100" height="160" rx="18" fill="url(#phoneBody)" stroke="#2F5C9E" stroke-width="2"/>
-<circle cx="110" cy="110" r="34" fill="#FFFFFF"/>
-<path d="M100 92 L128 110 L100 128 Z" fill="#2F5C9E"/>
+<style>
+  :root { color: #1b1b1b; }
+  @media (prefers-color-scheme: dark) {
+    :root { color: #d2d2d2; }
+  }
+</style>
+<rect x="5.5" y="1.5" width="13" height="21" rx="3" stroke="currentColor" stroke-width="0.8" stroke-linejoin="round"/>
+<circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="0.4"/>
+<path d="M10.6 9.6 L14.4 12 L10.6 14.4 Z" fill="currentColor"/>
 </svg>
