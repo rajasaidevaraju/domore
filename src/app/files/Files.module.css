@@ -47,32 +47,6 @@
   opacity: 0.8;
 }
 
-.filterToggle {
-  flex-shrink: 0;
-  padding: 8px 12px;
-  font-size: 0.85rem;
-  font-weight: 500;
-  border-radius: 8px;
-  background-color: rgb(var(--main-color));
-  color: rgb(var(--foreground-rgb));
-  border: 1px solid rgba(var(--foreground-rgb), 0.1);
-  cursor: pointer;
-  transition: all 0.2s ease;
-  user-select: none;
-}
-
-@media (pointer: fine) {
-  .filterToggle:hover {
-    background-color: rgb(var(--main-color-hover));
-  }
-}
-
-.filterToggleActive {
-  border-color: rgb(var(--secondary-color));
-  background-color: rgb(var(--main-color-hover));
-  font-weight: 600;
-}
-
 .customDropdown {
   position: relative;
   min-width: 100px;
@@ -132,6 +106,29 @@
   animation: slideIn 0.2s ease;
 }
 
+/* performer names are user-supplied and can be long; keep the control row stable */
+.triggerLabel {
+  max-width: 160px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* the performer list is unbounded, unlike the fixed sort options */
+.dropdownMenuScroll {
+  max-height: 260px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.dropdownEmpty {
+  padding: 8px 12px;
+  font-size: 0.85rem;
+  color: rgb(var(--foreground-rgb));
+  opacity: 0.6;
+  white-space: nowrap;
+}
+
 .dropdownGroupLabel {
   padding: 8px 12px 4px;
   font-size: 0.7rem;
@@ -173,6 +170,13 @@
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+/* the two labels cost more width than they earn once the row gets tight */
+@media (max-width: 768px) {
+  .sortLabel {
+    display: none;
   }
 }
 

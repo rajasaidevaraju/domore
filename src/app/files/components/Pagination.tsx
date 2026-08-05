@@ -1,20 +1,20 @@
 'use client'
 
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
 import styles from './Pagination.module.css';
 import { Meta } from '../../types/FileDataList';
 import { useState, useEffect, useRef } from 'react';
+import { FileFilters, filesUrl } from '../filterParams';
 
 interface PaginationProps {
-    meta: Meta,
-    performerId: number | null
-    sortBy: string | undefined
-    unassignedOnly?: boolean
+    meta: Meta
+    filters: FileFilters
 }
 
-export default function Pagination({ meta: { page, limit, total }, performerId, sortBy, unassignedOnly }: PaginationProps) {
+export default function Pagination({ meta: { page, limit, total }, filters }: PaginationProps) {
     const router = useRouter();
+    const pathname = usePathname();
     const dropdownRef = useRef<HTMLDivElement>(null);
     const [isOpen, setIsOpen] = useState(false);
 
@@ -23,58 +23,13 @@ export default function Pagination({ meta: { page, limit, total }, performerId, 
     const isLastPage = page === totalPages;
     const pageOptions = Array.from({ length: totalPages }, (_, i) => i + 1);
 
-    const [prevUrl, setPrevUrl] = useState<string>("/");
-    const [nextUrl, setNextUrl] = useState<string>("/");
-
-    useEffect(() => {
-        if (typeof window !== 'undefined') {
-            let base = new URL("/files", window.location.origin);
-            if (performerId != null) {
-                base.searchParams.append("performerId", performerId.toString())
-            }
-            if (sortBy) {
-                base.searchParams.append("sortBy", sortBy)
-            }
-            if (unassignedOnly) {
-                base.searchParams.append("unassigned", "true")
-            }
-
-            let calculatedPrevUrl: URL;
-            if (isFirstPage) {
-                calculatedPrevUrl = new URL("#", window.location.origin);
-            } else {
-                calculatedPrevUrl = new URL(base);
-                calculatedPrevUrl.searchParams.append("page", (page - 1).toString());
-            }
-            setPrevUrl(calculatedPrevUrl.toString());
-
-            let calculatedNextUrl: URL;
-            if (isLastPage) {
-                calculatedNextUrl = new URL("#", window.location.origin);
-            } else {
-                calculatedNextUrl = new URL(base);
-                calculatedNextUrl.searchParams.append("page", (page + 1).toString());
-            }
-            setNextUrl(calculatedNextUrl.toString());
-        }
-    }, [page, performerId, sortBy, unassignedOnly, isFirstPage, isLastPage]);
+    const pageUrl = (target: number) => filesUrl(pathname, { ...filters, page: target });
+    const prevUrl = isFirstPage ? "#" : pageUrl(page - 1);
+    const nextUrl = isLastPage ? "#" : pageUrl(page + 1);
 
     const handlePageChange = (selectedPage: number) => {
-        if (typeof window !== 'undefined') {
-            let url = new URL("/files", window.location.origin);
-            url.searchParams.append("page", selectedPage.toString());
-            if (performerId) {
-                url.searchParams.append("performerId", performerId.toString())
-            }
-            if (sortBy) {
-                url.searchParams.append("sortBy", sortBy)
-            }
-            if (unassignedOnly) {
-                url.searchParams.append("unassigned", "true")
-            }
-            router.push(url.pathname + url.search);
-            setIsOpen(false);
-        }
+        router.push(pageUrl(selectedPage));
+        setIsOpen(false);
     };
 
     useEffect(() => {

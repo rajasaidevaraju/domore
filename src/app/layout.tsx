@@ -25,14 +25,21 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var raw=localStorage.getItem('theme-storage');var theme=raw?JSON.parse(raw).state.theme:'system';if(theme!=='light'&&theme!=='dark'){theme=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';}document.documentElement.setAttribute('data-theme',theme);}catch(e){}})();`,
+          }}
+        />
         <link rel="icon" href="/icon.svg" type="image/svg+xml" />
-        <link rel="preload" href="/svg/filter.svg" as="image" type="image/svg+xml" />
+        <link rel="preload" href="/svg/tags.svg" as="image" type="image/svg+xml" />
         <link rel="preload" href="/svg/management.svg" as="image" type="image/svg+xml" />
         <link rel="preload" href="/svg/login.svg" as="image" type="image/svg+xml" />
         <link rel="preload" href="/svg/logout.svg" as="image" type="image/svg+xml" />
-        <link rel="preload" href="/svg/switch.svg" as="image" type="image/svg+xml" />
+        {/* chevrons and pagination arrows — the only icons the file list draws */}
+        <link rel="preload" href="/svg/left.svg" as="image" type="image/svg+xml" />
+        <link rel="preload" href="/svg/right.svg" as="image" type="image/svg+xml" />
         <link rel="preload" href="/svg/menu.svg" as="image" type="image/svg+xml" />
         <link rel="preload" href="/svg/home.svg" as="image" type="image/svg+xml" />
       </head>

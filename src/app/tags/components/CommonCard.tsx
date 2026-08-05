@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from "react";
-import styles from "./filter.module.css";
+import styles from "./tags.module.css";
 import AddPanel from "./AddPanel";
 import { ItemWithCount } from "@/app/types/Types";
 import Loading from "@/app/loading";

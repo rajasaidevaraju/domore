@@ -1,17 +1,12 @@
 import { create } from "zustand";
+import { FileFilters, DEFAULT_FILTERS } from "@/app/files/filterParams";
 
 interface NavState {
-  page: number;
-  performerId: number | null;
-  sortBy:string|undefined
-  unassignedOnly: boolean;
-  setNavContext: (page: number, performerId: number | null,sortBy:string|undefined,unassignedOnly:boolean) => void;
+  filters: FileFilters;
+  setFilters: (filters: FileFilters) => void;
 }
 
 export const useNavStore = create<NavState>((set) => ({
-  page: 1,
-  performerId: null,
-  sortBy:undefined,
-  unassignedOnly: false,
-  setNavContext: (page, performerId,sortBy,unassignedOnly) => set({ page, performerId,sortBy,unassignedOnly }),
+  filters: DEFAULT_FILTERS,
+  setFilters: (filters) => set({ filters }),
 }));

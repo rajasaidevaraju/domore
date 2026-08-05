@@ -171,6 +171,81 @@
   background-color: rgb(var(--main-color-faint));
 }
 
+/*
+ * Theme is a three-way choice, so every state stays visible and any of them is
+ * one click away — a cycling button hid both the options and the click cost.
+ */
+.themeSegmented {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 2px;
+  border-radius: 7px;
+  background-color: rgb(var(--main-color-faint));
+  border: 1px solid rgb(var(--main-color));
+}
+
+.themeSegment {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 6px 8px;
+  border: none;
+  border-radius: 5px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+@media (pointer: fine) {
+  .themeSegment:hover {
+    background-color: rgb(var(--main-color-hover));
+  }
+}
+
+.themeSegment:active {
+  background-color: rgb(var(--main-color-active));
+}
+
+.themeSegmentActive {
+  background-color: rgb(var(--background-rgb));
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.18);
+}
+
+.themeSegmentActive:active {
+  background-color: rgb(var(--background-rgb));
+}
+
+/* the icons are inline svg with stroke="currentColor", so colour is just color */
+.themeSegmentIcon {
+  display: block;
+  height: 18px;
+  width: 18px;
+  color: rgb(var(--foreground-rgb));
+  transition: color 0.2s ease;
+}
+
+.themeSegmentActive .themeSegmentIcon {
+  color: rgb(var(--secondary-color));
+}
+
+/*
+ * In the menu the control has to read as one more row, not a block, so it
+ * shrinks to its icons and lines up with the icons of the links below it.
+ */
+.themeSegmentedMobile {
+  width: fit-content;
+  margin: 0 10px;
+  box-sizing: border-box;
+}
+
+.themeSegmentedMobile .themeSegment {
+  padding: 7px 12px;
+}
+
 .iconText {
   text-decoration: none;
   color: inherit;

@@ -6,7 +6,7 @@ import styles from "../File.module.css";
 import { useAuthStore } from "@/app/store/auth";
 import { MessageType, Item, bumpThumbnailVersion } from "@/app/types/Types";
 import RippleButton from "@/app/types/RippleButton";
-import PressableLink from "@/app/types/PressableLink";
+import Link from "next/link";
 import PerformerPanel from "./PerformerPanel";
 import DeletePanel from "./DeletePanel";
 import EditNamePanel from "./EditNamePanel";
@@ -140,19 +140,22 @@ export default function FileDetails({ initPerformers, fileId, initFileName, down
       </div>
 
       <RippleButton className={styles.scbutton} onClick={handleDownload}>
-        Download Video
+        <img src="/svg/download.svg" alt="" />
+        <p>&nbsp;Download Video</p>
       </RippleButton>
 
       <div className={styles.buttonsDiv}>
         <p>Performers: </p>
         {performers === undefined || performers.length < 1 ? (
-          <p>No Performers</p>
+          <p className={styles.noPerformers}>No Performers</p>
         ) : (
-          performers.map((performer) => (
-            <PressableLink href={`/files?performerId=${performer.id}`} className={styles.scbutton} key={performer.id}>
-              <p>{performer.name}</p>
-            </PressableLink>
-          ))
+          <div className={styles.performerChips}>
+            {performers.map((performer) => (
+              <Link href={`/files?performerId=${performer.id}`} className={styles.performerChip} key={performer.id}>
+                {performer.name}
+              </Link>
+            ))}
+          </div>
         )}
       </div>
 

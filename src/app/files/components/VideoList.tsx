@@ -2,15 +2,11 @@ import { ServerRequest } from "@/app/service/ServerRequest";
 import VideoCard from "./VideoCard";
 import Pagination from "./Pagination";
 import styles from "@/app/files/Files.module.css";
+import { FileFilters } from "../filterParams";
 
-interface VideoListProps {
-    page: number;
-    performerId: number | null;
-    sortBy?: string;
-    unassignedOnly?: boolean;
-}
+export default async function VideoList({ filters }: { filters: FileFilters }) {
 
-export default async function VideoList({ page, performerId, sortBy, unassignedOnly }: VideoListProps) {
+    const { page, performerId, sortBy, unassignedOnly } = filters;
 
     try {
 
@@ -26,7 +22,7 @@ export default async function VideoList({ page, performerId, sortBy, unassignedO
                     ))}
                 </div>
 
-                {meta.total > 1 && <Pagination meta={meta} performerId={performerId} sortBy={sortBy} unassignedOnly={unassignedOnly} />}
+                {meta.total > 1 && <Pagination meta={meta} filters={filters} />}
             </>
         );
     } catch (error) {

@@ -6,7 +6,7 @@ import CategoriesCard from "./components/Categories";
 import { ToastData,ToastMessageDetails } from "@/app/types/Types";
 import ToastMessage from "@/app/types/ToastMessages";
 
-const Filter=()=>{
+const Tags=()=>{
 
     const [toasts, setToasts] = useState<ToastData[]>([]);
 
@@ -29,4 +29,4 @@ const Filter=()=>{
     )
 }
 
-export default Filter;
+export default Tags;

@@ -21,7 +21,7 @@ function ActionItems({ isMobile, closeMenu }: ActionItemsProps) {
     const pathname = usePathname();
 
     const isManagementActive = pathname === '/management';
-    const isFilterActive = pathname === '/filter';
+    const isTagsActive = pathname === '/tags';
     const isLoginActive = pathname === '/login';
 
 
@@ -63,7 +63,7 @@ function ActionItems({ isMobile, closeMenu }: ActionItemsProps) {
     let style = `${styles['actionItems']} ${isMobile ? styles['actionItemsMenu'] : ""}`
     let buttonStyle = `${styles['actionItem']} ${isMobile ? styles['actionItemMobile'] : ""}`
 
-    let filterStyle = `${buttonStyle} ${!isMobile && isFilterActive ? styles['active'] : ""}`
+    let tagsStyle = `${buttonStyle} ${!isMobile && isTagsActive ? styles['active'] : ""}`
     let managementStyle = `${buttonStyle} ${!isMobile && isManagementActive ? styles['active'] : ""}`
     let loginStyle = `${buttonStyle} ${!isMobile && isLoginActive ? styles['active'] : ""} ${isLoggedIn && styles['hidden']}`
     let logoutStyle = `${buttonStyle} ${!isLoggedIn && styles['hidden']}`
@@ -72,9 +72,9 @@ function ActionItems({ isMobile, closeMenu }: ActionItemsProps) {
         <>
             <div className={style}>
                 <ThemeToggle isMobile={isMobile as boolean} />
-                <PressableLink href="/filter" className={filterStyle} onClick={closeMenu}>
-                    <img src="/svg/filter.svg" alt="Filter" className={styles.icon} />
-                    <span className={styles.iconText}>Filter</span>
+                <PressableLink href="/tags" className={tagsStyle} onClick={closeMenu}>
+                    <img src="/svg/tags.svg" alt="Tags" className={styles.icon} />
+                    <span className={styles.iconText}>Tags</span>
                 </PressableLink>
                 <PressableLink href="/management" className={managementStyle} onClick={closeMenu}>
                     <img src="/svg/management.svg" alt="Management" className={styles.icon} />

@@ -2,20 +2,14 @@
 
 import { useEffect } from "react";
 import { useNavStore } from "@/app/store/navigation";
+import { FileFilters } from "@/app/files/filterParams";
 
-interface Props {
-  page: number;
-  performerId: number | null;
-  sortBy:string|undefined
-  unassignedOnly: boolean;
-}
-
-export default function NavContextBridge({ page, performerId, sortBy, unassignedOnly }: Props) {
-  const setNavContext = useNavStore((state) => state.setNavContext);
+export default function NavContextBridge({ filters }: { filters: FileFilters }) {
+  const setFilters = useNavStore((state) => state.setFilters);
 
   useEffect(() => {
-    setNavContext(page, performerId, sortBy, unassignedOnly);
-  }, [page, performerId, sortBy, unassignedOnly, setNavContext]);
+    setFilters(filters);
+  }, [filters, setFilters]);
 
   return null;
 }

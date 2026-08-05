@@ -538,6 +538,42 @@
     align-items: center;
 }
 
+
+.performerChips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: center;
+}
+
+.performerChip {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 10px;
+    border-radius: 9px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    text-decoration: none;
+    color: rgb(var(--secondary-color));
+    border: 1px solid rgba(var(--secondary-color), 0.28);
+    transition: background-color 0.2s ease;
+}
+
+@media (pointer: fine) {
+    .performerChip:hover {
+        background-color: rgba(var(--secondary-color), 0.22);
+    }
+}
+
+.performerChip:active {
+    background-color: rgba(var(--secondary-color), 0.3);
+}
+
+.noPerformers {
+    font-size: 0.85rem;
+    opacity: 0.6;
+}
+
 .namePanelDiv {
     display: flex;
     gap: 0.75rem;

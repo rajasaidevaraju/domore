@@ -1,8 +1,9 @@
 "use client";
 
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { useState, useRef, useEffect } from "react";
 import styles from "../Files.module.css";
+import { FileFilters, filesUrl } from "../filterParams";
 
 const SORT_OPTIONS = [
   {
@@ -25,19 +26,18 @@ const SORT_OPTIONS = [
   }
 ];
 
-export default function SortDropdown({ selected }: { selected: string }) {
+export default function SortDropdown({ filters }: { filters: FileFilters }) {
   const router = useRouter();
-  const searchParams = useSearchParams();
+  const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
+  const selected = filters.sortBy ?? "latest";
   const selectedOption = SORT_OPTIONS.flatMap(g => g.options).find(o => o.value === selected) || { label: "Latest", value: "latest" };
 
   function onSortChange(newSort: string) {
-    const params = new URLSearchParams(searchParams.toString());
-    params.set("sortBy", newSort);
-    params.delete("page");
-    router.push(`?${params.toString()}`);
+    // a new ordering invalidates the current page offset
+    router.push(filesUrl(pathname, { ...filters, sortBy: newSort, page: 1 }));
     setIsOpen(false);
   }
 

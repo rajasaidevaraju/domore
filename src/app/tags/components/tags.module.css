@@ -85,7 +85,7 @@
 
 
 .commonButton.editButton {
-  background-color: #2196f3;
+  background-color: rgb(var(--secondary-color));
   color: white;
   --icon-filter: var(--icon-filter-on-accent);
 }

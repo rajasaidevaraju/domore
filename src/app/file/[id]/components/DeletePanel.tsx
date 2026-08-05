@@ -4,6 +4,7 @@ import { ServerRequest } from "@/app/service/ServerRequest";
 import { MessageType } from "@/app/types/Types";
 import { useRouter } from "next/navigation";
 import { useNavStore } from "@/app/store/navigation";
+import { filesUrl } from "@/app/files/filterParams";
 
 interface DeletePanelProps {
     fileId: string;
@@ -15,24 +16,14 @@ interface DeletePanelProps {
 
 export default function DeletePanel({ fileId, fileName, token, showToast, onClose }: DeletePanelProps) {
     const router = useRouter();
-    const { page, performerId, sortBy, unassignedOnly } = useNavStore();
+    const filters = useNavStore((state) => state.filters);
 
     const handleConfirmDelete = async () => {
         onClose();
         if (token != null) {
             try {
                 await ServerRequest.deleteVideo(fileId, token);
-                let redirectUrl = `/?page=${page}`;
-                if (performerId) {
-                    redirectUrl += `&performerId=${performerId}`;
-                }
-                if (sortBy) {
-                    redirectUrl += `&sortBy=${sortBy}`;
-                }
-                if (unassignedOnly) {
-                    redirectUrl += `&unassigned=true`;
-                }
-                router.push(redirectUrl);
+                router.push(filesUrl("/", filters));
                 router.refresh();
             } catch (error: Error | any) {
                 if (error instanceof Error) {
