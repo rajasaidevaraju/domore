@@ -2,7 +2,7 @@
 import { notFound } from 'next/navigation';
 import VideoPlayer from "./components/VideoPlayer";
 import FileDetails from "./components/FileDetails";
-import { ServerRequest } from "../../service/ServerRequest";
+import { ServerRequest } from "@/app/service/ServerRequest";
 import { ServerUrlProvider } from "@/app/service/UrlProvider";
 import { FileDetails as FileDetailsType } from "@/app/types/Types";
 import styles from "./File.module.css";

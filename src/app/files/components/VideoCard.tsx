@@ -86,9 +86,20 @@ export default function VideoCard({ file }: VideoCardProps) {
     }, HOLD_TO_PREVIEW_MS);
   };
 
-  const handleTouchSettled = () => {
+  // a moving finger is a scroll, not a hold — drop the pending timer but leave a
+  // running preview alone, since holds jitter by a pixel or two
+  const handleTouchMove = () => {
+    cancelHoldTimer();
+  };
+
+  // touch has no mouseleave, so lifting off is the only signal that the hold is
+  // over; without this a started preview would play until the card unmounts
+  const handleTouchEnd = () => {
     cancelHoldTimer();
     suppressContextMenuRef.current = false;
+    if (previewingRef.current) {
+      stopPreview();
+    }
   };
 
   const handleClick = (event: React.MouseEvent) => {
@@ -105,16 +116,16 @@ export default function VideoCard({ file }: VideoCardProps) {
       onMouseEnter={() => startPreview()}
       onMouseLeave={stopPreview}
       onTouchStart={handleTouchStart}
-      onTouchEnd={handleTouchSettled}
-      onTouchMove={handleTouchSettled}
-      onTouchCancel={handleTouchSettled}
+      onTouchEnd={handleTouchEnd}
+      onTouchMove={handleTouchMove}
+      onTouchCancel={handleTouchEnd}
       onContextMenu={(event) => {
         if (suppressContextMenuRef.current) event.preventDefault();
       }}
       // iOS ignores contextmenu; toggle its link callout the same way
       style={{ WebkitTouchCallout: gifSrc ? 'default' : 'none' }}
     >
-      <Link href={`/file/${file.fileId}`} onClick={handleClick}>
+      <Link href={`/files/${file.fileId}`} onClick={handleClick}>
         <div className={styles.thumbnailBox}>
           {thumbSrc ? (
             <img

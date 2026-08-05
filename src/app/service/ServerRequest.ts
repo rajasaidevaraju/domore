@@ -37,29 +37,6 @@ export const ServerRequest = {
 
 
 
-  async uploadThumbnail(fileId: string | number, image: Blob, token: string): Promise<void> {
-    const formData = new FormData();
-    formData.append("fileId", fileId.toString());
-    formData.append("image", image);
-
-    const response = await fetch(`${API_BASE_URL}/server/thumbnail`, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${token}`
-      },
-      credentials: "include",
-      body: formData,
-    });
-    if (!response.ok) {
-      let defaultErrorMessage = "Thumbnail upload failed";
-      if (response.status === 401) {
-        defaultErrorMessage = "Unauthorized"
-      }
-      const error = await response.json().catch(() => null);
-      throw new Error(error?.message || defaultErrorMessage);
-    }
-  },
-
   // Image bytes are fetched by <img> tags directly so the browser's HTTP
   // cache and off-thread decoding handle them; these only build the URLs.
   thumbnailUrl(fileId: number): string {
@@ -99,65 +76,6 @@ export const ServerRequest = {
     }
     
     return await response.blob();
-  },
-  async uploadFile(file: File | undefined, token: string, target: StorageLocation, onProgress: (progress: number, speed: number) => void, passXMLObj: (xhr: XMLHttpRequest) => void): Promise<string> {
-    return new Promise((resolve, reject) => {
-      if (!file) {
-        reject(new Error('No file provided'));
-        return;
-      }
-
-      const formData = new FormData();
-      formData.append('file', file);
-      formData.append('fileName', file.name);
-
-      const xhr = new XMLHttpRequest();
-      passXMLObj(xhr)
-      xhr.responseType = 'json'
-      xhr.open('POST', `${API_BASE_URL}/server/file?uploadTarget=${target}`, true);
-      xhr.setRequestHeader('Authorization', `Bearer ${token}`);
-
-      let lastTime = Date.now();
-      let lastLoaded = 0;
-      let lastUpdate = 0;
-      const UPDATE_INTERVAL = 1000;
-
-      xhr.upload.addEventListener("progress", function (event: ProgressEvent<EventTarget>) {
-        if (event.lengthComputable) {
-          const percentComplete = (event.loaded / event.total) * 100;
-          // Calculate speed
-          const currentTime = Date.now();
-          const timeElapsed = (currentTime - lastTime) / 1000;
-          const bytesTransferred = event.loaded - lastLoaded;
-          const speed = (bytesTransferred / timeElapsed)
-
-          if (currentTime - lastUpdate >= UPDATE_INTERVAL || percentComplete === 100) {
-            onProgress(percentComplete, speed);
-            lastUpdate = currentTime;
-          }
-
-          lastTime = currentTime;
-          lastLoaded = event.loaded;
-
-        } else {
-          console.warn('Progress not computable');
-        }
-      }, false)
-      xhr.onerror = function () {
-        reject(new Error('Failed to upload file'));
-      };
-      xhr.onload = function () {
-        if (xhr.status === 200) {
-          resolve('File uploaded successfully!');
-        } else {
-          const response = xhr.response;
-          console.error(`Upload failed with error code ${xhr.status} and message ${response?.message || 'Unknown error'}`);
-          reject(new Error(`Upload failed with error code ${xhr.status}'}`));
-        }
-      };
-      xhr.send(formData);
-    });
-
   },
   async getUploadStatus(fileName: string, fileSize: number, chunkSize: number, target: StorageLocation, token: string): Promise<any> {
     try {
@@ -239,22 +157,6 @@ export const ServerRequest = {
     }
     return responseContent
   },
-  async fetchName(fileId: string, signal?: AbortSignal): Promise<string> {
-
-    const response = await fetch(`${API_BASE_URL}/server/name?fileId=${fileId}`, { signal });
-
-    if (!response.ok) {
-      const error = await response.json().catch(() => null);
-      throw new Error(error?.message || "Failed to fetch file stats");
-    }
-    const data = await response.json();
-
-    // removing file extension
-    let name = data.fileName.replace(/\.[a-zA-Z0-9]+$/, "")
-    return name
-
-  },
-
   async fetchfileDetails(fileId: string, signal?: AbortSignal): Promise<{ id: number, name: string, performers: Item[] }> {
 
     const response = await fetch(`${API_BASE_URL}/server/fileDetails/${fileId}`, { signal });

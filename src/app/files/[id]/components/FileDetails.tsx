@@ -173,7 +173,7 @@ export default function FileDetails({ initPerformers, fileId, initFileName, down
         <div className={styles.buttonsDiv}>
           <p>Actions: </p>
           <RippleButton className={styles.scbutton} onClick={handleTakeScreenshot} disabled={insertThumbnailLoading}>
-            {insertThumbnailLoading ? "uploading Thumbnail" : "Set As Thumbnail"}
+            {insertThumbnailLoading ? "Capturing Thumbnail" : "Set As Thumbnail"}
           </RippleButton>
           <RippleButton className={styles.scbutton} onClick={handleDeleteClick}>
             <p>&nbsp;Delete Video</p>
