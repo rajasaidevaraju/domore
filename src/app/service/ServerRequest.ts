@@ -23,7 +23,7 @@ export const ServerRequest = {
     if (unassignedOnly) {
       url.searchParams.append("unassigned", "true");
     }
-    const response = await fetch(url, { method: "GET", redirect: "follow", next: { revalidate: 5 } });
+    const response = await fetch(url, { method: "GET", redirect: "follow", cache: "no-store" });
     if (!response.ok) {
       if (response.status === 404) {
         throw new Error(`No files found on page ${page}`);

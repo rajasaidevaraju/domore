@@ -1,6 +1,3 @@
-<!-- 24 unit grid to match the icons in /svg/; the intrinsic size is only what a
-     standalone viewer uses, since the app sizes icons in CSS and the favicon
-     scales from the viewBox -->
 <svg width="256" height="256" viewBox="0 0 24 24" fill="none" role="img" xmlns="http://www.w3.org/2000/svg">
 <title>Phone icon with play badge, no notch</title>
 <desc>A rounded rectangle representing a phone, with a circular play button badge centered inside</desc>

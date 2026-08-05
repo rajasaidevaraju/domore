@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import styles from "../File.module.css";
 import { useAuthStore } from "@/app/store/auth";
 import { MessageType, Item, bumpThumbnailVersion } from "@/app/types/Types";
@@ -22,6 +23,7 @@ interface FileDetailsProps {
 
 export default function FileDetails({ initPerformers, fileId, initFileName, downloadLink }: FileDetailsProps) {
   const isDev = isDevMode();
+  const router = useRouter();
   const { token, isLoggedIn } = useAuthStore();
   const [performers, setPerformers] = useState<Item[]>(initPerformers);
   const [fileName, setFileName] = useState(isDev ? "This should be file name" : initFileName);
@@ -108,6 +110,7 @@ export default function FileDetails({ initPerformers, fileId, initFileName, down
       const updatedFileDetails = await ServerRequest.fetchfileDetails(fileId);
       setPerformers(updatedFileDetails.performers);
       setFileName(updatedFileDetails.name);
+      router.refresh();
       showToast(response.message, MessageType.SUCCESS);
     } catch (error) {
       if (error instanceof Error) {

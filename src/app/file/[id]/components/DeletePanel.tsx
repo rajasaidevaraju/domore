@@ -33,6 +33,7 @@ export default function DeletePanel({ fileId, fileName, token, showToast, onClos
                     redirectUrl += `&unassigned=true`;
                 }
                 router.push(redirectUrl);
+                router.refresh();
             } catch (error: Error | any) {
                 if (error instanceof Error) {
                     showToast(error.message, MessageType.DANGER);
