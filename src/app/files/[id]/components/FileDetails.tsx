@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import styles from "../File.module.css";
 import { useAuthStore } from "@/app/store/auth";
-import { MessageType, Item, bumpThumbnailVersion } from "@/app/types/Types";
+import { MessageType, Item } from "@/app/types/Types";
 import RippleButton from "@/app/types/RippleButton";
 import Link from "next/link";
 import PerformerPanel from "./PerformerPanel";
@@ -60,7 +60,6 @@ export default function FileDetails({ initPerformers, fileId, initFileName, down
         const timestampMs = videoElement.currentTime * 1000;
 
         const blob = await ServerRequest.extractThumbnail(fileId, timestampMs, token);
-        bumpThumbnailVersion(Number(fileId));
 
         const objectUrl = URL.createObjectURL(blob);
         setUploadedThumbnail(objectUrl);

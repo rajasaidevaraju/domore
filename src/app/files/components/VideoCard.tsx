@@ -36,8 +36,8 @@ export default function VideoCard({ file }: VideoCardProps) {
 
   useEffect(() => {
     if (isDev) return;
-    setThumbSrc(ServerRequest.thumbnailUrl(file.fileId));
-  }, [file.fileId, isDev]);
+    setThumbSrc(ServerRequest.thumbnailUrl(file.fileId, file.thumbnailUpdatedAt));
+  }, [file.fileId, file.thumbnailUpdatedAt, isDev]);
 
   const stopPreview = useCallback(() => {
     if (hoverTimerRef.current !== null) {

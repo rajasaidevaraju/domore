@@ -67,6 +67,7 @@ export interface ApiResponse {
 export interface FileDetails {
   id: number;
   name: string;
+  thumbnailUpdatedAt?: number;
   performers: Item[];
 }
 
@@ -84,10 +85,14 @@ export enum StorageLocation {
 
 export type HomeSearchParams = Promise<{ page: string | undefined, performerId: string | undefined, sortBy: string | undefined, unassigned: string | undefined }>
 
-// Image bytes are cached by the browser's HTTP cache; this only tracks
-// replacements so <img> URLs get a cache-busting query param after an update.
-export const thumbnailVersions = new Map<number, number>();
 
-export function bumpThumbnailVersion(fileId: number): void {
-  thumbnailVersions.set(fileId, (thumbnailVersions.get(fileId) ?? 0) + 1);
+const thumbnailUpdatedAtOverrides = new Map<number, number>();
+
+export function noteThumbnailUpdated(fileId: number, updatedAt: number): void {
+  if (!Number.isFinite(updatedAt) || updatedAt <= 0) return;
+  thumbnailUpdatedAtOverrides.set(fileId, updatedAt);
+}
+
+export function resolveThumbnailUpdatedAt(fileId: number, updatedAt?: number): number {
+  return Math.max(updatedAt ?? 0, thumbnailUpdatedAtOverrides.get(fileId) ?? 0);
 }

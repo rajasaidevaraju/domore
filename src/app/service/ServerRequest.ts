@@ -1,6 +1,6 @@
 import { ServerUrlProvider } from './UrlProvider';
 import { FileDataList } from "../types/FileDataList";
-import { ServerStats, Item, ApiResponse, StorageLocation, thumbnailVersions } from '@/app/types/Types'
+import { ServerStats, Item, ApiResponse, StorageLocation, noteThumbnailUpdated, resolveThumbnailUpdatedAt } from '@/app/types/Types'
 
 const API_BASE_URL = ServerUrlProvider();
 
@@ -37,13 +37,12 @@ export const ServerRequest = {
 
 
 
-  // Image bytes are fetched by <img> tags directly so the browser's HTTP
-  // cache and off-thread decoding handle them; these only build the URLs.
-  thumbnailUrl(fileId: number): string {
+
+  thumbnailUrl(fileId: number, thumbnailUpdatedAt?: number): string {
     const url = new URL("/server/thumbnail", API_BASE_URL || window.location.origin);
     url.searchParams.append("fileId", fileId.toString());
-    const version = thumbnailVersions.get(fileId);
-    if (version) {
+    const version = resolveThumbnailUpdatedAt(fileId, thumbnailUpdatedAt);
+    if (version > 0) {
       url.searchParams.append("v", version.toString());
     }
     return url.toString();
@@ -74,7 +73,12 @@ export const ServerRequest = {
       const error = await response.json().catch(() => null);
       throw new Error(error?.message || defaultErrorMessage);
     }
-    
+
+    const updatedAt = Number(response.headers.get("X-Thumbnail-Updated-At"));
+    if (updatedAt) {
+      noteThumbnailUpdated(Number(fileId), updatedAt);
+    }
+
     return await response.blob();
   },
   async getUploadStatus(fileName: string, fileSize: number, chunkSize: number, target: StorageLocation, token: string): Promise<any> {
@@ -157,7 +161,7 @@ export const ServerRequest = {
     }
     return responseContent
   },
-  async fetchfileDetails(fileId: string, signal?: AbortSignal): Promise<{ id: number, name: string, performers: Item[] }> {
+  async fetchfileDetails(fileId: string, signal?: AbortSignal): Promise<{ id: number, name: string, thumbnailUpdatedAt?: number, performers: Item[] }> {
 
     const response = await fetch(`${API_BASE_URL}/server/fileDetails/${fileId}`, { signal });
 
@@ -168,7 +172,7 @@ export const ServerRequest = {
     const data = await response.json();
     // removing file extension
     let name = data.name.replace(/\.[a-zA-Z0-9]+$/, "")
-    return { id: data.id, name: name, performers: data.performers }
+    return { id: data.id, name: name, thumbnailUpdatedAt: data.thumbnailUpdatedAt, performers: data.performers }
 
   },
   async getActiveServersList(signal: AbortSignal): Promise<string[]> {

@@ -4,6 +4,7 @@ interface FileData {
     fileName: string;
     fileSize:number;
     durationMs:number;
+    thumbnailUpdatedAt?:number;
 }
   
 interface Meta {

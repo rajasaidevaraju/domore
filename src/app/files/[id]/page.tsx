@@ -14,11 +14,14 @@ export async function generateMetadata({ params }: { params: pageParams }) {
   const API_BASE_URL = ServerUrlProvider();
   try {
     const result = await ServerRequest.fetchfileDetails(id);
+    const version = result.thumbnailUpdatedAt
+      ? `&v=${result.thumbnailUpdatedAt}`
+      : "";
     return {
       title: result.name || `File ${id}`,
       description: `Details for file ${id}`,
       openGraph: {
-        images: [`${API_BASE_URL}/server/thumbnail?fileId=${id}`],
+        images: [`${API_BASE_URL}/server/thumbnail?fileId=${id}${version}`],
       },
     };
   } catch (error) {
