@@ -75,7 +75,7 @@ export default function Stats(){
             </div>
             <div>
                 <p className={styles.text}>Files: {files}</p>
-                <p className={styles.text}>Percentage: {batteryPercentage}%</p>
+                <p className={styles.text}>Percentage: <span className={batteryClass(batteryPercentage)}>{batteryPercentage}%</span></p>
                 <p className={styles.text}>Charging: {isCharging ? "Yes" : "No"}</p>
             </div>
             
@@ -90,6 +90,13 @@ export default function Stats(){
             
         </div>
     )
+}
+
+function batteryClass(percentage:number){
+    if(percentage < 0) return undefined;
+    if(percentage >= 80) return styles.batteryHigh;
+    if(percentage >= 30) return styles.batteryMedium;
+    return styles.batteryLow;
 }
 
 function StorageBar(props:{total:number,free:number,storageName:string}){
