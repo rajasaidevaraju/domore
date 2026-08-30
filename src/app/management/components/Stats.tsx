@@ -59,6 +59,7 @@ export default function Stats(){
 
     const {
         files = 0,
+        totalFileSize = 0,
         freeInternal = 0,
         freeExternal = 0,
         totalInternal = 0,
@@ -75,6 +76,7 @@ export default function Stats(){
             </div>
             <div>
                 <p className={styles.text}>Files: {files}</p>
+                <p className={styles.text}>Total Video Size: {formatSize(totalFileSize)}</p>
                 <p className={styles.text}>Percentage: <span className={batteryClass(batteryPercentage)}>{batteryPercentage}%</span></p>
                 <p className={styles.text}>Charging: {isCharging ? "Yes" : "No"}</p>
             </div>

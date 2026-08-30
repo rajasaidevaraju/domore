@@ -24,6 +24,7 @@ export interface NetworkReturn {
 
 export interface ServerStats {
   files: number,
+  totalFileSize: number,
   freeInternal: number,
   totalInternal: number,
   freeExternal: number,
