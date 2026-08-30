@@ -151,6 +151,7 @@ export const ServerRequest = {
 
     const responseContent = {
       files: data.files,
+      totalFileSize: data.totalFileSize,
       freeInternal: data.freeInternal,
       totalInternal: data.totalInternal,
       freeExternal: data.freeExternal,
