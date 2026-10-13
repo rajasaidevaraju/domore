@@ -397,6 +397,7 @@ export default function VideoPlayer({ videoSrc }: VideoPlayerProps) {
             toggleFullscreen();
           }}
           playsInline
+          preload="metadata"
         >
           Your browser does not support the video tag.
         </video>
