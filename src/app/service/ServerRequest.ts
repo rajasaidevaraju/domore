@@ -4,6 +4,13 @@ import { ServerStats, Item, ApiResponse, StorageLocation, noteThumbnailUpdated, 
 
 const API_BASE_URL = ServerUrlProvider();
 
+export class UnauthorizedError extends Error {
+  constructor(message = "Session expired. Please log in again.") {
+    super(message);
+    this.name = "UnauthorizedError";
+  }
+}
+
 export const ServerRequest = {
 
   async fetchFiles(page?: number, performerId?: number, sortBy?: string, unassignedOnly?: boolean): Promise<FileDataList> {
@@ -96,6 +103,9 @@ export const ServerRequest = {
         }
       });
 
+      if (response.status === 401) {
+        throw new UnauthorizedError();
+      }
       if (!response.ok && response.status !== 409) {
         const error = await response.json().catch(() => null);
         throw new Error(error?.message || `Server returned ${response.status}`);
@@ -131,6 +141,8 @@ export const ServerRequest = {
       xhr.onload = function () {
         if (xhr.status === 200) {
           resolve(xhr.response);
+        } else if (xhr.status === 401) {
+          reject(new UnauthorizedError());
         } else {
           const response = xhr.response;
           reject(new Error(response?.message || `Upload failed for chunk ${chunkIndex} with status ${xhr.status}`));

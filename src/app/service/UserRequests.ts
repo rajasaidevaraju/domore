@@ -62,22 +62,26 @@ export const UserRequests = {
           throw error;
         }
       },
-      async verifyToken(token:string):Promise<{username:string|null,token:string|null,isTokenValid:boolean}> {
-        let invalid={username:null,token:null,isTokenValid:false};
+      async verifyToken(token:string):Promise<{username:string|null,token:string|null,isTokenValid:boolean,unreachable:boolean}> {
+        let invalid={username:null,token:null,isTokenValid:false,unreachable:false};
+        let unreachable={username:null,token:null,isTokenValid:true,unreachable:true};
         try {
           const response = await fetch(`${API_BASE_URL}/server/verify`, {
             method: 'GET',credentials: 'include', headers: {'Authorization': `Bearer ${token}`},
           })
-          if (!response.ok) {
+          if (response.status === 401 || response.status === 400) {
             return invalid
+          }
+          if (!response.ok) {
+            return unreachable
           }
           let data = await response.json();
           if (typeof data === 'object' && data !== null && data.username !== undefined && data.token !== undefined) {
-            return {username:data.username,token:data.token,isTokenValid:true}
+            return {username:data.username,token:data.token,isTokenValid:true,unreachable:false}
           }
-          return invalid
+          return unreachable
         } catch (error: any) {
-          return invalid
+          return unreachable
         }
       }
 }

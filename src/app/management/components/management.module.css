@@ -249,6 +249,41 @@
 }
 
 
+.overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(var(--foreground-rgb), 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.dialog {
+  background-color: rgb(var(--background-rgb));
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  padding: 20px;
+  width: 90%;
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.dialog h2 {
+  margin: 0;
+  font-size: 1.3rem;
+}
+
+.dialogActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 6px;
+}
+
+
 @media (max-width: 768px) {
   .cardContainer {
     padding: 10px;

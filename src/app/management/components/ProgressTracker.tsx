@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from "react";
-import { ServerRequest } from "@/app/service/ServerRequest";
+import { ServerRequest, UnauthorizedError } from "@/app/service/ServerRequest";
 import { formatSize } from "@/app/service/format";
 import styles from "./management.module.css";
 import { useAuthStore } from '@/app/store/auth';
@@ -23,16 +23,19 @@ const ProgressTracker: React.FC<ProgressTrackerProps> = ({ file, startUpload, re
   const [error, setError] = useState<string | null>(null);
   const [aborted, setAborted] = useState(false)
   const abortedRef = useRef(false);
-  const { isLoggedIn, token } = useAuthStore();
+  const [authError, setAuthError] = useState(false);
+  const { token, expireSession } = useAuthStore();
 
 
   const handleFileUpload = async () => {
 
     if (token == null) {
-      setError('Unauthorized');
+      setError(new UnauthorizedError().message);
+      setAuthError(true);
       return;
     } else {
       setError(null);
+      setAuthError(false);
     }
 
     if (file) {
@@ -120,6 +123,7 @@ const ProgressTracker: React.FC<ProgressTrackerProps> = ({ file, startUpload, re
               }
               success = true;
             } catch (e) {
+              if (e instanceof UnauthorizedError) throw e;
               retryCount++;
               setRetry(retryCount);
               if (retryCount > 2) throw e;
@@ -139,7 +143,12 @@ const ProgressTracker: React.FC<ProgressTrackerProps> = ({ file, startUpload, re
           }
         }
       } catch (error: any) {
-        if (error.name === 'AbortError' || (error instanceof Error && error.message.includes('abort'))) {
+        if (error instanceof UnauthorizedError) {
+          setRetry(0);
+          setError(error.message);
+          setAuthError(true);
+          expireSession();
+        } else if (error.name === 'AbortError' || (error instanceof Error && error.message.includes('abort'))) {
         } else {
           setError(error instanceof Error ? error.message : 'Upload failed');
           console.error(`[ProgressTracker] Error:`, error);
@@ -174,6 +183,13 @@ const ProgressTracker: React.FC<ProgressTrackerProps> = ({ file, startUpload, re
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [startUpload])
+
+  useEffect(() => {
+    if (authError && token != null && uploadStarted.current && !abortedRef.current) {
+      handleFileUpload()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [token])
 
 
   return (

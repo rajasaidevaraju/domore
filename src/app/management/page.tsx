@@ -8,9 +8,10 @@ import { ToastData,MessageType } from "../types/Types";
 import ToastMessage from "@/app/types/ToastMessages";
 import styles from "./components/management.module.css";
 import { useAuthStore } from '@/app/store/auth';
+import ReLoginDialog from "./components/ReLoginDialog";
 
 const Management=()=>{
-    const {isLoggedIn} = useAuthStore();
+    const {isLoggedIn, sessionExpired} = useAuthStore();
     const [toasts, setToasts] = useState<ToastData[]>([]);
     
     const showToast = (message: string, type: MessageType) => {
@@ -25,12 +26,9 @@ const Management=()=>{
 
     return (
         <div className={styles.managementpanel}>
-            {isLoggedIn && 
-            <>
-                <UploadCard/>
-                <Operations showToast={showToast}/>
-            </>
-            }
+            {(isLoggedIn || sessionExpired) && <UploadCard/>}
+            {isLoggedIn && <Operations showToast={showToast}/>}
+            {sessionExpired && <ReLoginDialog/>}
             <Stats/>
             {toasts.length > 0 && <ToastMessage toasts={toasts} onClose={removeToast} />}
         </div>
